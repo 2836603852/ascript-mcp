@@ -56,6 +56,7 @@ python scripts/extract_api.py /path/to/ascript-windows
 ```bash
 cd /opt/ascript-mcp
 source .venv/bin/activate
+pip install -e .
 python -m ascript_mcp.server
 ```
 

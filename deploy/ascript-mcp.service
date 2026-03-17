@@ -8,6 +8,7 @@ User=www-data
 Group=www-data
 WorkingDirectory=/opt/ascript-mcp
 Environment="PATH=/opt/ascript-mcp/.venv/bin:/usr/bin"
+Environment="PYTHONPATH=/opt/ascript-mcp/src"
 ExecStart=/opt/ascript-mcp/.venv/bin/python -m ascript_mcp.server
 Restart=always
 RestartSec=5
