@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
-Group=www-data
+User=www
+Group=www
 WorkingDirectory=/home/wwwroot/mcp.ascript.cn
 Environment="PATH=/home/wwwroot/mcp.ascript.cn/.venv/bin:/usr/bin"
 Environment="PYTHONPATH=/home/wwwroot/mcp.ascript.cn/src"
