@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+*.log
+
+# API 数据是生成的，不需要提交（可选，如果希望部署时免提取可以提交）
+# src/ascript_mcp/api_data/*.json

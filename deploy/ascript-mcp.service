@@ -1,0 +1,18 @@
+[Unit]
+Description=AScript MCP Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/ascript-mcp
+Environment="PATH=/opt/ascript-mcp/.venv/bin:/usr/bin"
+ExecStart=/opt/ascript-mcp/.venv/bin/python -m ascript_mcp.server
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4785 @@
+{
+  "platform": "windows",
+  "modules": [
+    {
+      "module": "ascript.windows",
+      "file": "ascript/windows/__init__.py",
+      "docstring": "ascript.windows 模块 - Windows 平台自动化核心包。\n\n负责初始化 Windows 平台相关的路径配置和 RapidOCR Hook 注入。",
+      "classes": [],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.daos.screen",
+      "file": "ascript/windows/daos/screen.py",
+      "docstring": "屏幕数据模型模块。\n\n定义屏幕操作中使用的基础数据结构，包括坐标点、颜色、尺寸和 OCR 识别结果。",
+      "classes": [
+        {
+          "name": "Point",
+          "docstring": "屏幕坐标点。\n\n表示屏幕上的一个二维坐标点。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化坐标点。\n\nArgs:\n    x: 横坐标，默认为 0。\n    y: 纵坐标，默认为 0。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将坐标点转换为字典。\n\nReturns:\n    dict: 包含 'x' 和 'y' 键的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "Color",
+          "docstring": "颜色值。\n\n将十六进制颜色字符串解析为 RGB 分量。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化颜色对象。\n\n从十六进制颜色字符串（如 '#FF00AA'）中解析出 R、G、B 分量。\n\nArgs:\n    color: 十六进制颜色字符串，格式为 '#RRGGBB'。",
+              "params": [
+                {
+                  "name": "color",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "to_rgb",
+              "docstring": "将颜色转换为 RGB 列表。\n\nReturns:\n    list: 包含 [R, G, B] 三个整数值的列表，每个值范围为 0-255。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "Size",
+          "docstring": "尺寸大小。\n\n表示宽度和高度的二维尺寸。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化尺寸对象。\n\nArgs:\n    width: 宽度值。\n    height: 高度值。",
+              "params": [
+                {
+                  "name": "width"
+                },
+                {
+                  "name": "height"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "Point",
+          "docstring": "屏幕坐标点（重新定义）。\n\n表示屏幕上的一个二维坐标点，覆盖了之前定义的 Point 类。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化坐标点。\n\nArgs:\n    x: 横坐标，默认为 0。\n    y: 纵坐标，默认为 0。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将坐标点转换为字典。\n\nReturns:\n    dict: 包含 'x' 和 'y' 键的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "OcrRes",
+          "docstring": "OCR 识别结果。\n\n封装单条 OCR 文字识别的结果，包括识别文本、置信度和区域位置信息。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化 OCR 识别结果。\n\nArgs:\n    text: 识别出的文本内容。\n    confidence: 识别置信度，取值范围为 0.0 到 1.0。\n    region_position: 文本区域的四个顶点坐标列表，\n        格式为 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "None"
+                },
+                {
+                  "name": "region_position",
+                  "type": "list",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将 OCR 结果转换为字典。\n\nReturns:\n    dict: 包含 'text'、'confidence' 和 'region_position' 键的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.hardware.keyboard",
+      "file": "ascript/windows/hardware/keyboard.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Keyboard",
+          "docstring": "键盘自动化操作类。\n\n基于 PyAutoGUI 封装，支持中英文智能输入、组合键操作及链式调用。\n中文输入通过剪贴板粘贴实现，英文输入通过模拟按键实现。\n所有方法均为类方法，返回类本身以支持链式调用。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "input",
+              "docstring": "自动识别中英文并输入文本。\n\n如果文本包含非 ASCII 字符（如中文、全角符号），通过剪贴板粘贴实现；\n如果是纯英文，通过模拟键盘敲击实现。\n\nArgs:\n    msg: 要输入的字符串内容。\n    interval: 仅对纯英文输入有效，每个字符之间敲击的间隔时间（秒），默认为 0.0。\n\nReturns:\n    Keyboard 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "msg",
+                  "type": "str"
+                },
+                {
+                  "name": "interval",
+                  "type": "float",
+                  "default": "0.0"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "key",
+              "docstring": "按下并释放指定按键。\n\nArgs:\n    keys: 按键名称（如 'enter'、'esc'）或按键名称列表。\n    presses: 连续按下的次数，默认为 1。\n    interval: 连续按下之间的间隔时间（秒），默认为 0.1。\n\nReturns:\n    Keyboard 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "keys",
+                  "type": "Union[str, List[str]]"
+                },
+                {
+                  "name": "presses",
+                  "type": "int",
+                  "default": "1"
+                },
+                {
+                  "name": "interval",
+                  "type": "float",
+                  "default": "0.1"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "key_hot",
+              "docstring": "执行组合键操作。\n\n例如 key_hot('ctrl', 'c') 执行复制操作。\n\nArgs:\n    *args: 按键序列，例如 'ctrl', 'alt', 'delete'。\n    interval: 按键按下之间的间隔时间（秒），默认为 0.1。\n\nReturns:\n    Keyboard 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "*args"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "key_down",
+              "docstring": "按下指定按键不松开。\n\nArgs:\n    key_str: 按键名称，如 'shift'、'ctrl'。\n\nReturns:\n    Keyboard 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "key_str",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "key_up",
+              "docstring": "松开已按下的按键。\n\nArgs:\n    key_str: 按键名称，如 'shift'、'ctrl'。\n\nReturns:\n    Keyboard 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "key_str",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "wait",
+              "docstring": "在键盘操作链中插入等待。\n\nArgs:\n    seconds: 等待的时长（秒）。\n\nReturns:\n    Keyboard 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "seconds",
+                  "type": "float"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.hardware.logitech_driver",
+      "file": "ascript/windows/hardware/logitech_driver.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "LogitechDriver",
+          "docstring": "罗技驱动级硬件操作类。\n\n通过加载罗技 G HUB SDK 的 DLL，实现驱动级别的鼠标点击和移动操作。\n需要系统已安装并运行罗技 G HUB 驱动程序。\n支持 x86 和 x64 架构自动适配。\n\nAttributes:\n    DLL_NAME: 罗技 SDK DLL 文件名。\n    _dll: 已加载的 DLL 对象实例。\n    _initialized: 驱动是否已完成初始化。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "_get_dll_path",
+              "docstring": "根据当前 Python 解释器的位数定位对应架构的 DLL 文件路径。\n\nReturns:\n    str: DLL 文件的完整路径。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "_is_ghub_running",
+              "docstring": "检测罗技 G HUB 进程是否正在运行。\n\n通过 tasklist 命令检查 lghub.exe、lghub_agent.exe、lghub_updater.exe\n等进程是否存在。\n\nReturns:\n    bool: G HUB 正在运行返回 True，否则返回 False。",
+              "params": [],
+              "return_type": "bool",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "init",
+              "docstring": "初始化罗技驱动。\n\n执行环境检查（G HUB 进程、DLL 文件），加载 DLL 并尝试调用\nSDK 初始化函数。初始化成功后会等待 0.5 秒确保驱动就绪。\n重复调用时若已初始化会直接返回 True。\n\nReturns:\n    bool: 初始化成功返回 True，失败返回 False。",
+              "params": [],
+              "return_type": "bool",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "advanced_click_guide",
+              "docstring": "高级引导：检查运行权限与驱动环境。\n\n检查当前是否以管理员权限运行，并尝试激活驱动模式。\n在控制台输出检查结果供用户排查问题。\n\nReturns:\n    bool: 驱动激活成功返回 True，失败返回 False。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "click",
+              "docstring": "执行驱动级鼠标点击。\n\n通过罗技 SDK 直接发送鼠标按键事件，可绕过部分反作弊检测。\n\nArgs:\n    button: 鼠标按键编号，1=左键，2=中键，4=右键（SDK 定义）。\n    duration: 按下与释放之间的间隔时间（秒），默认为 0.05。\n\nReturns:\n    bool: 点击成功返回 True，失败（驱动未初始化或异常）返回 False。",
+              "params": [
+                {
+                  "name": "button",
+                  "type": "int",
+                  "default": "1"
+                },
+                {
+                  "name": "duration",
+                  "type": "float",
+                  "default": "0.05"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "move_rel",
+              "docstring": "驱动级鼠标相对位移。\n\n通过罗技 SDK 发送鼠标相对移动事件。\n\nArgs:\n    x: 水平方向的相对位移量（像素）。\n    y: 垂直方向的相对位移量（像素）。\n\nReturns:\n    bool: 移动成功返回对应的 SDK 返回值，失败返回 False。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int"
+                },
+                {
+                  "name": "y",
+                  "type": "int"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "DLL_NAME",
+              "value": "'LogitechGkeyEnginesWrapper.dll'"
+            },
+            {
+              "name": "_dll",
+              "value": "None"
+            },
+            {
+              "name": "_initialized",
+              "value": "False"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.hardware.mouse",
+      "file": "ascript/windows/hardware/mouse.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Mouse",
+          "docstring": "鼠标自动化控制类。\n\n基于 PyDirectInput 封装，支持鼠标移动、点击、长按、滚动、拖拽等操作。\n已启用 DPI 感知，自动处理 Windows 高分屏缩放。\n所有方法均为类方法，返回类本身以支持链式调用。\n\nAttributes:\n    LEFT: 左键标识符。\n    MIDDLE: 中键标识符。\n    RIGHT: 右键标识符。\n    DEFAULT_MOVE_DURATION: 默认鼠标移动耗时（秒）。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "mouse_move",
+              "docstring": "移动鼠标到屏幕上的指定坐标位置。\n\nArgs:\n    x: 目标位置的屏幕 X 坐标。\n    y: 目标位置的屏幕 Y 坐标。\n    move_duration: 鼠标移动过程的耗时（秒），默认为 0.1。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int"
+                },
+                {
+                  "name": "y",
+                  "type": "int"
+                },
+                {
+                  "name": "move_duration",
+                  "type": "float",
+                  "default": "DEFAULT_MOVE_DURATION"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "mouse_down",
+              "docstring": "按下鼠标按键不松开。\n\nArgs:\n    x: 按下时的屏幕 X 坐标，为 None 时在当前位置按下。\n    y: 按下时的屏幕 Y 坐标，为 None 时在当前位置按下。\n    button: 鼠标按键，可选 'left'、'middle'、'right'，默认为左键。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "button",
+                  "type": "str",
+                  "default": "LEFT"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "mouse_up",
+              "docstring": "松开已按下的鼠标按键。\n\nArgs:\n    x: 松开时的屏幕 X 坐标，为 None 时在当前位置松开。\n    y: 松开时的屏幕 Y 坐标，为 None 时在当前位置松开。\n    button: 鼠标按键，可选 'left'、'middle'、'right'，默认为左键。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "button",
+                  "type": "str",
+                  "default": "LEFT"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "click",
+              "docstring": "模拟鼠标点击操作。\n\n支持指定坐标、多次点击、随机偏移等功能。\n\nArgs:\n    x: 点击位置的屏幕 X 坐标，为 None 时在当前位置点击。\n    y: 点击位置的屏幕 Y 坐标，为 None 时在当前位置点击。\n    clicks: 点击次数，默认为 1。设为 2 可实现双击。\n    interval: 多次点击之间的间隔时间（秒），默认为 0.1。\n    button: 鼠标按键，可选 'left'、'middle'、'right'，默认为左键。\n    move_duration: 移动到目标位置的耗时（秒），默认为 0.0（瞬移）。\n    duration: 按下与弹起之间的物理间隔（秒），增大此值可提高点击成功率，默认为 0.05。\n    offset: 随机偏移范围（像素），大于 0 时会在目标坐标附近随机偏移，用于模拟人类操作。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "Optional[int]",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "Optional[int]",
+                  "default": "None"
+                },
+                {
+                  "name": "clicks",
+                  "type": "int",
+                  "default": "1"
+                },
+                {
+                  "name": "interval",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "button",
+                  "type": "str",
+                  "default": "LEFT"
+                },
+                {
+                  "name": "move_duration",
+                  "type": "float",
+                  "default": "0.0"
+                },
+                {
+                  "name": "duration",
+                  "type": "float",
+                  "default": "0.05"
+                },
+                {
+                  "name": "offset",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "long_press",
+              "docstring": "模拟鼠标长按操作。\n\n在指定位置按下鼠标并保持一段时间后松开。\n\nArgs:\n    x: 长按位置的屏幕 X 坐标，为 None 时在当前位置操作。\n    y: 长按位置的屏幕 Y 坐标，为 None 时在当前位置操作。\n    press_duration: 按住的持续时间（秒），默认为 2.0。\n    button: 鼠标按键，可选 'left'、'middle'、'right'，默认为左键。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "press_duration",
+                  "type": "float",
+                  "default": "2.0"
+                },
+                {
+                  "name": "button",
+                  "type": "str",
+                  "default": "LEFT"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "scroll",
+              "docstring": "模拟鼠标滚轮滚动。\n\nArgs:\n    clicks: 滚动量，正数向上滚动，负数向下滚动。\n    x: 滚动时的屏幕 X 坐标，为 None 时在当前位置滚动。\n    y: 滚动时的屏幕 Y 坐标，为 None 时在当前位置滚动。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "clicks",
+                  "type": "int"
+                },
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "drag",
+              "docstring": "从指定位置拖拽鼠标到目标位置。\n\n使用左键进行拖拽操作。如果不指定起始位置，则从当前鼠标位置开始拖拽。\n\nArgs:\n    to_x: 拖拽目标的屏幕 X 坐标。\n    to_y: 拖拽目标的屏幕 Y 坐标。\n    from_x: 拖拽起始的屏幕 X 坐标，为 None 时从当前位置开始。\n    from_y: 拖拽起始的屏幕 Y 坐标，为 None 时从当前位置开始。\n    move_duration: 拖拽移动过程的耗时（秒），默认为 0.5。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "to_x",
+                  "type": "int"
+                },
+                {
+                  "name": "to_y",
+                  "type": "int"
+                },
+                {
+                  "name": "from_x",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "from_y",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "move_duration",
+                  "type": "float",
+                  "default": "0.5"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "wait",
+              "docstring": "在鼠标操作链中插入等待。\n\nArgs:\n    seconds: 等待的时长（秒）。\n\nReturns:\n    Mouse 类本身，支持链式调用。",
+              "params": [
+                {
+                  "name": "seconds",
+                  "type": "float"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "LEFT",
+              "value": "'left'"
+            },
+            {
+              "name": "MIDDLE",
+              "value": "'middle'"
+            },
+            {
+              "name": "RIGHT",
+              "value": "'right'"
+            },
+            {
+              "name": "DEFAULT_MOVE_DURATION",
+              "value": "0.1"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.license",
+      "file": "ascript/windows/license/__init__.py",
+      "docstring": "许可证加密模块。\n\n提供基于 AES 加密的许可证验证功能，包括加密通信和数据填充工具。\n\nExports:\n    achttp: 加密 HTTP 通信模块。\n    AES: AES 加密算法。\n    pad: PKCS7 数据填充函数。\n    unpad: PKCS7 数据去填充函数。",
+      "classes": [],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.resources.templates.build",
+      "file": "ascript/windows/resources/templates/build.py",
+      "docstring": "",
+      "classes": [],
+      "functions": [
+        {
+          "name": "auto_build",
+          "docstring": "使用 Nuitka 将 Python 项目打包为独立的 Windows 可执行文件。\n\n自动构造 Nuitka 编译命令，实时输出编译日志到控制台，\n并在完成后报告编译结果。\n\nArgs:\n    entry_file: Python 入口文件路径（如 'main.py'）\n    project_name: 输出的可执行文件名称（不含 .exe 后缀）",
+          "params": [
+            {
+              "name": "entry_file"
+            },
+            {
+              "name": "project_name"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.resources.templates.windows.main",
+      "file": "ascript/windows/resources/templates/windows/main.py",
+      "docstring": "AScript Windows 应用模板的入口程序。\n\n演示如何使用 FloatScriptWindow 创建带有启动/停止控制的自动化脚本应用。",
+      "classes": [],
+      "functions": [
+        {
+          "name": "task_start",
+          "docstring": "业务逻辑入口函数。\n\n当用户点击启动按钮或触发自启动时，此函数将在独立的子进程中运行。\n在此函数中编写自动化任务的核心业务逻辑。",
+          "params": [],
+          "return_type": null,
+          "decorators": [
+            "app.on('start')"
+          ]
+        },
+        {
+          "name": "task_stop",
+          "docstring": "任务停止时的善后处理回调。\n\n当用户手动停止或任务结束时触发。可在此执行资源释放操作，\n如关闭文件句柄、断开数据库连接等。注意约有 3 秒的执行时限，\n超时后系统会强制回收进程资源。",
+          "params": [],
+          "return_type": null,
+          "decorators": [
+            "app.on('stop')"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.screen.as_cv",
+      "file": "ascript/windows/screen/as_cv.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "MatchResult",
+          "docstring": "图像匹配结果的数据封装类。\n\n封装单次图像匹配的完整结果信息，包含坐标、置信度、匹配方法等。\n支持字典式访问和 JSON 序列化。\n\nAttributes:\n    center: 匹配区域的中心点坐标，格式为 (x, y)。\n    rectangle: 匹配区域的四个顶点坐标列表，格式为 [(x1,y1), (x2,y2), (x3,y3), (x4,y4)]。\n    rect: 匹配区域的外接矩形，格式为 [left, top, right, bottom]。\n    confidence: 匹配置信度，范围 0.0 ~ 1.0。\n    method: 使用的匹配算法名称（如 'template_fast'、'multi_scale'、'akaze'）。\n    scale: 匹配时的缩放比例，默认为 1.0。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "x",
+              "docstring": "获取匹配中心点的 X 坐标。\n\nReturns:\n    int: 中心点 X 坐标值。",
+              "params": [],
+              "return_type": "int",
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "y",
+              "docstring": "获取匹配中心点的 Y 坐标。\n\nReturns:\n    int: 中心点 Y 坐标值。",
+              "params": [],
+              "return_type": "int",
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将匹配结果转换为 JSON 兼容的字典。\n\n在 dataclass 默认字段基础上增加 x、y 顶层字段，方便前端 JS 直接调用。\n\nReturns:\n    dict: 包含所有属性及额外 x、y 字段的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "AsCv",
+          "docstring": "计算机视觉核心工具类。\n\n提供图像格式转换、模板匹配、多尺度匹配、特征匹配（AKAZE）等功能。\n所有方法均为静态方法或类方法，无需实例化即可使用。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "to_numpy",
+              "docstring": "将各种格式的图像统一转换为 NumPy 数组（OpenCV BGR 格式）。\n\n支持文件路径（含中文路径）、PIL Image 对象、NumPy 数组等输入。\n\nArgs:\n    im: 输入图像，可以是文件路径字符串、PIL.Image 对象、NumPy 数组或 None。\n\nReturns:\n    numpy.ndarray: BGR 格式的图像数组，输入为 None 时返回 None。\n\nRaises:\n    FileNotFoundError: 当文件路径无效或图像解析失败时抛出。",
+              "params": [
+                {
+                  "name": "im"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_all_template",
+              "docstring": "基础模板匹配，在源图像中查找所有与模板匹配的位置。\n\n使用归一化相关系数法（TM_CCOEFF_NORMED）进行匹配。\n支持灰度匹配和 RGB 分通道加权匹配两种模式。\n\nArgs:\n    im_source: 源图像（被搜索的大图），支持路径、PIL、NumPy 格式。\n    im_search: 模板图像（要查找的小图），支持路径、PIL、NumPy 格式。\n    threshold: 匹配置信度阈值，范围 0.0 ~ 1.0，默认为 0.8。\n    maxcnt: 最大返回结果数，0 表示不限制。1 时使用快速单结果模式。\n    rgb: 是否启用 RGB 分通道加权匹配模式，默认为 False（灰度匹配）。\n\nReturns:\n    List[MatchResult]: 匹配结果列表，按置信度从高到低排列。",
+              "params": [
+                {
+                  "name": "im_source"
+                },
+                {
+                  "name": "im_search"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.8"
+                },
+                {
+                  "name": "maxcnt",
+                  "default": "0"
+                },
+                {
+                  "name": "rgb",
+                  "default": "False"
+                }
+              ],
+              "return_type": "List[MatchResult]",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "find_all_multi_scale",
+              "docstring": "多尺度模板匹配，在不同缩放比例下搜索模板图像。\n\n对模板图像进行多个比例的缩放后分别进行模板匹配，\n最终通过简易非极大值抑制去除重叠结果。\n\nArgs:\n    im_source: 源图像（被搜索的大图）。\n    im_search: 模板图像（要查找的小图）。\n    threshold: 匹配置信度阈值，默认为 0.8。\n    maxcnt: 最大返回结果数，0 表示不限制。\n    scale_range: 缩放比例范围，格式为 (最小比例, 最大比例)，默认为 (0.5, 1.5)。\n    steps: 在缩放范围内的采样步数，默认为 10。\n\nReturns:\n    List[MatchResult]: 去重后的匹配结果列表，按置信度从高到低排列。",
+              "params": [
+                {
+                  "name": "im_source"
+                },
+                {
+                  "name": "im_search"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.8"
+                },
+                {
+                  "name": "maxcnt",
+                  "default": "0"
+                },
+                {
+                  "name": "scale_range",
+                  "default": "(0.5, 1.5)"
+                },
+                {
+                  "name": "steps",
+                  "default": "10"
+                }
+              ],
+              "return_type": "List[MatchResult]",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "find_akaze",
+              "docstring": "基于 AKAZE 算法的特征点匹配。\n\n使用 AKAZE 特征检测器提取特征点，通过暴力匹配和 RANSAC 单应性估计\n定位模板在源图像中的位置。适用于视角变化、缩放等场景。\n\nArgs:\n    im_source: 源图像（被搜索的大图）。\n    im_search: 模板图像（要查找的小图）。\n    threshold: 内点比例阈值，默认为 0.5。\n    min_match: 最少需要的特征匹配点数，默认为 10。\n\nReturns:\n    List[MatchResult]: 匹配结果列表，最多返回一个结果。",
+              "params": [
+                {
+                  "name": "im_source"
+                },
+                {
+                  "name": "im_search"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.5"
+                },
+                {
+                  "name": "min_match",
+                  "default": "10"
+                }
+              ],
+              "return_type": "List[MatchResult]",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "find",
+              "docstring": "综合图像查找入口。\n\n依次尝试模板匹配、多尺度匹配、AKAZE 特征匹配，直到找到足够数量的结果。\n\nArgs:\n    im_source: 源图像（被搜索的大图）。\n    im_search: 模板图像（要查找的小图）。\n    threshold: 匹配置信度阈值，默认为 0.8。\n    maxcnt: 最大返回结果数，默认为 1。0 表示不限制。\n    use_scale: 模板匹配结果不足时是否启用多尺度匹配，默认为 True。\n\nReturns:\n    List[MatchResult]: 匹配结果列表。",
+              "params": [
+                {
+                  "name": "im_source"
+                },
+                {
+                  "name": "im_search"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.8"
+                },
+                {
+                  "name": "maxcnt",
+                  "default": "1"
+                },
+                {
+                  "name": "use_scale",
+                  "default": "True"
+                }
+              ],
+              "return_type": "List[MatchResult]",
+              "decorators": [
+                "classmethod"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.screen.find_colors",
+      "file": "ascript/windows/screen/find_colors.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "FindColors",
+          "docstring": "多点找色工具类。\n\n基于向量化位移过滤算法实现高性能多点颜色匹配。\n支持自定义搜索区域、容差阈值、排序方向等参数。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "_hex_to_bgr",
+              "docstring": "将十六进制颜色字符串转换为 OpenCV BGR 格式元组。\n\nArgs:\n    hex_str: 十六进制颜色字符串，如 '#FF0000' 或 'FF0000'。\n\nReturns:\n    tuple: BGR 格式颜色元组，如 (0, 0, 255) 表示红色。",
+              "params": [
+                {
+                  "name": "hex_str"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "_parse_colors",
+              "docstring": "解析多点找色的颜色描述字符串。\n\n将形如 \"x,y,color|dx,dy,color\" 的字符串解析为基准色和偏移点列表。\n第一个点作为基准点，后续点记录相对于基准点的偏移和目标颜色。\n\nArgs:\n    colors_str: 颜色描述字符串，格式为 \"x,y,#RRGGBB|x,y,#RRGGBB|...\"。\n\nReturns:\n    tuple: (base_bgr, offsets)，其中：\n        - base_bgr (numpy.ndarray): 基准点的 BGR 颜色数组。\n        - offsets (list): 偏移点列表，每项为 (dy, dx, target_bgr) 元组。",
+              "params": [
+                {
+                  "name": "colors_str"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find",
+              "docstring": "查找第一个匹配的颜色目标。\n\n对 find_all 的便捷封装，默认只返回第一个匹配结果。\n\nArgs:\n    colors: 多点颜色描述字符串，格式为 \"x,y,#RRGGBB|x,y,#RRGGBB|...\"。\n    rect: 搜索区域 [left, top, right, bottom]，为 None 时搜索全屏。\n    threshold: 颜色匹配精度，范围 0.0 ~ 1.0，默认为 0.95。值越高要求越精确。\n    ori: 搜索方向（1-8），控制结果的排序优先级，默认为 2（从上到下、从左到右）。\n    exclusion_radius: 排除半径（像素），同一区域内不重复返回，默认为 5。\n    im_source: 自定义图像源，为 None 时自动截取当前屏幕。\n    max_res: 最大返回结果数，默认为 1。\n\nReturns:\n    tuple: 匹配位置坐标 (x, y)，未找到时返回 None。",
+              "params": [
+                {
+                  "name": "colors",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "default": "None"
+                },
+                {
+                  "name": "threshold",
+                  "type": "float",
+                  "default": "0.95"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "exclusion_radius",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "im_source",
+                  "default": "None"
+                },
+                {
+                  "name": "max_res",
+                  "type": "int",
+                  "default": "1"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_all",
+              "docstring": "全量查找所有匹配的颜色目标。\n\n采用向量化位移过滤算法，通过 NumPy 整体矩阵运算实现高性能匹配，\n避免逐像素 Python 循环导致的性能瓶颈。内置熔断机制防止海量结果卡死。\n\nArgs:\n    colors: 多点颜色描述字符串，格式为 \"x,y,#RRGGBB|x,y,#RRGGBB|...\"。\n    rect: 搜索区域 [left, top, right, bottom]，为 None 时搜索全屏。\n    threshold: 颜色匹配精度，范围 0.0 ~ 1.0，默认为 0.95。\n        容差计算公式：tol = 255 * (1.0 - threshold)。\n    ori: 搜索方向（1-8），控制结果排序：\n        1=左到右/上到下，2=上到下/左到右，3=上到下/右到左，\n        4=右到左/上到下，5=右到左/下到上，6=下到上/右到左，\n        7=下到上/左到右，8=左到右/下到上。默认为 2。\n    exclusion_radius: 排除半径（像素），同一区域内不重复返回，默认为 5。\n    im_source: 自定义图像源，为 None 时自动截取当前屏幕。\n    max_res: 最大返回结果数，0 表示不限制。\n\nReturns:\n    list: 匹配位置坐标列表，每项为 (x, y) 元组。",
+              "params": [
+                {
+                  "name": "colors",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "default": "None"
+                },
+                {
+                  "name": "threshold",
+                  "type": "float",
+                  "default": "0.95"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "exclusion_radius",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "im_source",
+                  "default": "None"
+                },
+                {
+                  "name": "max_res",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.screen.find_images",
+      "file": "ascript/windows/screen/find_images.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "FindImages",
+          "docstring": "图像查找工具类。\n\n提供统一的找图接口，支持多种图像来源（全屏截图、窗口句柄、文件路径、PIL/NumPy 对象），\n内部调用 AsCv 的模板匹配和特征匹配算法。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "_get_source_image",
+              "docstring": "处理多种来源的图像输入，统一转换为 NumPy 数组。\n\n支持以下输入类型：\n- None: 自动截取全屏图像。\n- Window 对象（含 hwnd 属性）: 截取该窗口画面。\n- int（窗口句柄）: 根据句柄截取窗口画面。\n- 其他（路径/PIL/NumPy）: 通过 AsCv.to_numpy 转换。\n\nArgs:\n    im_source: 图像来源，可以是 None、Window 对象、int 句柄、文件路径、PIL Image 或 NumPy 数组。\n\nReturns:\n    numpy.ndarray: BGR 格式的图像数组。",
+              "params": [
+                {
+                  "name": "im_source"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_all_template",
+              "docstring": "统一模板找图入口，在源图像中查找所有匹配的模板位置。\n\n自动处理图像来源的格式转换，然后调用 AsCv 的模板匹配算法。\n\nArgs:\n    im_search: 模板图像（要查找的小图），支持路径、PIL Image 或 NumPy 数组。\n    im_source: 源图像来源，支持路径、PIL Image、NumPy 数组、Window 对象、\n        HWND 句柄（int）或 None（自动全屏截图）。\n    threshold: 匹配置信度阈值，范围 0.0 ~ 1.0，默认为 0.8。\n    max_res: 最大返回结果数，0 表示不限制。\n    rgb: 是否启用 RGB 分通道加权匹配模式，默认为 False。\n\nReturns:\n    List[MatchResult]: 匹配结果列表。",
+              "params": [
+                {
+                  "name": "im_search"
+                },
+                {
+                  "name": "im_source",
+                  "default": "None"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.8"
+                },
+                {
+                  "name": "max_res",
+                  "default": "0"
+                },
+                {
+                  "name": "rgb",
+                  "default": "False"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_template",
+              "docstring": "模板查找（预留接口，暂未实现）。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_akaze",
+              "docstring": "使用 AKAZE 特征匹配算法在源图像中查找模板。\n\n适用于目标存在旋转、缩放或视角变化的场景。\n\nArgs:\n    im_search: 模板图像（要查找的小图），支持路径、PIL Image 或 NumPy 数组。\n    im_source: 源图像来源，支持路径、PIL Image、NumPy 数组、Window 对象、\n        HWND 句柄（int）或 None（自动全屏截图）。\n    threshold: 内点比例阈值，默认为 0.5。\n    min_match: 最少需要的特征匹配点数，默认为 10。\n\nReturns:\n    List[MatchResult]: 匹配结果列表。",
+              "params": [
+                {
+                  "name": "im_search"
+                },
+                {
+                  "name": "im_source",
+                  "default": "None"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.5"
+                },
+                {
+                  "name": "min_match",
+                  "default": "10"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.screen.screen_core",
+      "file": "ascript/windows/screen/screen_core.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Screen",
+          "docstring": "屏幕截图与显示器信息工具类。\n\n基于 mss 库实现高性能屏幕截图，支持 Windows 高分屏 DPI 自适应。\n提供多种输出格式（PIL、NumPy、OpenCV、Base64）及区域截取功能。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "size",
+              "docstring": "获取主显示器的分辨率尺寸。\n\nReturns:\n    List[int]: [宽度, 高度]，单位为像素。",
+              "params": [],
+              "return_type": "List[int]",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "capture",
+              "docstring": "截取屏幕图像。\n\n支持全屏或指定区域截图，可输出多种格式并可选保存到文件。\n已处理 Windows 高分屏 DPI 缩放问题。\n\nArgs:\n    rect: 截图区域 [left, top, right, bottom]，为 None 时截取整个主显示器。\n    format: 输出格式，可选值：\n        - 'pillow': 返回 PIL.Image 对象（默认）。\n        - 'numpy': 返回 RGB 格式的 NumPy 数组。\n        - 'opencv': 返回 BGR 格式的 NumPy 数组。\n        - 'base64': 返回 JPEG 格式的 Base64 数据 URI 字符串。\n        - 'base64:png': 返回 PNG 格式的 Base64 数据 URI 字符串。\n    save_path: 文件保存路径，自动根据后缀名选择存储格式（支持 jpg/png），\n        为 None 时不保存。\n\nReturns:\n    Union[Image.Image, numpy.ndarray, str, None]: 根据 format 参数返回对应格式的截图，\n        截图失败时返回 None。",
+              "params": [
+                {
+                  "name": "rect",
+                  "type": "Optional[List[int]]",
+                  "default": "None"
+                },
+                {
+                  "name": "format",
+                  "type": "str",
+                  "default": "'pillow'"
+                },
+                {
+                  "name": "save_path",
+                  "type": "Optional[str]",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Union[Image.Image, np.ndarray, str, None]",
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.screen.ocr.rapidocr_hook",
+      "file": "ascript/windows/screen/ocr/rapidocr_hook.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "OCRItem",
+          "docstring": "OCR 单条识别结果的数据封装类。\n\n封装一条文字识别结果的完整信息，支持直接点击识别到的文字位置。\n\nAttributes:\n    txt: 识别出的文本内容。\n    box: 文字区域的四个顶点坐标，格式为 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]。\n    score: 识别置信度，范围 0.0 ~ 1.0。\n    center: 文字区域的中心点坐标 (x, y)。\n    rect: 文字区域的外接矩形 [left, top, right, bottom]。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "click",
+              "docstring": "点击该识别结果所在的位置。\n\nArgs:\n    window: 可选的 Window 对象。传入时调用 window.click() 进行窗口内相对坐标点击；\n        不传时调用全局 Mouse.click() 进行屏幕绝对坐标点击。\n\nReturns:\n    OCRItem: 返回自身，支持链式调用。",
+              "params": [
+                {
+                  "name": "window",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将识别结果转换为字典格式。\n\nReturns:\n    dict: 包含 txt、box、score、center、rect 等字段的字典。",
+              "params": [],
+              "return_type": "dict",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "NullOCRItem",
+          "docstring": "空 OCR 结果对象（空对象模式）。\n\n当 find 方法未找到匹配结果时返回此对象，防止链式调用因 None 而报错。\n所有属性均为默认空值，布尔值为 False。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化空 OCR 结果，所有属性设为默认空值。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "click",
+              "docstring": "静默处理点击操作，不执行任何动作。\n\nArgs:\n    window: 忽略此参数。\n\nReturns:\n    NullOCRItem: 返回自身，支持链式调用。",
+              "params": [
+                {
+                  "name": "window",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "to_dict",
+              "docstring": "转换为空字典。\n\nReturns:\n    dict: 空字典。",
+              "params": [],
+              "return_type": "dict",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "RapidOCRHook",
+          "docstring": "RapidOCR 运行时 Hook，动态注入 find/find_all 扩展方法。\n\n通过 Python 的 MetaPathFinder 机制拦截 rapidocr.utils.output 模块的导入，\n在其 RapidOCROutput 类上注入 find() 和 find_all() 方法，\n使 OCR 结果对象直接支持文字搜索和定位功能。",
+          "bases": [
+            "importlib.abc.MetaPathFinder"
+          ],
+          "methods": [
+            {
+              "name": "find_spec",
+              "docstring": "拦截模块导入，在目标模块加载时注入扩展方法。\n\nArgs:\n    fullname: 正在导入的模块全名。\n    path: 模块搜索路径。\n    target: 目标模块对象（可选）。\n\nReturns:\n    ModuleSpec: 当拦截到目标模块时返回其 spec，否则返回 None。",
+              "params": [
+                {
+                  "name": "fullname"
+                },
+                {
+                  "name": "path"
+                },
+                {
+                  "name": "target",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_patch",
+              "docstring": "向目标模块的 RapidOCROutput 类动态注入 find 和 find_all 方法。\n\nArgs:\n    module: 已加载的 rapidocr.utils.output 模块对象。",
+              "params": [
+                {
+                  "name": "module"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": [
+        {
+          "name": "install",
+          "docstring": "注册 RapidOCR Hook 的入口函数。\n\n如果 rapidocr.utils.output 已加载，直接对其进行补丁；\n否则将 RapidOCRHook 注册到 sys.meta_path，等待模块导入时自动注入。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.store",
+      "file": "ascript/windows/store/__init__.py",
+      "docstring": "",
+      "classes": [],
+      "functions": [
+        {
+          "name": "main",
+          "docstring": "",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.system.device",
+      "file": "ascript/windows/system/device.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "classproperty",
+          "docstring": "类属性描述符，支持将方法作为类级别的只读属性访问。\n\n通过该描述符，可以像访问普通属性一样访问类方法，无需实例化。\n\nArgs:\n    fget: 被装饰的 getter 函数，接收类对象作为参数。",
+          "bases": [
+            "object"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化类属性描述符。\n\nArgs:\n    fget: 被装饰的 getter 函数。",
+              "params": [
+                {
+                  "name": "fget"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "Device",
+          "docstring": "AScript 设备环境全感知中心。\n\n提供对当前 Windows 设备各维度信息的静态访问能力，包括：\n身份识别、操作系统、运行环境、屏幕与缩放、核心硬件（CPU/内存/GPU）、\n磁盘管理、电源与外设、网络信息等。所有属性均可通过类直接访问，无需实例化。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "id",
+              "docstring": "获取设备唯一标识符（基于硬件指纹，重装系统不变）。\n\nReturns:\n    str: 大写的 UUID5 字符串，由网卡 MAC、处理器型号和主机名生成。",
+              "params": [],
+              "return_type": "str",
+              "decorators": [
+                "classproperty"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.system.easy_print",
+      "file": "ascript/windows/system/easy_print.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "QueueStream",
+          "docstring": "重定向 stdout/stderr 的流对象，将输出内容写入进程间队列。\n\n用于子进程中替代标准输出/错误流，使子进程的 print 输出能够\n通过队列传递到主进程统一处理。\n\nArgs:\n    queue: multiprocessing.Queue 实例，用于进程间传递打印内容。\n    stream_type: 流类型标识，可选 \"stdout\" 或 \"stderr\"，默认 \"stdout\"。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化队列流对象。\n\nArgs:\n    queue: multiprocessing.Queue 实例，用于进程间传递打印内容。\n    stream_type: 流类型标识，可选 \"stdout\" 或 \"stderr\"，默认 \"stdout\"。",
+              "params": [
+                {
+                  "name": "queue"
+                },
+                {
+                  "name": "stream_type",
+                  "default": "'stdout'"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "write",
+              "docstring": "将非空消息写入队列。\n\nArgs:\n    msg: 要写入的消息字符串。",
+              "params": [
+                {
+                  "name": "msg"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "flush",
+              "docstring": "刷新流缓冲区（兼容 print 的 flush=True，无实际操作）。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "isatty",
+              "docstring": "判断是否为终端设备。\n\nReturns:\n    bool: 返回原始流的 isatty() 结果，兼容终端判断。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": [
+        {
+          "name": "init_main",
+          "docstring": "主进程初始化：创建进程间共享队列并启动监听线程。\n\n在主进程中调用一次即可。创建用于接收子进程输出的队列，\n并启动后台线程持续监听子进程的打印内容。\n\nArgs:\n    listen_callback: 自定义监听回调函数，默认为 None。\n        若为 None，则使用内置的默认监听函数将子进程输出打印到主进程终端。",
+          "params": [
+            {
+              "name": "listen_callback",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "init_sub",
+          "docstring": "子进程初始化：将 stdout/stderr 重定向到共享队列。\n\n在子进程中自动执行（模块导入时触发），将标准输出和标准错误\n重定向为 QueueStream 对象，使子进程的所有 print 输出\n通过队列传递到主进程。主进程中调用无效。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.system.env",
+      "file": "ascript/windows/system/env.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "EnvManager",
+          "docstring": "用户虚拟环境管理器。\n\n负责为每个用户创建独立的 Python 虚拟环境，支持 wheel 包的自动部署、\n应用启动与停止、运行状态监控等功能。每个用户通过 user_id 隔离环境。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化环境管理器。\n\nArgs:\n    root_path: 环境根目录路径，默认为当前工作目录下的 \"user_envs\" 文件夹。\n        所有用户的虚拟环境和模块将存放在此目录下。",
+              "params": [
+                {
+                  "name": "root_path",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_get_pkg_name",
+              "docstring": "从 wheel 文件中提取 Python 包名。\n\nArgs:\n    wheel_path: .whl 文件的路径。\n\nReturns:\n    str | None: 提取到的包名，失败时返回 None。",
+              "params": [
+                {
+                  "name": "wheel_path"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_env_dir",
+              "docstring": "获取指定用户的虚拟环境目录路径。\n\nArgs:\n    user_id: 用户唯一标识。\n\nReturns:\n    str: 虚拟环境目录的绝对路径。",
+              "params": [
+                {
+                  "name": "user_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_model_dir",
+              "docstring": "获取指定用户的模块目录路径。\n\nArgs:\n    user_id: 用户唯一标识。\n\nReturns:\n    str: 模块目录的绝对路径。",
+              "params": [
+                {
+                  "name": "user_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_python_exe",
+              "docstring": "获取指定用户虚拟环境中的 Python 可执行文件路径。\n\nArgs:\n    user_id: 用户唯一标识。\n\nReturns:\n    str: Python 可执行文件的绝对路径。",
+              "params": [
+                {
+                  "name": "user_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_pip_exe",
+              "docstring": "获取指定用户虚拟环境中的 pip 可执行文件路径。\n\nArgs:\n    user_id: 用户唯一标识。\n\nReturns:\n    str: pip 可执行文件的绝对路径。",
+              "params": [
+                {
+                  "name": "user_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_create_cmd",
+              "docstring": "生成创建虚拟环境的命令字符串。\n\nArgs:\n    env_dir: 虚拟环境目标目录路径。\n\nReturns:\n    str: 用于创建虚拟环境的 shell 命令。",
+              "params": [
+                {
+                  "name": "env_dir"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "smart_deploy",
+              "docstring": "智能部署用户环境。\n\n根据 MD5 校验判断环境是否已存在且完整，若匹配则跳过部署；\n否则清理旧环境并重新创建虚拟环境、安装 wheel 包。\n\nArgs:\n    user_id: 用户唯一标识。\n    wheel_path: .whl 安装包的文件路径。\n    file_md5: wheel 文件的 MD5 校验值，用于判断环境是否需要更新。\n    show_console: 是否显示安装过程的控制台窗口，默认 True。\n\nReturns:\n    bool: 部署成功返回 True，失败返回 False。",
+              "params": [
+                {
+                  "name": "user_id"
+                },
+                {
+                  "name": "wheel_path"
+                },
+                {
+                  "name": "file_md5"
+                },
+                {
+                  "name": "show_console",
+                  "default": "True"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_get_best_index",
+              "docstring": "测速选择最快的 PyPI 镜像源。\n\n对比官方源和清华源的响应时间，返回延迟最低的源地址。\n\nReturns:\n    str: 最快的 PyPI 镜像源 URL。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_execute_combined_install",
+              "docstring": "执行虚拟环境创建和 wheel 包安装的组合命令。\n\n通过一条 cmd 命令依次完成虚拟环境创建和包安装，失败时会在控制台显示错误信息。\n\nArgs:\n    user_id: 用户唯一标识，用于窗口标题显示。\n    wheel_path: .whl 安装包的文件路径。\n    env_dir: 虚拟环境目标目录路径。\n    show_console: 是否显示控制台窗口。\n\nRaises:\n    RuntimeError: 安装命令执行失败时抛出。",
+              "params": [
+                {
+                  "name": "user_id"
+                },
+                {
+                  "name": "wheel_path"
+                },
+                {
+                  "name": "env_dir"
+                },
+                {
+                  "name": "show_console"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run_app",
+              "docstring": "启动用户应用程序。\n\n在指定用户的虚拟环境中运行应用入口模块，自动从环境配置中\n读取包名。启动后会创建后台监控线程跟踪进程状态。\n\nArgs:\n    user_id: 用户唯一标识。\n    entry_module: 入口模块名，默认 \"main\"。\n    cwd: 工作目录，默认为用户环境目录。\n    show_console: 是否显示控制台窗口，默认 False。\n\nReturns:\n    int | None: 启动成功返回进程 PID，失败返回 None。",
+              "params": [
+                {
+                  "name": "user_id"
+                },
+                {
+                  "name": "entry_module",
+                  "default": "'main'"
+                },
+                {
+                  "name": "cwd",
+                  "default": "None"
+                },
+                {
+                  "name": "show_console",
+                  "default": "False"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_wait_and_handle_error",
+              "docstring": "等待进程结束并处理异常退出。\n\n作为后台监控线程的目标函数运行，在进程异常退出时\n读取错误日志并弹出错误提示框。\n\nArgs:\n    process: subprocess.Popen 进程对象。\n    user_id: 用户唯一标识。\n    name: 包名称，用于错误提示。\n    pid_file: PID 文件路径，用于判断是否为手动停止。\n    show_console: 是否显示了控制台窗口。\n    log_path: 错误日志文件路径。",
+              "params": [
+                {
+                  "name": "process"
+                },
+                {
+                  "name": "user_id"
+                },
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "pid_file"
+                },
+                {
+                  "name": "show_console"
+                },
+                {
+                  "name": "log_path"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_handle_runtime_error",
+              "docstring": "处理运行时错误：记录崩溃日志并弹出错误提示。\n\nArgs:\n    name: 模块/包名称。\n    stderr: 标准错误输出内容。\n    code: 进程退出码。",
+              "params": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "stderr"
+                },
+                {
+                  "name": "code"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_show_error_box",
+              "docstring": "在 Windows 上弹出错误消息框。\n\nArgs:\n    content: 消息框内容文本。\n    title: 消息框标题。",
+              "params": [
+                {
+                  "name": "content"
+                },
+                {
+                  "name": "title"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "is_running",
+              "docstring": "检查指定用户的应用是否正在运行。\n\n通过 PID 文件和进程信息双重验证运行状态。\n\nArgs:\n    user_id: 用户唯一标识。\n\nReturns:\n    bool: 应用正在运行返回 True，否则返回 False。",
+              "params": [
+                {
+                  "name": "user_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "stop_app",
+              "docstring": "停止指定用户的应用进程。\n\n先删除 PID 文件（标记为手动停止），然后使用 taskkill 强制终止进程树。\n\nArgs:\n    user_id: 用户唯一标识。",
+              "params": [
+                {
+                  "name": "user_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.system.key_value",
+      "file": "ascript/windows/system/key_value.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "KeyValueMeta",
+          "docstring": "KeyValue 的元类，支持类级别的索引操作。\n\n通过该元类，可以直接使用 KeyValue[\"key\"] 语法进行键值的\n读取、设置和删除操作。",
+          "bases": [
+            "type"
+          ],
+          "methods": [],
+          "class_variables": []
+        },
+        {
+          "name": "KeyValue",
+          "docstring": "基于 JSON 文件的持久化键值存储。\n\n提供线程安全的键值对读写操作，数据自动持久化到 JSON 文件。\n支持类级别的索引操作（如 KeyValue[\"key\"] = value）。\n\nAttributes:\n    FILENAME: 存储文件名，默认为 \"config.json\"。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "_initialize",
+              "docstring": "延迟初始化：确定存储路径并加载已有数据。\n\n首次访问时自动调用，确保数据文件路径和内存数据已就绪。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "_determine_path",
+              "docstring": "确定配置文件的存储路径。\n\n优先使用当前工作目录，若无写权限则回退到用户家目录下的隐藏文件夹。\n\nReturns:\n    pathlib.Path: 配置文件的完整路径。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "_load_data",
+              "docstring": "从 JSON 文件加载数据到内存。\n\nReturns:\n    dict: 解析后的键值数据字典，文件不存在或解析失败时返回空字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "_commit",
+              "docstring": "将内存数据持久化写入 JSON 文件（线程安全）。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "save",
+              "docstring": "保存键值对并持久化到文件。\n\nArgs:\n    key: 键名。\n    value: 要保存的值，需可 JSON 序列化。",
+              "params": [
+                {
+                  "name": "key"
+                },
+                {
+                  "name": "value"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "get",
+              "docstring": "获取指定键的值。\n\nArgs:\n    key: 键名。\n    default: 键不存在时的默认返回值，默认 None。\n\nReturns:\n    对应键的值，不存在时返回 default。",
+              "params": [
+                {
+                  "name": "key"
+                },
+                {
+                  "name": "default",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "remove",
+              "docstring": "删除指定键值对并持久化更新。\n\nArgs:\n    key: 要删除的键名。若键不存在则不执行任何操作。",
+              "params": [
+                {
+                  "name": "key"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "_data",
+              "value": "None"
+            },
+            {
+              "name": "_file_path",
+              "value": "None"
+            },
+            {
+              "name": "_lock",
+              "value": "threading.Lock()"
+            },
+            {
+              "name": "FILENAME",
+              "value": "'config.json'"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.system.pip",
+      "file": "ascript/windows/system/pip.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Pip",
+          "docstring": "Python 包管理工具类，具备自动择源功能。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "_get_best_index",
+              "docstring": "测试各个镜像源的响应时间，返回最快的源。",
+              "params": [],
+              "return_type": "str",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "is_installed",
+              "docstring": "检查指定包是否已安装。\n\nArgs:\n    package_spec: 包名或带版本约束的包规范，如 \"requests\" 或 \"requests>=2.28\"。\n\nReturns:\n    bool: 已安装返回 True，未安装返回 False。",
+              "params": [
+                {
+                  "name": "package_spec",
+                  "type": "str"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "install",
+              "docstring": "安装 Python 包。\n\n如果未指定 index_url，则自动测速选择最快的镜像源进行安装。\n\nArgs:\n    package_spec: 包名或带版本约束的包规范，如 \"requests>=2.28\"。\n    upgrade: 是否升级到最新版本，默认 False。\n    index_url: 指定的 PyPI 镜像源 URL，默认 None（自动择源）。\n\nReturns:\n    bool: 安装成功返回 True，失败返回 False。",
+              "params": [
+                {
+                  "name": "package_spec",
+                  "type": "str"
+                },
+                {
+                  "name": "upgrade",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "index_url",
+                  "type": "str",
+                  "default": "None"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "ensure",
+              "docstring": "确保指定包已安装，未安装则自动安装。\n\nArgs:\n    package_spec: 包名或带版本约束的包规范。\n    index_url: 指定的 PyPI 镜像源 URL，默认 None（自动择源）。\n\nReturns:\n    bool: 包已存在或安装成功返回 True，安装失败返回 False。",
+              "params": [
+                {
+                  "name": "package_spec",
+                  "type": "str"
+                },
+                {
+                  "name": "index_url",
+                  "type": "str",
+                  "default": "None"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "remove",
+              "docstring": "卸载指定的 Python 包。\n\nArgs:\n    package_name: 要卸载的包名。\n\nReturns:\n    bool: 卸载成功返回 True，失败返回 False。",
+              "params": [
+                {
+                  "name": "package_name",
+                  "type": "str"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "MIRRORS",
+              "value": "{'tsinghua': 'https://pypi.tuna.tsinghua.edu.cn/simple', 'aliyun': 'https://mirrors.aliyun.com/pypi/simple/', 'pypi': 'https://pypi.org/simple'}"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.system.r",
+      "file": "ascript/windows/system/r.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "R",
+          "docstring": "资源路径解析器。\n\n提供统一的资源文件路径解析能力，自动适配开发环境和打包环境\n（支持 PyInstaller 和 Nuitka）。分为两类接口：\n- 开发者接口（ui/img/res）：锚定工程根目录下的 res/ 文件夹。\n- 内部接口（internal）：锚定 ascript 包的安装目录。\n\nAttributes:\n    _BASE_DIR: 缓存的工程根目录路径。\n    _PKG_ROOT: ascript 包的物理安装根目录。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "get_root",
+              "docstring": "获取工程根目录或打包后的解压临时目录。\n\n自动检测运行环境：\n- Nuitka 打包：使用 NUITKA_ONEFILE_PARENT 环境变量。\n- PyInstaller 打包：使用 sys._MEIPASS。\n- 开发环境：使用 main.py 所在目录。\n\nReturns:\n    Path: 工程根目录的绝对路径。",
+              "params": [],
+              "return_type": "Path",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "_build_path",
+              "docstring": "通用路径构建方法。\n\n拼接基准目录和子路径，路径不存在时输出警告。\n\nArgs:\n    base: 基准目录路径。\n    *sub_paths: 子路径片段，依次拼接。\n\nReturns:\n    str: 完整的文件路径字符串。",
+              "params": [
+                {
+                  "name": "base",
+                  "type": "Path"
+                },
+                {
+                  "name": "*sub_paths"
+                }
+              ],
+              "return_type": "str",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "ui",
+              "docstring": "获取工程 res/ui/ 目录下的 UI 资源文件路径。\n\nArgs:\n    path: 相对于 res/ui/ 的文件路径。\n\nReturns:\n    str: UI 资源文件的绝对路径。",
+              "params": [
+                {
+                  "name": "path",
+                  "type": "str"
+                }
+              ],
+              "return_type": "str",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "img",
+              "docstring": "获取工程 res/img/ 目录下的图片资源文件路径。\n\nArgs:\n    path: 相对于 res/img/ 的文件路径。\n\nReturns:\n    str: 图片资源文件的绝对路径。",
+              "params": [
+                {
+                  "name": "path",
+                  "type": "str"
+                }
+              ],
+              "return_type": "str",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "res",
+              "docstring": "获取工程 res/ 目录下的通用资源文件路径。\n\nArgs:\n    path: 相对于 res/ 的文件路径。\n\nReturns:\n    str: 资源文件的绝对路径。",
+              "params": [
+                {
+                  "name": "path",
+                  "type": "str"
+                }
+              ],
+              "return_type": "str",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "internal",
+              "docstring": "查找 ascript 包内部资源文件路径。\n\n打包环境下优先在临时解压目录查找，未找到或开发环境下\n回退到包安装目录（site-packages）查找。\n\nArgs:\n    *sub_paths: 相对于 ascript 包根目录的子路径片段。\n\nReturns:\n    str: 内部资源文件的绝对路径。",
+              "params": [
+                {
+                  "name": "*sub_paths"
+                }
+              ],
+              "return_type": "str",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "is_admin",
+              "docstring": "判断当前进程是否拥有管理员权限。\n\nReturns:\n    bool: 拥有管理员权限返回 True，否则返回 False。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "run_as_admin",
+              "docstring": "以管理员权限重新启动当前程序。\n\n如果当前进程不具有管理员权限，将通过 Windows UAC 弹窗\n请求提升权限并重新启动程序，当前进程随即退出。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "classmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "_BASE_DIR",
+              "value": "None"
+            },
+            {
+              "name": "_PKG_ROOT",
+              "value": "Path(os.path.dirname(os.path.abspath(ascript.__file__))).resolve()"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.system.runtime",
+      "file": "ascript/windows/system/runtime.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Runtime",
+          "docstring": "程序运行时生命周期管理器。\n\n提供全局事件循环机制，使主线程保持运行状态直到收到停止信号。\n适用于需要主线程驻留的场景（如 GUI 应用、后台服务等）。\n\nAttributes:\n    _stop_event: 线程事件对象，用于控制运行/停止状态。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "wait",
+              "docstring": "启动全局事件循环，阻塞主线程直到收到停止信号。\n\n主线程会停留在此方法中，直到调用 Runtime.stop() 或\n接收到 SIGINT/SIGTERM 信号（如 Ctrl+C）才会继续向下运行。\n支持优雅的信号处理和键盘中断。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "stop",
+              "docstring": "停止全局事件循环，解除 Runtime.wait() 的阻塞状态。\n\n调用后主线程将从 wait() 方法返回并继续执行后续代码。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "_stop_event",
+              "value": "threading.Event()"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.tools.action",
+      "file": "ascript/windows/tools/action.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "ProApi",
+          "docstring": "剪贴板操作代理类，提供将文本复制到系统剪贴板的功能。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "copy",
+              "docstring": "将指定文本复制到系统剪贴板。\n\nArgs:\n    text: 要复制到剪贴板的文本内容，会自动转换为字符串。",
+              "params": [
+                {
+                  "name": "text"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "AScriptApp",
+          "docstring": "AScript 坐标捕获工具应用程序。\n\n提供一个置顶小窗口，实时显示鼠标的屏幕坐标和窗口相对坐标，\n支持通过 Shift+A 热键记录坐标并复制到剪贴板。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化坐标捕获工具。\n\n设置应用图标路径、窗口标题，并初始化运行状态。\n自动适配打包环境（PyInstaller）和开发环境的资源路径。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_worker",
+              "docstring": "后台工作线程，持续追踪鼠标坐标并监听热键事件。\n\n注册 Shift+A 全局热键，循环获取鼠标位置信息（屏幕坐标和窗口相对坐标），\n实时更新前端 UI 显示。当热键触发时，根据当前模式（屏幕/窗口）将坐标\n复制到剪贴板并添加到历史记录。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "启动坐标捕获工具应用。\n\n创建 webview 窗口并启动后台工作线程，使用 Edge Chromium 内核渲染界面。\n窗口关闭后自动停止后台线程。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.tools.colors_tool",
+      "file": "ascript/windows/tools/colors_tool.py",
+      "docstring": "",
+      "classes": [],
+      "functions": [
+        {
+          "name": "colors_tool_screenshot",
+          "docstring": "截取屏幕或指定窗口的截图，返回 base64 编码的图像数据。\n\n如果提供了窗口句柄，则截取该窗口；否则截取全屏。\n全屏截取时会先最小化工具窗口以避免遮挡。\n\nArgs:\n    hwnd: 目标窗口句柄。为 None 或空值时截取全屏。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - data (str): base64 编码的图像数据\n        - save_info (dict): 保存信息，含 status 和 path\n        - message (str): 错误信息（如有）",
+          "params": [
+            {
+              "name": "hwnd"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "ascript_get_image",
+          "docstring": "读取指定路径的图片，可选缩放后以 base64 格式返回。\n\n支持相对路径和绝对路径。相对路径会自动拼接截图目录。\n图片统一转为 RGB 模式输出 JPEG 格式。\n\nArgs:\n    file_path: 图片完整路径或文件名。若为相对路径，则从截图目录读取。\n    max_side_size: 缩放限制（像素）。0 表示不缩放；大于 0 则将长边限制在该像素内。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - message (str): 操作结果描述\n        - data (str): base64 编码的图像数据（data URI 格式），失败时为空字符串",
+          "params": [
+            {
+              "name": "file_path",
+              "type": "str"
+            },
+            {
+              "name": "max_side_size",
+              "type": "int",
+              "default": "0"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "colors_tool_screenshot_files",
+          "docstring": "获取截图目录下所有图片文件的绝对路径列表。\n\n扫描截图目录中的图片文件（支持 png、jpg、jpeg、bmp、gif 格式），\n按修改时间从新到旧排序返回。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - message (str): 操作结果描述\n        - data (list): 图片文件绝对路径列表\n        - path (str): 截图目录路径（仅成功时包含）",
+          "params": [],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "save_dropped_image",
+          "docstring": "将前端拖拽上传的 base64 图片保存到截图目录。\n\n自动在文件名中添加时间戳以避免重名冲突。\n\nArgs:\n    base64_str: base64 编码的图片数据，支持 data URI 格式（如 \"data:image/png;base64,...\"）。\n    filename: 原始文件名，用于保留文件扩展名。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - path (str): 保存后的文件绝对路径（仅成功时包含）\n        - message (str): 错误信息（仅失败时包含）",
+          "params": [
+            {
+              "name": "base64_str"
+            },
+            {
+              "name": "filename"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "listen_win32_hotkey",
+          "docstring": "监听 Win32 全局热键（Shift+S）并触发前端截图。\n\n注册 Shift+S 全局热键，当热键被按下时调用前端 JS 函数\ntriggerScreenshotUI() 触发截图操作。该函数应在独立线程中运行。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "server_external",
+          "docstring": "提供外部文件的静态资源服务路由。\n\n通过 base64 编码的物理路径定位文件根目录，支持中文路径和 URL 编码。\n用于在 Eel Web 应用中访问本地文件系统中的图片等资源。\n\nArgs:\n    base64_path: base64 编码的物理目录路径（可能经过 URL 编码）。\n    filename: 相对于根目录的文件名路径。\n\nReturns:\n    bottle.Response: 静态文件响应，或 500 错误响应。",
+          "params": [
+            {
+              "name": "base64_path"
+            },
+            {
+              "name": "filename"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.btl.route('/external/<base64_path>/<filename:path>')"
+          ]
+        },
+        {
+          "name": "start_colors",
+          "docstring": "启动图形处理（颜色工具）Web 应用。\n\n初始化 Eel 框架并打开颜色工具页面，支持通过窗口句柄或窗口标题\n指定目标窗口。自动检测可用浏览器（Chrome/Edge）。\n\nArgs:\n    hwnd: 目标窗口句柄字符串。优先级高于 window_title。\n    window_title: 目标窗口标题，用于自动查找窗口句柄。",
+          "params": [
+            {
+              "name": "hwnd",
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "window_title",
+              "type": "str",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.tools.config",
+      "file": "ascript/windows/tools/config.py",
+      "docstring": "工具模块配置文件。\n\n定义工具运行所需的临时目录路径（截图目录、临时数据目录），\n并在模块加载时自动创建所需的目录结构。\n\n模块属性:\n    file_root_path (str): 临时文件根目录，位于系统临时目录下的 ascript 子目录。\n    file_capture_dir (str): 截图保存目录。\n    file_data_temp (str): 临时数据目录。",
+      "classes": [],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.tools.dumptool",
+      "file": "ascript/windows/tools/dumptool.py",
+      "docstring": "",
+      "classes": [],
+      "functions": [
+        {
+          "name": "start_vtree",
+          "docstring": "启动 UI 元素树（VTree）查看器 Web 应用。\n\n初始化 Eel 框架并打开 VTree 页面，用于查看和分析目标窗口的 UI 元素层级结构。\n支持通过窗口句柄或窗口标题指定目标窗口。自动检测可用浏览器（Chrome/Edge）。\n\nArgs:\n    hwnd: 目标窗口句柄字符串。优先级高于 window_title。\n    window_title: 目标窗口标题，用于自动查找窗口句柄。",
+          "params": [
+            {
+              "name": "hwnd",
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "window_title",
+              "type": "str",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.tools.eel_api",
+      "file": "ascript/windows/tools/eel_api.py",
+      "docstring": "",
+      "classes": [],
+      "functions": [
+        {
+          "name": "get_online_windows",
+          "docstring": "获取当前系统中所有可见窗口的信息列表。\n\n遍历所有可见窗口，过滤掉无标题的后台窗口，返回包含窗口标题和句柄的字典列表。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - data (list[dict]): 窗口信息列表，每项包含 display、hwnd、title\n        - message (str): 错误信息（仅失败时包含）",
+          "params": [],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "get_ui_tree_data",
+          "docstring": "获取指定窗口的完整 UI 元素树结构。\n\n根据窗口句柄构建 Selector，递归探测窗口中的所有 UI 元素，\n返回树状结构的字典数据。会自动激活目标窗口。\n\nArgs:\n    hwnd: 窗口句柄，会自动转换为整数类型。\n    max_depth: 探测深度限制。0 表示不限深度，大于 0 则限制最大递归层数。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\"、\"empty\" 或 \"error\"\n        - data (dict): UI 元素树的字典表示（仅成功时包含）\n        - message (str): 结果描述或错误信息",
+          "params": [
+            {
+              "name": "hwnd"
+            },
+            {
+              "name": "max_depth",
+              "default": "0"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "test_selector",
+          "docstring": "执行 Selector 表达式并返回匹配的 UI 元素结果。\n\n接收前端传入的 Selector 表达式字符串，使用 eval 在安全环境中执行，\n自动处理未调用 .find() 的情况，并将结果序列化为字典列表返回。\n\nArgs:\n    selector_str: Selector 表达式字符串，如 \"Selector(...).find()\"。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - data (list[dict]): 匹配到的 UI 元素字典列表\n        - message (str): 错误信息（仅失败时包含）",
+          "params": [
+            {
+              "name": "selector_str",
+              "type": "str"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "get_screenshot",
+          "docstring": "截取指定窗口的截图，返回 base64 编码的预览图。\n\n分阶段处理：参数校验、窗口捕获、磁盘保存（可选）、base64 编码。\n每个阶段独立捕获异常，确保不会因局部错误导致整体崩溃。\n\nArgs:\n    hwnd: 目标窗口句柄，会自动转换为整数。\n    save_path: 图片保存路径（可选）。可以是文件路径或目录路径。\n        若为目录则自动生成文件名。若为 None 则不保存到磁盘。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - status (str): \"success\" 或 \"error\"\n        - data (str): base64 编码的 JPEG 预览图（data URI 格式）\n        - save_info (dict): 磁盘保存结果，含 status 和 path\n        - message (str): 错误信息（如有）",
+          "params": [
+            {
+              "name": "hwnd"
+            },
+            {
+              "name": "save_path",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "open_folder",
+          "docstring": "使用系统默认文件浏览器打开指定路径。\n\n自动识别当前操作系统（Windows/macOS/Linux），调用对应的文件管理器打开目录。\n\nArgs:\n    path: 要打开的目录或文件路径，支持相对路径（会自动转为绝对路径）。\n\nReturns:\n    bool: 打开成功返回 True，路径不存在或打开失败返回 False。",
+          "params": [
+            {
+              "name": "path"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "file_delete",
+          "docstring": "删除指定路径的文件或清空指定目录的内容。\n\n如果路径是文件则直接删除；如果是目录则仅清空其中内容而不删除目录本身，\n以防止程序因目录被删除而崩溃。自动处理只读文件权限问题。\n\nArgs:\n    path: 要删除的文件或目录路径，支持相对路径。\n\nReturns:\n    bool: 操作成功返回 True，路径不存在或操作失败返回 False。",
+          "params": [
+            {
+              "name": "path"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "python_executor",
+          "docstring": "通用 Python 代码执行器，供前端 JS 调用执行 Python 代码。\n\n在隔离的命名空间中编译并执行传入的 Python 代码字符串，\n支持 import 语句和复杂逻辑。通过 _result 变量传递执行结果。\n\nArgs:\n    python_code: 要执行的 Python 代码字符串。可在代码中设置 _result 变量作为返回值。\n\nReturns:\n    dict: 包含以下字段的字典：\n        - success (bool): 执行是否成功\n        - data: 执行结果（代码中 _result 变量的值），经过 JSON 安全序列化\n        - error (dict|None): 错误信息，含 type、message、traceback 字段",
+          "params": [
+            {
+              "name": "python_code"
+            }
+          ],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        },
+        {
+          "name": "make_json_serializable",
+          "docstring": "将任意 Python 对象转换为 JSON 可序列化的格式。\n\n递归处理各种数据类型，包括基本类型、容器类型、NumPy 数组、\n自定义类实例等，确保结果可以安全地通过 JSON 传输到前端。\n\nArgs:\n    obj: 任意 Python 对象。\n\nReturns:\n    JSON 可序列化的对象（dict、list、str、int、float、bool 或 None）。",
+          "params": [
+            {
+              "name": "obj"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "select_folder",
+          "docstring": "弹出系统文件夹选择对话框并返回用户选择的路径。\n\n使用 tkinter 的 filedialog 组件弹出文件夹选择对话框，\n对话框始终显示在最前面。\n\nReturns:\n    str: 用户选择的文件夹路径，取消选择则返回空字符串。",
+          "params": [],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.tools.mouse_catch",
+      "file": "ascript/windows/tools/mouse_catch.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "ProApi",
+          "docstring": "剪贴板操作代理类，提供将文本复制到系统剪贴板的功能。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "copy",
+              "docstring": "将指定文本复制到系统剪贴板。\n\nArgs:\n    text: 要复制到剪贴板的文本内容，会自动转换为字符串。",
+              "params": [
+                {
+                  "name": "text"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "MouseCatch",
+          "docstring": "鼠标坐标捕获工具。\n\n提供一个置顶小窗口，实时显示鼠标的屏幕坐标和窗口相对坐标，\n支持通过 Shift+A 热键记录坐标并复制到剪贴板。使用 pywebview 渲染界面。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化鼠标坐标捕获工具。\n\n设置应用图标路径、窗口标题，并初始化运行状态标志。\n自动适配打包环境（PyInstaller）和开发环境的资源路径。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_worker",
+              "docstring": "后台工作线程，持续追踪鼠标坐标并监听热键事件。\n\n注册 Shift+A 全局热键，循环获取鼠标位置信息（屏幕坐标和窗口相对坐标），\n实时更新前端 UI 显示。当热键触发时，根据当前模式（屏幕/窗口）将坐标\n复制到剪贴板并添加到历史记录。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "启动鼠标坐标捕获工具应用。\n\n创建 pywebview 窗口并启动后台工作线程，使用 Edge Chromium 内核渲染界面。\n窗口设置为置顶显示，关闭后自动停止后台线程。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.tools.plug_manager",
+      "file": "ascript/windows/tools/plug_manager.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "FindImagesPlug",
+          "docstring": "找图插件，用于在大图中定位小图的位置。",
+          "bases": [
+            "GpPlug"
+          ],
+          "methods": [],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'找图'"
+            },
+            {
+              "name": "description",
+              "value": "'快速找到小图在大图中的位置'"
+            },
+            {
+              "name": "entry_html",
+              "value": "'plugs/find_images.html'"
+            },
+            {
+              "name": "icon",
+              "value": "'img/svg/find_images.svg'"
+            }
+          ]
+        },
+        {
+          "name": "FindColorsPlug",
+          "docstring": "找色插件，用于通过颜色特征在图像中定位目标点位。",
+          "bases": [
+            "GpPlug"
+          ],
+          "methods": [],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'找色'"
+            },
+            {
+              "name": "description",
+              "value": "'通过颜色特征,找到图像中的点位'"
+            },
+            {
+              "name": "entry_html",
+              "value": "'plugs/find_colors.html'"
+            },
+            {
+              "name": "icon",
+              "value": "'img/svg/find_colors.svg'"
+            }
+          ]
+        },
+        {
+          "name": "RapidOCRPlug",
+          "docstring": "Rapid OCR 文字识别插件，用于识别图像中的文字内容。",
+          "bases": [
+            "GpPlug"
+          ],
+          "methods": [],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'Rapid文字识别'"
+            },
+            {
+              "name": "description",
+              "value": "'传入图像,识别途中文字'"
+            },
+            {
+              "name": "entry_html",
+              "value": "'plugs/rapidocr.html'"
+            },
+            {
+              "name": "icon",
+              "value": "'img/svg/ocr.svg'"
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "ascript_plug_list",
+          "docstring": "获取所有已注册的图形处理插件列表。\n\n实例化所有插件并将其转换为字典格式，供前端渲染插件菜单使用。\n\nReturns:\n    list[dict]: 插件信息字典列表，每项包含 name、class_name、description、entry_html、icon 字段。",
+          "params": [],
+          "return_type": null,
+          "decorators": [
+            "eel.expose"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.tools.gpplug.plug",
+      "file": "ascript/windows/tools/gpplug/plug.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "GpPlug",
+          "docstring": "图形处理插件基类（抽象类）。\n\n定义了所有图形处理插件必须实现的标准接口，包括名称、描述、\n入口页面和图标。子类必须实现所有抽象属性。",
+          "bases": [
+            "ABC"
+          ],
+          "methods": [
+            {
+              "name": "name",
+              "docstring": "插件显示名称。\n\nReturns:\n    str: 插件的中文显示名称。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property",
+                "abstractmethod"
+              ]
+            },
+            {
+              "name": "description",
+              "docstring": "插件功能描述。\n\nReturns:\n    str: 插件功能的简要说明文本。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property",
+                "abstractmethod"
+              ]
+            },
+            {
+              "name": "entry_html",
+              "docstring": "插件入口 HTML 文件的相对路径。\n\nReturns:\n    str: 相对于 web 目录的 HTML 文件路径。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property",
+                "abstractmethod"
+              ]
+            },
+            {
+              "name": "icon",
+              "docstring": "插件图标的相对路径。\n\nReturns:\n    str: 相对于 web 目录的图标文件路径。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property",
+                "abstractmethod"
+              ]
+            },
+            {
+              "name": "class_name",
+              "docstring": "获取当前插件类的类名。\n\nReturns:\n    str: 类名字符串，如 'FindImagesPlug'。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将插件的所有属性转换为字典，方便序列化为 JSON。\n\nReturns:\n    dict: 包含 name、class_name、description、entry_html、icon 字段的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.ui.app_store_window",
+      "file": "ascript/windows/ui/app_store_window.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "AppStoreWindow",
+          "docstring": "应用商店窗口类。\n\n提供应用搜索、激活码验证、应用下载与启动等功能的 Web 窗口界面。\n继承自 WebWindow，通过 HTML 页面与 Python 后端进行交互。",
+          "bases": [
+            "WebWindow"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化应用商店窗口。\n\nArgs:\n    default_id: 默认的应用 ID，用于自动填充搜索框。\n    on_start: 应用启动时的回调函数，接收 (app_info, license_data) 两个参数。\n    env_path: 虚拟环境的根目录路径，传递给 EnvManager。",
+              "params": [
+                {
+                  "name": "default_id",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "on_start",
+                  "default": "None"
+                },
+                {
+                  "name": "env_path",
+                  "type": "str",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_init_config",
+              "docstring": "获取初始配置信息。\n\nReturns:\n    dict: 包含 default_id 的字典，前端用于初始化界面。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_app_info",
+              "docstring": "根据应用 ID 搜索并获取应用信息。\n\nArgs:\n    app_id: 应用的唯一标识符。\n\nReturns:\n    dict: 成功时返回 {\"code\": 1, \"data\": app_info}；\n          失败时返回 {\"code\": 0, \"msg\": 错误信息}。",
+              "params": [
+                {
+                  "name": "app_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_cached_key",
+              "docstring": "按应用 ID 获取本地缓存的激活码。\n\nArgs:\n    app_id: 应用的唯一标识符。\n\nReturns:\n    str: 缓存的激活码字符串，若无缓存则返回空字符串。",
+              "params": [
+                {
+                  "name": "app_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "activate_key",
+              "docstring": "使用激活码对指定应用进行授权激活。\n\nArgs:\n    app_id: 应用的唯一标识符。\n    key: 用户输入的激活码。\n\nReturns:\n    dict: 服务端返回的激活结果，成功时 code 为 1 并包含 data 字段。",
+              "params": [
+                {
+                  "name": "app_id"
+                },
+                {
+                  "name": "key",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_history",
+              "docstring": "获取应用运行历史记录列表。\n\nReturns:\n    list: 运行记录列表，每项包含 id 和 name 字段；异常时返回空列表。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "download_app",
+              "docstring": "下载应用文件到本地存储目录。\n\n根据应用信息中的文件路径下载 whl 等文件，支持断点检测（已存在则跳过），\n并在下载过程中通过 JS 回调更新进度条。\n\nArgs:\n    app_info: 应用信息字典，需包含 filePath（下载地址）、fileMd5（文件校验值）、id（应用 ID）。\n\nReturns:\n    dict: 成功时返回 {\"code\": 1, \"msg\": ..., \"path\": 本地路径}；\n          失败时返回 {\"code\": 0, \"msg\": 错误信息}。",
+              "params": [
+                {
+                  "name": "app_info"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "start_app",
+              "docstring": "启动应用程序。\n\n保存运行记录并调用外部回调函数启动应用引擎。\n\nArgs:\n    app_info: 应用信息字典，需包含 id 和 name 字段。\n\nReturns:\n    dict: 返回 {\"code\": 1, \"msg\": \"启动成功\"}。",
+              "params": [
+                {
+                  "name": "app_info",
+                  "type": "dict"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "check_status",
+              "docstring": "检查指定应用是否正在运行。\n\n供前端轮询调用，判断应用进程的运行状态。\n\nArgs:\n    app_id: 应用的唯一标识符。\n\nReturns:\n    dict: 返回 {\"running\": bool}，表示应用是否在运行中。",
+              "params": [
+                {
+                  "name": "app_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "stop_app",
+              "docstring": "强行停止指定应用的运行。\n\nArgs:\n    app_id: 应用的唯一标识符。\n\nReturns:\n    dict: 返回 {\"code\": 1, \"msg\": \"已发送停止指令\"}。",
+              "params": [
+                {
+                  "name": "app_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "clear_env",
+              "docstring": "清理指定应用的虚拟环境目录。\n\n仅在应用未运行时允许清理，运行中会返回错误提示。\n\nArgs:\n    app_id: 应用的唯一标识符。\n\nReturns:\n    dict: 成功时返回 {\"code\": 1, \"msg\": \"环境已重置\"}；\n          失败时返回 {\"code\": 0, \"msg\": 错误信息}。",
+              "params": [
+                {
+                  "name": "app_id"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.ui.draw_window",
+      "file": "ascript/windows/ui/draw_window.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "DrawWindow",
+          "docstring": "屏幕绘制覆盖层窗口。\n\n使用 Win32 API 创建一个全屏透明置顶窗口，支持在屏幕上绘制矩形、线条和文本。\n绘制内容不会被截图捕获（使用 WDA_EXCLUDEFROMCAPTURE）。\n所有方法均为静态方法，全局共享一个绘制窗口实例。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "_create_window",
+              "docstring": "创建全屏透明置顶的绘制覆盖层窗口。\n\n注册自定义窗口类，创建带有 WS_EX_LAYERED、WS_EX_TRANSPARENT、WS_EX_TOPMOST\n扩展样式的窗口，并进入消息循环。该方法在后台线程中运行。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "_init",
+              "docstring": "初始化绘制窗口。\n\n如果窗口线程尚未启动，则创建后台线程并等待窗口句柄就绪。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "draw_rect",
+              "docstring": "在屏幕上绘制一个空心矩形。\n\nArgs:\n    x: 矩形左上角的 X 坐标（像素）。\n    y: 矩形左上角的 Y 坐标（像素）。\n    w: 矩形的宽度（像素）。\n    h: 矩形的高度（像素）。\n    color: 颜色值，BGR 格式，默认为红色 (0x0000FF)。\n    thickness: 边框线条粗细（像素），默认为 2。",
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "w"
+                },
+                {
+                  "name": "h"
+                },
+                {
+                  "name": "color",
+                  "default": "255"
+                },
+                {
+                  "name": "thickness",
+                  "default": "2"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "draw_line",
+              "docstring": "在屏幕上绘制一条直线。\n\nArgs:\n    x1: 起点 X 坐标（像素）。\n    y1: 起点 Y 坐标（像素）。\n    x2: 终点 X 坐标（像素）。\n    y2: 终点 Y 坐标（像素）。\n    color: 颜色值，BGR 格式，默认为红色 (0x0000FF)。\n    thickness: 线条粗细（像素），默认为 2。",
+              "params": [
+                {
+                  "name": "x1"
+                },
+                {
+                  "name": "y1"
+                },
+                {
+                  "name": "x2"
+                },
+                {
+                  "name": "y2"
+                },
+                {
+                  "name": "color",
+                  "default": "255"
+                },
+                {
+                  "name": "thickness",
+                  "default": "2"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "draw_text",
+              "docstring": "在屏幕上绘制文本。\n\nArgs:\n    x: 文本起始位置的 X 坐标（像素）。\n    y: 文本起始位置的 Y 坐标（像素）。\n    text: 要绘制的文本内容。\n    color: 颜色值，BGR 格式，默认为红色 (0x0000FF)。\n    font_size: 字体大小（像素），默认为 20。",
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "text"
+                },
+                {
+                  "name": "color",
+                  "default": "255"
+                },
+                {
+                  "name": "font_size",
+                  "default": "20"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "clear",
+              "docstring": "清除屏幕上所有已绘制的图形。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "_hwnd",
+              "value": "None"
+            },
+            {
+              "name": "_thread",
+              "value": "None"
+            },
+            {
+              "name": "_shapes",
+              "value": "[]"
+            },
+            {
+              "name": "_lock",
+              "value": "threading.Lock()"
+            },
+            {
+              "name": "_wnd_proc_ptr",
+              "value": "None"
+            },
+            {
+              "name": "WNDPROC",
+              "value": "ctypes.WINFUNCTYPE(PTR_TYPE, wintypes.HWND, ctypes.c_uint, wintypes.WPARAM, wintypes.LPARAM)"
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "RGB",
+          "docstring": "将 RGB 颜色值转换为 BGR 格式。\n\nDrawWindow 使用 BGR 颜色格式，此函数将常见的 RGB 值转换为对应的 BGR 值。\n\nArgs:\n    r: 红色通道值 (0-255)。\n    g: 绿色通道值 (0-255)。\n    b: 蓝色通道值 (0-255)。\n\nReturns:\n    int: BGR 格式的颜色整数值。",
+          "params": [
+            {
+              "name": "r"
+            },
+            {
+              "name": "g"
+            },
+            {
+              "name": "b"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.ui.flot_test",
+      "file": "ascript/windows/ui/flot_test.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Api",
+          "docstring": "WebView 窗口的 JavaScript API 桥接类。\n\n提供前端 JS 可调用的 Python 方法，包括状态切换回调、窗口拖拽和隐藏功能。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化 API 桥接对象。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "on_toggle",
+              "docstring": "处理播放/停止状态切换事件。\n\nArgs:\n    status: 当前运行状态，True 表示运行中，False 表示已停止。",
+              "params": [
+                {
+                  "name": "status"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "start_drag",
+              "docstring": "启动窗口拖拽操作。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "hide_window",
+              "docstring": "隐藏窗口到系统托盘。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "RecordPlayer",
+          "docstring": "唱片机风格的浮动控制面板。\n\n提供一个无边框、置顶的迷你窗口，带有唱片旋转动画效果，\n支持播放/停止控制、系统托盘集成和窗口拖拽。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化唱片机控制面板。\n\nArgs:\n    icon_path: 图标文件路径，用于窗口内唱片图片和系统托盘图标。",
+              "params": [
+                {
+                  "name": "icon_path",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "listen",
+              "docstring": "注册状态变化的监听回调。\n\nArgs:\n    callback: 回调函数，接收一个 bool 参数表示当前运行状态。",
+              "params": [
+                {
+                  "name": "callback",
+                  "type": "Callable[[bool], None]"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_get_base64",
+              "docstring": "读取图标文件并转换为 Base64 编码字符串。\n\nReturns:\n    str: 图标文件的 Base64 编码字符串。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_fix_taskbar",
+              "docstring": "通过 Win32 API 从任务栏移除窗口图标。\n\n循环查找窗口句柄，找到后修改扩展样式为工具窗口，\n移除 AppWindow 属性以隐藏任务栏图标。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_show_window",
+              "docstring": "显示主窗口。\n\nArgs:\n    icon: 系统托盘图标对象（由 pystray 回调传入，可选）。\n    item: 菜单项对象（由 pystray 回调传入，可选）。",
+              "params": [
+                {
+                  "name": "icon",
+                  "default": "None"
+                },
+                {
+                  "name": "item",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_quit_app",
+              "docstring": "退出应用程序。\n\n停止系统托盘图标并强制终止进程。\n\nArgs:\n    icon: 系统托盘图标对象。\n    item: 菜单项对象。",
+              "params": [
+                {
+                  "name": "icon"
+                },
+                {
+                  "name": "item"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_setup_tray",
+              "docstring": "初始化并启动系统托盘图标。\n\n创建包含\"显示控制栏\"和\"彻底退出\"菜单项的系统托盘图标。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "启动唱片机控制面板。\n\n创建无边框置顶 WebView 窗口，启动系统托盘和任务栏隐藏补丁，\n并进入 WebView 事件循环。此方法会阻塞当前线程。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.ui.flot_window",
+      "file": "ascript/windows/ui/flot_window.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "QueueWriter",
+          "docstring": "队列写入器，将标准输出重定向到多进程队列。\n\n用于子进程中捕获 print 输出，通过队列传递给主进程进行显示。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化队列写入器。\n\nArgs:\n    queue: multiprocessing.Queue 实例，用于接收输出消息。",
+              "params": [
+                {
+                  "name": "queue"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "write",
+              "docstring": "将非空消息写入队列。\n\nArgs:\n    message: 要写入的消息字符串。",
+              "params": [
+                {
+                  "name": "message"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "flush",
+              "docstring": "刷新操作（无实际操作，仅为兼容标准输出接口）。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "FloatScriptWindow",
+          "docstring": "浮动脚本控制窗口。\n\n提供一个无边框置顶的迷你控制面板，支持脚本的启动/停止、\n日志实时输出、系统托盘集成，以及通过多进程隔离运行用户脚本。\n继承自 WebWindow。",
+          "bases": [
+            "WebWindow"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化浮动脚本控制窗口。\n\nArgs:\n    icon_path: 图标文件路径，用于窗口显示和系统托盘图标。\n    title: 窗口标题，默认为 \"AScript\"。\n    use_process: 是否使用独立进程运行脚本，默认为 True。\n    auto_start: 是否在窗口就绪后自动启动脚本，默认为 False。",
+              "params": [
+                {
+                  "name": "icon_path",
+                  "type": "str"
+                },
+                {
+                  "name": "title",
+                  "type": "str",
+                  "default": "'AScript'"
+                },
+                {
+                  "name": "use_process",
+                  "type": "bool",
+                  "default": "True"
+                },
+                {
+                  "name": "auto_start",
+                  "type": "bool",
+                  "default": "False"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "on",
+              "docstring": "注册事件监听的装饰器。\n\n支持的事件名: \"start\"（脚本启动）、\"stop\"（脚本停止）。\n\nArgs:\n    event_name: 事件名称。\n\nReturns:\n    Callable: 装饰器函数。",
+              "params": [
+                {
+                  "name": "event_name",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_setup_logging",
+              "docstring": "设置日志重定向。\n\n将 sys.stdout 替换为当前实例，使 print 输出同时写入控制台和 WebView 界面。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_queue_listener",
+              "docstring": "队列消息监听线程。\n\n持续从子进程消息队列中读取日志并打印到主进程标准输出（触发 WebView 显示）。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "write",
+              "docstring": "写入消息到控制台和 WebView 界面。\n\n同时将消息输出到原始标准输出和 WebView 的日志面板。\n\nArgs:\n    message: 要写入的消息字符串。",
+              "params": [
+                {
+                  "name": "message"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "flush",
+              "docstring": "刷新原始标准输出缓冲区。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_worker_wrapper",
+              "docstring": "子进程中的工作函数包装器。\n\n在独立进程中运行用户脚本，重定向输出到队列，并监听停止信号。\n\nArgs:\n    start_func: 用户注册的启动函数。\n    stop_func: 用户注册的停止函数（可选，可为 None）。\n    queue: multiprocessing.Queue，用于传递日志消息。\n    stop_event: multiprocessing.Event，用于接收停止信号。",
+              "params": [
+                {
+                  "name": "start_func"
+                },
+                {
+                  "name": "stop_func"
+                },
+                {
+                  "name": "queue"
+                },
+                {
+                  "name": "stop_event"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "_monitor_worker",
+              "docstring": "监控工作进程状态。\n\n等待工作进程结束后，更新 UI 状态为已停止。\n\nArgs:\n    worker: 要监控的 multiprocessing.Process 实例。",
+              "params": [
+                {
+                  "name": "worker"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "on_toggle_click",
+              "docstring": "处理前端播放/停止按钮点击事件。\n\n根据状态启动或停止工作进程，防止重复操作。\n\nArgs:\n    status: True 表示启动，False 表示停止。\n\nReturns:\n    dict: 操作结果，如 {\"status\": \"success\"} 或 {\"status\": \"error\", \"msg\": \"BUSY\"}。",
+              "params": [
+                {
+                  "name": "status"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_force_stop_worker",
+              "docstring": "强制停止工作进程。\n\n依次尝试: 发送停止事件 -> 等待退出 -> terminate -> kill，确保进程被终止。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "drag_window",
+              "docstring": "启动窗口拖拽操作，供前端鼠标拖拽事件调用。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "hide_window",
+              "docstring": "隐藏或显示窗口，供前端隐藏按钮调用。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "resize_ui",
+              "docstring": "调整窗口大小。\n\nArgs:\n    expand: True 展开为大窗口 (300x450)，False 收缩为小窗口 (240x76)。",
+              "params": [
+                {
+                  "name": "expand"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_init_data",
+              "docstring": "获取窗口初始化数据。\n\n标记窗口为就绪状态，并返回标题和图标的 Base64 数据。\n\nReturns:\n    dict: 包含 title（窗口标题）和 icon_b64（图标 Base64 编码）的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_fix_window_once",
+              "docstring": "通过 Win32 API 修复窗口样式。\n\n移除标题栏、边框和系统菜单，设置为工具窗口样式以隐藏任务栏图标。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "toggle_visible",
+              "docstring": "切换窗口的显示/隐藏状态。\n\nArgs:\n    icon: 系统托盘图标对象（由 pystray 回调传入，可选）。\n    item: 菜单项对象（由 pystray 回调传入，可选）。",
+              "params": [
+                {
+                  "name": "icon",
+                  "default": "None"
+                },
+                {
+                  "name": "item",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_setup_tray",
+              "docstring": "初始化并启动系统托盘图标。\n\n创建包含\"显示/隐藏\"和\"彻底退出\"菜单项的系统托盘图标。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_auto_start_logic",
+              "docstring": "自动启动逻辑。\n\n等待 WebView 就绪后，自动触发脚本启动，用于 auto_start=True 的场景。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "show",
+              "docstring": "显示浮动控制窗口并进入事件循环。\n\n启动系统托盘、窗口样式修复和可选的自动启动逻辑，然后调用父类 show 方法。\n仅在主进程中有效，子进程调用会直接返回。\n\nArgs:\n    title: 窗口标题，默认为 \"AScriptControlPanel\"。\n    debug: 是否启用 WebView 调试模式，默认为 False。\n    width: 窗口宽度（像素），默认为 240。\n    height: 窗口高度（像素），默认为 76。\n    **kwargs: 传递给 WebWindow.show 的额外参数。",
+              "params": [
+                {
+                  "name": "title",
+                  "type": "str",
+                  "default": "'AScriptControlPanel'"
+                },
+                {
+                  "name": "debug",
+                  "default": "False"
+                },
+                {
+                  "name": "width",
+                  "type": "int",
+                  "default": "240"
+                },
+                {
+                  "name": "height",
+                  "type": "int",
+                  "default": "76"
+                },
+                {
+                  "name": "**kwargs"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.ui.license_window",
+      "file": "ascript/windows/ui/license_window.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "LicenseWindow",
+          "docstring": "授权验证窗口类。\n\n提供应用授权验证的 Web 窗口界面，支持查询应用信息、激活码验证和启动授权检查。\n继承自 WebWindow，窗口关闭后返回验证结果（True/False）。",
+          "bases": [
+            "WebWindow"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化授权验证窗口。\n\nArgs:\n    app_id: 需要验证授权的应用唯一标识符。",
+              "params": [
+                {
+                  "name": "app_id",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_app_info",
+              "docstring": "获取当前应用的详细信息。\n\nReturns:\n    dict: 应用信息字典；未找到时返回 {'name': '没有找到该程序'}。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "activate_key",
+              "docstring": "使用激活码进行授权验证。\n\n验证成功后将激活码缓存到本地，失败则清空授权数据。\n\nArgs:\n    key: 用户输入的激活码字符串。\n\nReturns:\n    dict: 服务端返回的验证结果，成功时 code 为 1 并包含 data 字段。",
+              "params": [
+                {
+                  "name": "key",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "start_app",
+              "docstring": "执行最终的授权校验并决定是否允许启动。\n\n依次检查应用信息加载状态、免费版直接放行、授权版验证 license 状态。\n验证通过后关闭窗口并设置返回值为 True。\n\nReturns:\n    bool|dict: 验证通过返回 True；失败返回包含 error 信息的字典。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_cached_key",
+              "docstring": "获取本地缓存的激活码。\n\nReturns:\n    str: 缓存的激活码字符串，若无缓存则返回空字符串。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.ui.web_window",
+      "file": "ascript/windows/ui/web_window.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "WebWindow",
+          "docstring": "基于 pywebview 的 Web 窗口基类。\n\n封装了 HTML 页面加载、Python-JavaScript 双向通信桥接、窗口生命周期管理等功能。\n子类可通过 expose 方法向前端暴露 Python 函数。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化 Web 窗口。\n\nArgs:\n    html_path: HTML 页面文件路径。\n    project_root: 项目根目录路径，用于资源定位。默认为当前工作目录。",
+              "params": [
+                {
+                  "name": "html_path",
+                  "type": "str"
+                },
+                {
+                  "name": "project_root",
+                  "type": "Optional[str]",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "expose",
+              "docstring": "将 Python 函数暴露给前端 JavaScript 调用。\n\n暴露后，前端可通过 callPython('函数名', ...参数) 调用该函数。\n\nArgs:\n    func: 要暴露的 Python 函数。\n\nReturns:\n    Callable: 传入的函数本身（可用作装饰器）。",
+              "params": [
+                {
+                  "name": "func",
+                  "type": "Callable"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "show",
+              "docstring": "创建并显示 Web 窗口。\n\n加载 HTML 页面，注入 callPython 桥接函数，启动 WebView 事件循环。\n\nArgs:\n    title: 窗口标题，默认为 \"AScript Window\"。\n    debug: 是否启用 WebView 调试模式，默认为 False。\n    block: 是否阻塞当前线程，默认为 True。设为 False 时在后台线程运行。\n    **kwargs: 传递给 webview.create_window 的额外参数（如 width、height、frameless 等）。\n\nReturns:\n    阻塞模式下返回 _return_value（由子类设置）；非阻塞模式无返回值。",
+              "params": [
+                {
+                  "name": "title",
+                  "type": "str",
+                  "default": "'AScript Window'"
+                },
+                {
+                  "name": "debug",
+                  "default": "False"
+                },
+                {
+                  "name": "block",
+                  "type": "bool",
+                  "default": "True"
+                },
+                {
+                  "name": "**kwargs"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "close",
+              "docstring": "关闭并销毁 Web 窗口。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.utils.node_utils",
+      "file": "ascript/windows/utils/node_utils.py",
+      "docstring": "窗口节点工具模块。\n\n提供与 Windows 窗口枚举和节点操作相关的实用函数。",
+      "classes": [],
+      "functions": [
+        {
+          "name": "get_all_window",
+          "docstring": "获取所有窗口句柄。\n\n根据指定的模式枚举系统中所有顶层窗口。\n\nArgs:\n    model: 枚举模式，用于控制窗口枚举的方式。\n\nReturns:\n    None: 当前实现未返回值（EnumWindows 缺少回调函数）。",
+          "params": [
+            {
+              "name": "model",
+              "type": "int"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.utils.screen_utils",
+      "file": "ascript/windows/utils/screen_utils.py",
+      "docstring": "屏幕颜色查找工具模块。\n\n提供基于像素颜色的多点查找、颜色比较等屏幕图像分析功能。\n支持多种扫描方向和相似度容差匹配。",
+      "classes": [],
+      "functions": [
+        {
+          "name": "find_colors",
+          "docstring": "在图像中查找多点颜色匹配的位置。\n\n根据给定的多点颜色描述字符串，在图像中搜索匹配的位置。\n第一个点作为基准点，后续点的坐标相对于基准点计算偏移量。\n\nArgs:\n    colors: 多点颜色描述字符串，格式为 'x1,y1,#RRGGBB|x2,y2,#RRGGBB|...'，\n        多个点之间用 '|' 分隔，每个点包含坐标和十六进制颜色值。\n    sim: 颜色相似度，取值范围 0.0 到 1.0，1.0 表示完全匹配。\n    max_points: 最大返回匹配点数，-1 表示不限制。\n    ore: 扫描方向，取值 1-8，对应不同的扫描顺序。\n    img: 待搜索的 PIL 图像对象。\n    space: 找到匹配后的排除间距，避免重复匹配相邻区域。\n\nReturns:\n    list: 匹配到的 Point 坐标点列表。",
+          "params": [
+            {
+              "name": "colors",
+              "type": "str"
+            },
+            {
+              "name": "sim",
+              "type": "float"
+            },
+            {
+              "name": "max_points",
+              "type": "int"
+            },
+            {
+              "name": "ore",
+              "type": "int"
+            },
+            {
+              "name": "img",
+              "type": "Image"
+            },
+            {
+              "name": "space",
+              "type": "int"
+            }
+          ],
+          "return_type": "list",
+          "decorators": []
+        },
+        {
+          "name": "compare_colors",
+          "docstring": "比较图像中指定位置的颜色是否全部匹配。\n\n检查图像中多个指定坐标的像素颜色是否都在给定的相似度范围内。\n\nArgs:\n    colors: 多点颜色描述字符串，格式为 'x1,y1,#RRGGBB|x2,y2,#RRGGBB|...'。\n    sim: 颜色相似度，取值范围 0.0 到 1.0。\n    img: 待比较的 PIL 图像对象。\n\nReturns:\n    bool: 所有点的颜色都匹配时返回 True，否则返回 False。",
+          "params": [
+            {
+              "name": "colors",
+              "type": "str"
+            },
+            {
+              "name": "sim",
+              "type": "float"
+            },
+            {
+              "name": "img",
+              "type": "Image"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "native_find_colors",
+          "docstring": "原生多点颜色查找的核心实现。\n\n遍历图像像素，按照指定的扫描方向查找与多点颜色模式匹配的位置。\n支持 8 种不同的扫描方向（左上到右下、右下到左上等）。\n\nArgs:\n    sim: 颜色容差值（已转换为 0-255 范围），表示允许的最大颜色差异。\n    max_points: 最大返回匹配点数，-1 表示不限制。\n    ore: 扫描方向，取值 1-8：\n        1 - 从左到右，从上到下；\n        2 - 从上到下，从左到右；\n        3 - 从上到下，从右到左；\n        4 - 从右到左，从上到下；\n        5 - 从右到左，从下到上；\n        6 - 从下到上，从右到左；\n        7 - 从下到上，从左到右；\n        8 - 从左到右，从下到上。\n    img: 待搜索的 PIL 图像对象。\n    points: 多点颜色描述列表，每个元素为包含 'x'、'y'、'color' 的字典。\n    space: 找到匹配后的排除间距。\n\nReturns:\n    list: 匹配到的 Point 坐标点列表。",
+          "params": [
+            {
+              "name": "sim",
+              "type": "float"
+            },
+            {
+              "name": "max_points",
+              "type": "int"
+            },
+            {
+              "name": "ore",
+              "type": "int"
+            },
+            {
+              "name": "img",
+              "type": "Image"
+            },
+            {
+              "name": "points",
+              "type": "list"
+            },
+            {
+              "name": "space",
+              "type": "int"
+            }
+          ],
+          "return_type": "list",
+          "decorators": []
+        },
+        {
+          "name": "space_image",
+          "docstring": "将匹配点周围区域的像素标记为无效。\n\n在找到一个匹配点后，将其周围指定范围内的像素设置为 [-1, -1, -1]，\n防止在同一区域内重复匹配。\n\nArgs:\n    pixs: 图像像素数据列表，每个元素为 [R, G, B]。\n    space: 排除的间距范围（像素数）。\n    width: 图像宽度。\n    height: 图像高度。\n    w: 匹配点的横坐标。\n    h: 匹配点的纵坐标。",
+          "params": [
+            {
+              "name": "pixs"
+            },
+            {
+              "name": "space"
+            },
+            {
+              "name": "width"
+            },
+            {
+              "name": "height"
+            },
+            {
+              "name": "w"
+            },
+            {
+              "name": "h"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "check_color",
+          "docstring": "检查指定位置是否满足多点颜色匹配条件。\n\n以 (x, y) 为基准点，检查该点及所有偏移点的颜色是否都在容差范围内。\n\nArgs:\n    width: 图像宽度。\n    height: 图像高度。\n    pixs: 图像像素数据列表。\n    x: 基准点横坐标。\n    y: 基准点纵坐标。\n    points: 多点颜色描述列表，第一个为基准点，后续为偏移点。\n    sim: 颜色容差值（0-255 范围）。\n\nReturns:\n    bool: 所有点都匹配时返回 True，否则返回 False。",
+          "params": [
+            {
+              "name": "width"
+            },
+            {
+              "name": "height"
+            },
+            {
+              "name": "pixs"
+            },
+            {
+              "name": "x"
+            },
+            {
+              "name": "y"
+            },
+            {
+              "name": "points"
+            },
+            {
+              "name": "sim"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "get_pix_forxy",
+          "docstring": "根据二维坐标计算像素在一维数组中的索引。\n\nArgs:\n    width: 图像宽度。\n    x: 横坐标。\n    y: 纵坐标。\n\nReturns:\n    int: 像素在一维像素数组中的索引位置。",
+          "params": [
+            {
+              "name": "width"
+            },
+            {
+              "name": "x"
+            },
+            {
+              "name": "y"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "compare_color",
+          "docstring": "比较两个颜色是否在容差范围内相似。\n\n逐通道（R、G、B）比较两个颜色值的差异，判断是否在允许的容差范围内。\n如果 c1 已被标记为无效（[-1, -1, -1]），则直接返回 False。\n\nArgs:\n    c1: 第一个颜色值，格式为 [R, G, B]。\n    c2: 第二个颜色值，格式为 [R, G, B]。\n    sim: 颜色容差值（0-255 范围），每个通道允许的最大差异。\n\nReturns:\n    bool: 两个颜色在容差范围内相似返回 True，否则返回 False。",
+          "params": [
+            {
+              "name": "c1"
+            },
+            {
+              "name": "c2"
+            },
+            {
+              "name": "sim"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.windows.window.Selector",
+      "file": "ascript/windows/window/Selector.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "UIElement",
+          "docstring": "UI 元素封装类。\n\n将 uiautomation 的 Control 对象封装为更易用的 UI 元素，\n提供属性访问、坐标转换、点击、输入、截图等操作。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化 UI 元素。\n\nArgs:\n    node: uiautomation 的 Control 控件对象\n    window: 所属的 Window 窗口对象\n    depth: 该元素在 UI 树中的深度层级",
+              "params": [
+                {
+                  "name": "node",
+                  "type": "auto.Control"
+                },
+                {
+                  "name": "window",
+                  "type": "Any"
+                },
+                {
+                  "name": "depth",
+                  "type": "int"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_check_clickable",
+              "docstring": "检查控件节点是否支持点击交互。\n\n通过检测 InvokePattern、TogglePattern、SelectionItemPattern 来判断。\n\nArgs:\n    node: uiautomation 的 Control 控件对象\n\nReturns:\n    支持点击返回 True，否则返回 False",
+              "params": [
+                {
+                  "name": "node",
+                  "type": "auto.Control"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": []
+            },
+            {
+              "name": "_get_node_value",
+              "docstring": "获取控件的文本内容值。\n\n优先通过 ValuePattern 获取，若失败则对 EditControl 类型回退到 Name 属性。\n\nArgs:\n    node: uiautomation 的 Control 控件对象\n\nReturns:\n    控件的文本值，获取失败返回空字符串",
+              "params": [
+                {
+                  "name": "node",
+                  "type": "auto.Control"
+                }
+              ],
+              "return_type": "str",
+              "decorators": []
+            },
+            {
+              "name": "to_dict",
+              "docstring": "将 UI 元素及其子元素递归转换为字典结构。\n\nReturns:\n    包含元素所有属性和子元素的嵌套字典",
+              "params": [],
+              "return_type": "Dict[str, Any]",
+              "decorators": []
+            },
+            {
+              "name": "child_count",
+              "docstring": "获取子节点数量。\n\nReturns:\n    子元素的个数",
+              "params": [],
+              "return_type": "int",
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "center",
+              "docstring": "获取元素相对于窗口的中心点坐标。\n\nReturns:\n    (x, y) 形式的中心点坐标元组",
+              "params": [],
+              "return_type": "Tuple[int, int]",
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "click",
+              "docstring": "点击当前 UI 元素。\n\n支持底层指令点击和物理模拟点击两种模式。底层指令点击不移动鼠标，\n物理模拟点击会真实移动鼠标到元素位置。\n\nArgs:\n    simulate: True 为强制物理模拟点击，False 为优先使用底层指令点击（失败时自动降级）\n\nReturns:\n    返回自身（UIElement），支持链式调用",
+              "params": [
+                {
+                  "name": "simulate",
+                  "type": "bool",
+                  "default": "False"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "input",
+              "docstring": "向当前 UI 元素输入文本。\n\n支持底层直接赋值和模拟键盘敲击两种模式。\n\nArgs:\n    text: 要输入的文本字符串\n    simulate: False 为优先使用 ValuePattern 直接设值（静默且快），\n        True 为使用 SendKeys 模拟键盘敲击（适合需要触发监听事件的输入框）\n\nReturns:\n    返回自身（UIElement），支持链式调用",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                },
+                {
+                  "name": "simulate",
+                  "type": "bool",
+                  "default": "False"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "capture",
+              "docstring": "捕获当前 UI 元素的截图。\n\nArgs:\n    save_path: 图片保存路径，为 None 则不保存到文件\n\nReturns:\n    Pillow Image 对象",
+              "params": [
+                {
+                  "name": "save_path",
+                  "type": "str",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Image",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "Selector",
+          "docstring": "UI 元素选择器，支持链式查询和操作。\n\n提供类似 CSS 选择器的链式 API，可通过属性过滤、层级关系（子节点、父节点、兄弟节点）\n组合定位 UI 元素，并支持在查询链中插入点击和输入动作。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化选择器。\n\nArgs:\n    window: 已存在的 Window 对象实例，作为搜索的根窗口\n    title: 窗口标题，当 window 为 None 时通过标题自动查找窗口\n    depth: 最大搜索深度，默认为 0xFFFFFFFF（不限制）",
+              "params": [
+                {
+                  "name": "window",
+                  "type": "Any",
+                  "default": "None"
+                },
+                {
+                  "name": "title",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "depth",
+                  "type": "int",
+                  "default": "4294967295"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_add_filter",
+              "docstring": "添加属性过滤条件到当前查询步骤。\n\n如果上一步是关系跳转（child/parent/brother），则将过滤条件附加到该步骤；\n否则添加到当前待提交的过滤条件集合。\n\nArgs:\n    key: 过滤属性名（如 'name'、'type'、'res_id' 等）\n    value: 过滤属性值",
+              "params": [
+                {
+                  "name": "key",
+                  "type": "str"
+                },
+                {
+                  "name": "value",
+                  "type": "Any"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_flush_to_step",
+              "docstring": "将当前累积的过滤条件和深度设置提交为一个 find 查询步骤。\n\n如果当前没有待提交的过滤条件且深度为默认值，则不执行任何操作。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "_add_relation",
+              "docstring": "添加关系跳转步骤（child/parent/brother）。\n\n先提交当前累积的过滤条件，再添加一个关系跳转步骤。\n\nArgs:\n    method: 关系类型，可选 'child'、'parent'、'brother'\n    param: 跳转参数（索引值），None 表示获取全部",
+              "params": [
+                {
+                  "name": "method",
+                  "type": "str"
+                },
+                {
+                  "name": "param",
+                  "type": "Any"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "name",
+              "docstring": "按控件名称过滤（支持正则匹配）。\n\nArgs:\n    val: 名称匹配模式（正则表达式）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "type",
+              "docstring": "按控件类型过滤（如 'ButtonControl'、'EditControl'）。\n\nArgs:\n    val: 控件类型名称（支持正则匹配）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "class_name",
+              "docstring": "按窗口类名过滤。\n\nArgs:\n    val: 窗口类名（支持正则匹配）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "res_id",
+              "docstring": "按 AutomationId 资源 ID 过滤。\n\nArgs:\n    val: AutomationId 值（支持正则匹配）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "value",
+              "docstring": "按控件的文本值过滤。\n\nArgs:\n    val: 文本值（支持正则匹配）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "description",
+              "docstring": "按控件的帮助文本描述过滤。\n\nArgs:\n    val: 描述文本（支持正则匹配）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "handle",
+              "docstring": "按原生窗口句柄过滤。\n\nArgs:\n    val: 窗口句柄值（精确匹配）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "int"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "enabled",
+              "docstring": "按是否启用状态过滤。\n\nArgs:\n    val: True 为只匹配启用的控件，False 为只匹配禁用的控件\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "visible",
+              "docstring": "按是否可见状态过滤。\n\nArgs:\n    val: True 为只匹配可见的控件，False 为只匹配不可见的控件\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "clickable",
+              "docstring": "按是否可点击状态过滤。\n\nArgs:\n    val: True 为只匹配可点击的控件，False 为只匹配不可点击的控件\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "password",
+              "docstring": "按是否为密码输入框过滤。\n\nArgs:\n    val: True 为只匹配密码框，False 为只匹配非密码框\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "val",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "child_count",
+              "docstring": "按子节点数量过滤。\n\nArgs:\n    count: 精确匹配的子节点数量\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "count",
+                  "type": "int"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "depth",
+              "docstring": "设置后续查找的最大搜索深度。\n\nArgs:\n    d: 最大搜索深度\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "d",
+                  "type": "int"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "child",
+              "docstring": "跳转到子节点。\n\nArgs:\n    index: 子节点索引（正数从1开始，负数从末尾，float 为相对偏移，None 为全部子节点）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "index",
+                  "type": "Any",
+                  "default": "None"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "parent",
+              "docstring": "跳转到父节点。\n\nArgs:\n    index: 向上跳转的层数，默认为 1 层\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "index",
+                  "type": "Any",
+                  "default": "None"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "brother",
+              "docstring": "跳转到兄弟节点。\n\nArgs:\n    index: 兄弟节点索引（正数从1开始，负数从末尾，float 为相对偏移，None 为全部兄弟）\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "index",
+                  "type": "Any",
+                  "default": "None"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "click",
+              "docstring": "在查询链中插入点击动作，对当前匹配的所有元素执行点击。\n\nArgs:\n    simulate: True 为物理模拟点击，False 为底层指令点击\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "simulate",
+                  "type": "bool",
+                  "default": "False"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "input",
+              "docstring": "在查询链中插入文本输入动作，对当前匹配的所有元素执行输入。\n\nArgs:\n    msg: 要输入的文本字符串\n\nReturns:\n    Selector 自身，支持链式调用",
+              "params": [
+                {
+                  "name": "msg",
+                  "type": "str"
+                }
+              ],
+              "return_type": "'Selector'",
+              "decorators": []
+            },
+            {
+              "name": "_match_node",
+              "docstring": "检查控件节点是否满足所有过滤条件。\n\n支持布尔精确匹配、整数精确匹配和字符串正则匹配（不区分大小写）。\n\nArgs:\n    node: uiautomation 的 Control 控件对象\n    filters: 过滤条件字典，键为属性名，值为期望匹配的值\n\nReturns:\n    所有条件都满足返回 True，否则返回 False",
+              "params": [
+                {
+                  "name": "node",
+                  "type": "auto.Control"
+                },
+                {
+                  "name": "filters",
+                  "type": "Dict"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": []
+            },
+            {
+              "name": "find_all",
+              "docstring": "执行查询链，返回所有匹配的 UIElement 列表。\n\n按照之前通过链式调用构建的查询步骤依次执行，\n包括属性过滤、关系跳转和动作执行，最终返回去重后的结果。\n\nReturns:\n    匹配的 UIElement 对象列表",
+              "params": [],
+              "return_type": "List[Any]",
+              "decorators": []
+            },
+            {
+              "name": "_pick_by_float",
+              "docstring": "通过浮点数相对偏移量从候选列表中选取控件。\n\n以当前控件在候选列表中的位置为基准，按 param * 10 的偏移量选取目标。\n\nArgs:\n    candidates: 候选控件列表\n    current: 当前基准控件\n    param: 浮点数偏移量（如 0.1 表示偏移 1 位，-0.2 表示偏移 -2 位）\n\nReturns:\n    选中的控件列表（0 或 1 个元素）",
+              "params": [
+                {
+                  "name": "candidates"
+                },
+                {
+                  "name": "current"
+                },
+                {
+                  "name": "param"
+                }
+              ],
+              "return_type": "List[auto.Control]",
+              "decorators": []
+            },
+            {
+              "name": "_pick_by_int",
+              "docstring": "通过整数索引从已匹配的控件列表中选取。\n\nArgs:\n    matched: 已通过过滤条件匹配的控件列表\n    param: 整数索引（正数从1开始，负数从末尾），None 返回全部\n\nReturns:\n    选中的控件列表",
+              "params": [
+                {
+                  "name": "matched"
+                },
+                {
+                  "name": "param"
+                }
+              ],
+              "return_type": "List[auto.Control]",
+              "decorators": []
+            },
+            {
+              "name": "find",
+              "docstring": "执行查询链，返回第一个匹配的 UIElement。\n\nReturns:\n    匹配的第一个 UIElement 对象，未找到则返回 None",
+              "params": [],
+              "return_type": "Optional[Any]",
+              "decorators": []
+            },
+            {
+              "name": "get_uielement_tree",
+              "docstring": "获取窗口的完整 UI 元素树。\n\n遍历窗口下所有控件，构建层级化的 UIElement 树结构。\n\nArgs:\n    as_json: True 返回 JSON 字符串，False 返回根 UIElement 对象\n\nReturns:\n    UI 元素树的根节点（UIElement）或其 JSON 字符串表示；窗口无效时返回 None 或空字符串",
+              "params": [
+                {
+                  "name": "as_json",
+                  "type": "bool",
+                  "default": "False"
+                }
+              ],
+              "return_type": "Union[Any, str]",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.window.Window",
+      "file": "ascript/windows/window/Window.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "WindowRect",
+          "docstring": "窗口空间位置信息 (不占内存，支持补全)。\n\nArgs:\n    left: 窗口左边界的屏幕 X 坐标\n    top: 窗口上边界的屏幕 Y 坐标\n    right: 窗口右边界的屏幕 X 坐标\n    bottom: 窗口下边界的屏幕 Y 坐标\n    width: 窗口宽度（像素）\n    height: 窗口高度（像素）",
+          "bases": [
+            "NamedTuple"
+          ],
+          "methods": [],
+          "class_variables": []
+        },
+        {
+          "name": "WindowCaptureFormat",
+          "docstring": "窗口截图输出格式枚举。\n\n定义了截图方法返回图像的格式选项，包括 PIL、NumPy 数组和 OpenCV BGR 格式。",
+          "bases": [
+            "Enum"
+          ],
+          "methods": [
+            {
+              "name": "convert",
+              "docstring": "将 PIL.Image 转换为当前枚举指定的格式。\n\nArgs:\n    pil_image: 原始的 PIL 图像对象\n\nReturns:\n    根据枚举值返回对应格式的图像：PIL.Image、numpy RGB 数组或 numpy BGR 数组",
+              "params": [
+                {
+                  "name": "pil_image",
+                  "type": "Image.Image"
+                }
+              ],
+              "return_type": "Union[Image.Image, np.ndarray]",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "PIL",
+              "value": "auto()"
+            },
+            {
+              "name": "NUMPY",
+              "value": "auto()"
+            },
+            {
+              "name": "OPENCV",
+              "value": "auto()"
+            }
+          ]
+        },
+        {
+          "name": "Window",
+          "docstring": "Windows 窗口操作封装类。\n\n提供对 Windows 窗口的查找、激活、截图、点击、拖拽、输入等操作的统一接口。\n通过窗口句柄（hwnd）标识和操作目标窗口。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "初始化窗口对象。\n\nArgs:\n    hwnd: Windows 窗口句柄（HWND）",
+              "params": [
+                {
+                  "name": "hwnd"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "find_all",
+              "docstring": "批量检索满足条件的所有窗口。\n\n遍历系统中的所有顶层窗口，根据标题正则、进程名、类名等条件进行筛选。\n\nArgs:\n    title_re: 窗口标题的正则表达式匹配模式，为 None 则不过滤标题\n    process_name: 进程名关键字（不区分大小写的包含匹配），为 None 则不过滤进程\n    class_name: 精确匹配的窗口类名，为 None 则不过滤类名\n    visible_only: 是否只返回可见窗口，默认为 True\n\nReturns:\n    符合条件的 Window 对象列表",
+              "params": [
+                {
+                  "name": "title_re",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "process_name",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "class_name",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "visible_only",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": "List['Window']",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "find",
+              "docstring": "快速检索满足条件的第一个窗口。\n\n与 find_all 相同的筛选逻辑，但只返回第一个匹配结果。支持超时等待机制。\n\nArgs:\n    title_re: 窗口标题的正则表达式匹配模式\n    process_name: 进程名关键字（不区分大小写）\n    class_name: 精确匹配的窗口类名\n    visible_only: 是否只返回可见窗口，默认为 True\n    timeout: 等待超时时间（秒），默认为 0 表示立即返回；大于 0 时会以 0.5 秒间隔轮询\n\nReturns:\n    匹配的第一个 Window 对象，未找到则返回 None",
+              "params": [
+                {
+                  "name": "title_re",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "process_name",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "class_name",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "visible_only",
+                  "type": "bool",
+                  "default": "True"
+                },
+                {
+                  "name": "timeout",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": "Optional['Window']",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "launch",
+              "docstring": "启动应用程序并返回其窗口对象。\n\n支持通过应用名称或可执行文件路径启动应用。若应用已运行且不允许多开，\n则直接激活已有窗口。启动后会轮询等待窗口出现。\n\nArgs:\n    name: 应用名称（用于注册表查找和窗口匹配）\n    path: 可执行文件的完整路径，优先级高于 name 的自动查找\n    allow_multiple: 是否允许多开，默认为 False（已有窗口时直接复用）\n    timeout: 等待新窗口出现的超时时间（秒），默认 15 秒\n\nReturns:\n    启动或找到的 Window 对象，超时未找到则返回 None 或已有窗口",
+              "params": [
+                {
+                  "name": "name",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "path",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "allow_multiple",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "timeout",
+                  "type": "int",
+                  "default": "15"
+                }
+              ],
+              "return_type": "Optional['Window']",
+              "decorators": [
+                "classmethod"
+              ]
+            },
+            {
+              "name": "title",
+              "docstring": "窗口标题",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "class_name",
+              "docstring": "窗口类名 (用于区分应用类型)",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "pid",
+              "docstring": "进程 ID",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "process_path",
+              "docstring": "可执行文件完整路径",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "process_name",
+              "docstring": "进程名 (如 chrome.exe)",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "is_visible",
+              "docstring": "判断窗口是否真正可见。\n\n综合检查系统可见性标志、窗口面积、坐标合理性和标题有效性。\n\nReturns:\n    如果窗口确实可见则返回 True，否则返回 False",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "is_minimized",
+              "docstring": "是否最小化",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "is_maximized",
+              "docstring": "是否最大化",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "is_responding",
+              "docstring": "窗口是否响应（未卡死）",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "_check_responding_via_timeout",
+              "docstring": "通过发送超时消息检测窗口是否仍在响应。\n\n作为 is_responding 的备选检测方案，通过 SendMessageTimeout 发送 WM_NULL 消息，\n如果窗口在 100 毫秒内无响应则判定为卡死。\n\nReturns:\n    窗口响应返回 True，超时或异常返回 False",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "is_always_on_top",
+              "docstring": "是否处于“总在最前”置顶状态",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "rect",
+              "docstring": "[属性] 获取窗口精准的视觉坐标和大小 (DPI感知)\n用法: win.rect.width, win.rect.top",
+              "params": [],
+              "return_type": "WindowRect",
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "set_rect",
+              "docstring": "统一调整窗口的位置和大小。\n\n可以同时或单独设置窗口的坐标和尺寸，未指定的参数保持当前值不变。\n\nArgs:\n    x: 目标 X 坐标（像素），None 则保持现状\n    y: 目标 Y 坐标（像素），None 则保持现状\n    width: 目标宽度（像素），None 则保持现状\n    height: 目标高度（像素），None 则保持现状",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "width",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "height",
+                  "type": "int",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "move",
+              "docstring": "移动窗口到指定位置，不改变窗口大小。\n\nArgs:\n    x: 目标屏幕 X 坐标（像素）\n    y: 目标屏幕 Y 坐标（像素）",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int"
+                },
+                {
+                  "name": "y",
+                  "type": "int"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "resize",
+              "docstring": "调整窗口大小，不改变窗口位置。\n\nArgs:\n    width: 目标宽度（像素）\n    height: 目标高度（像素）",
+              "params": [
+                {
+                  "name": "width",
+                  "type": "int"
+                },
+                {
+                  "name": "height",
+                  "type": "int"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "activate",
+              "docstring": "激活窗口并将其带到前台显示。\n\n如果窗口处于最小化状态，会先恢复窗口再置前台。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "set_always_on_top",
+              "docstring": "设置或取消窗口置顶状态。\n\nArgs:\n    toggle: True 为置顶，False 为取消置顶",
+              "params": [
+                {
+                  "name": "toggle",
+                  "default": "True"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "minimize",
+              "docstring": "将窗口最小化到任务栏。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "close",
+              "docstring": "发送 WM_CLOSE 消息以标准方式关闭窗口。\n\n这是温和的关闭方式，应用可能会弹出保存确认对话框。",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "kill",
+              "docstring": "强行终止窗口所属的进程。\n\nReturns:\n    终止成功返回 True，失败返回 False",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "capture",
+              "docstring": "对窗口进行截图，支持指定区域和多种输出格式。\n\n使用 PrintWindow API 截取窗口客户端区域（不含标题栏、边框和阴影），\n支持 DPI 感知，解决常见的黑屏和尺寸不对问题。\n\nArgs:\n    save_path: 图片保存路径，为 None 则不保存到文件\n    format: 输出格式，支持 PIL、NUMPY（RGB）、OPENCV（BGR）\n    rect: 指定截取的区域（WindowRect），为 None 则截取整个窗口\n    force_activate: 是否先激活窗口再截图，默认为 True\n\nReturns:\n    截图结果，格式由 format 参数决定；失败返回 None",
+              "params": [
+                {
+                  "name": "save_path",
+                  "type": "Optional[str]",
+                  "default": "None"
+                },
+                {
+                  "name": "format",
+                  "type": "WindowCaptureFormat",
+                  "default": "WindowCaptureFormat.PIL"
+                },
+                {
+                  "name": "rect",
+                  "type": "Optional[WindowRect]",
+                  "default": "None"
+                },
+                {
+                  "name": "force_activate",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": "Union[Image.Image, np.ndarray, None]",
+              "decorators": []
+            },
+            {
+              "name": "_get_lparam",
+              "docstring": "将坐标转换为 Windows 消息的 lParam 参数。\n\n根据 is_relative 标志决定是否需要将屏幕绝对坐标转换为窗口相对坐标，\n然后按 MAKELONG 格式打包为 lParam。\n\nArgs:\n    x: X 坐标\n    y: Y 坐标\n    is_relative: True 表示已是窗口相对坐标，False 表示是屏幕绝对坐标\n\nReturns:\n    编码后的 lParam 整数值（高16位为Y，低16位为X）",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int"
+                },
+                {
+                  "name": "y",
+                  "type": "int"
+                },
+                {
+                  "name": "is_relative",
+                  "type": "bool"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "click",
+              "docstring": "在窗口内指定的相对坐标位置执行鼠标点击。\n\n将窗口相对坐标转换为屏幕绝对坐标后，通过 Mouse 模块执行真实鼠标点击。\n\nArgs:\n    x: 相对于窗口左上角的 X 坐标（像素）\n    y: 相对于窗口左上角的 Y 坐标（像素）\n    clicks: 点击次数，默认 1 次\n    interval: 多次点击之间的间隔（秒），默认 0.1\n    button: 鼠标按键，\"primary\" 为左键，\"secondary\" 为右键\n    move_duration: 鼠标移动到目标位置的耗时（秒），0 为瞬移\n    duration: 按下与释放之间的持续时间（秒），0 为普通点击\n    offset: 坐标随机偏移量（像素），用于模拟人工点击",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "Optional[int]",
+                  "default": "None"
+                },
+                {
+                  "name": "y",
+                  "type": "Optional[int]",
+                  "default": "None"
+                },
+                {
+                  "name": "clicks",
+                  "type": "int",
+                  "default": "1"
+                },
+                {
+                  "name": "interval",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "button",
+                  "type": "str",
+                  "default": "'primary'"
+                },
+                {
+                  "name": "move_duration",
+                  "type": "float",
+                  "default": "0.0"
+                },
+                {
+                  "name": "duration",
+                  "type": "float",
+                  "default": "0.0"
+                },
+                {
+                  "name": "offset",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "long_click",
+              "docstring": "在指定坐标执行长按操作。\n\n通过 PostMessage 发送鼠标按下消息，等待指定时长后再发送释放消息。\n\nArgs:\n    x: X 坐标\n    y: Y 坐标\n    duration: 按住时长（秒），默认 1.0\n    is_relative: True 表示相对窗口坐标，False 表示屏幕绝对坐标",
+              "params": [
+                {
+                  "name": "x",
+                  "type": "int"
+                },
+                {
+                  "name": "y",
+                  "type": "int"
+                },
+                {
+                  "name": "duration",
+                  "type": "float",
+                  "default": "1.0"
+                },
+                {
+                  "name": "is_relative",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "drag",
+              "docstring": "从起点坐标拖拽到终点坐标。\n\n通过 PostMessage 模拟鼠标拖拽过程：按下 -> 分步平滑移动 -> 释放。\n\nArgs:\n    x1: 起点 X 坐标\n    y1: 起点 Y 坐标\n    x2: 终点 X 坐标\n    y2: 终点 Y 坐标\n    duration: 拖拽总耗时（秒），默认 0.5\n    is_relative: True 表示相对窗口坐标，False 表示屏幕绝对坐标",
+              "params": [
+                {
+                  "name": "x1",
+                  "type": "int"
+                },
+                {
+                  "name": "y1",
+                  "type": "int"
+                },
+                {
+                  "name": "x2",
+                  "type": "int"
+                },
+                {
+                  "name": "y2",
+                  "type": "int"
+                },
+                {
+                  "name": "duration",
+                  "type": "float",
+                  "default": "0.5"
+                },
+                {
+                  "name": "is_relative",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "type_text",
+              "docstring": "向窗口逐字符发送文本输入消息。\n\n通过 WM_CHAR 消息逐字发送，无需激活窗口即可输入。\n\nArgs:\n    text: 要输入的文本字符串",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.windows.window.launcher",
+      "file": "ascript/windows/window/launcher.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Launcher",
+          "docstring": "Windows 应用程序启动器。\n\n提供通过应用名称或路径查找、解析和启动 Windows 应用程序的能力。\n支持从注册表、快捷方式等多种途径自动定位可执行文件。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "get_info",
+              "docstring": "根据应用名称或路径获取可执行文件的物理路径和进程名。\n\n按优先级依次尝试：直接路径 -> 注册表查找 -> 快捷方式解析。\n\nArgs:\n    name: 应用名称（支持正则表达式），用于注册表和快捷方式搜索\n    path: 可执行文件的直接路径，若存在则优先使用\n\nReturns:\n    (物理路径, 进程名) 的元组，未找到路径时路径为 None",
+              "params": [
+                {
+                  "name": "name",
+                  "type": "Optional[str]",
+                  "default": "None"
+                },
+                {
+                  "name": "path",
+                  "type": "Optional[str]",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Tuple[Optional[str], Optional[str]]",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "run",
+              "docstring": "启动应用程序。\n\n支持通过物理路径启动、系统应用名称启动和 Shell 协议启动。\n优先使用 os.startfile（模拟双击），失败时回退到 subprocess。\n\nArgs:\n    name: 应用名称（如 'notepad'、'calc'），用于 Shell 启动\n    path: 可执行文件的完整路径\n\nReturns:\n    启动成功返回 True，失败返回 False",
+              "params": [
+                {
+                  "name": "name",
+                  "type": "Optional[str]",
+                  "default": "None"
+                },
+                {
+                  "name": "path",
+                  "type": "Optional[str]",
+                  "default": "None"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "_get_path_from_registry",
+              "docstring": "从 Windows 注册表中查找应用程序的可执行文件路径。\n\n深度扫描 App Paths 和 Uninstall 注册表项（覆盖 32 位和 64 位），\n同时搜索 HKLM 和 HKCU 根键。支持通过键名和 DisplayName 两种方式匹配。\n\nArgs:\n    name_regex: 应用名称的正则表达式模式\n\nReturns:\n    (可执行文件路径, 进程名) 的元组，未找到返回 (None, None)",
+              "params": [
+                {
+                  "name": "name_regex",
+                  "type": "str"
+                }
+              ],
+              "return_type": "Tuple[Optional[str], Optional[str]]",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "_find_shortcut",
+              "docstring": "在常见位置搜索匹配的快捷方式文件（.lnk）。\n\n扫描开始菜单程序目录、公共桌面和用户桌面等位置。\n\nArgs:\n    name_regex: 快捷方式名称的正则表达式模式\n\nReturns:\n    匹配的第一个快捷方式路径，未找到返回 None",
+              "params": [
+                {
+                  "name": "name_regex",
+                  "type": "str"
+                }
+              ],
+              "return_type": "Optional[pathlib.Path]",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "_resolve_lnk",
+              "docstring": "解析 Windows 快捷方式（.lnk）文件的真实目标路径。\n\n使用 WScript.Shell COM 对象读取快捷方式的 TargetPath。\n\nArgs:\n    lnk_path: 快捷方式文件的路径\n\nReturns:\n    快捷方式指向的目标路径字符串，解析失败返回 None",
+              "params": [
+                {
+                  "name": "lnk_path",
+                  "type": "pathlib.Path"
+                }
+              ],
+              "return_type": "Optional[str]",
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": []
+    }
+  ]
+}

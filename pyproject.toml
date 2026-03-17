@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ascript-mcp"
+version = "1.0.0"
+description = "AScript MCP Service - 为大模型提供 ascript 自动化库 API 文档服务"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+dependencies = [
+    "mcp>=1.0.0",
+    "uvicorn>=0.30.0",
+    "starlette",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
