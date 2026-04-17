@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ascript-mcp"
-version = "1.0.0"
-description = "AScript MCP Service - 为大模型提供 ascript 自动化库 API 文档服务"
+version = "1.6.1"
+description = "AScript MCP Service - 为大模型提供 ascript 自动化库 API 文档与设备交互服务"
+readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
@@ -15,5 +16,11 @@ dependencies = [
     "starlette",
 ]
 
+[project.scripts]
+ascript-mcp = "ascript_mcp.local:main_sync"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"ascript_mcp" = ["api_data/*.json"]
