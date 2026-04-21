@@ -28,5 +28,8 @@ test_*.png
 test_*.jpg
 screenshot_*.png
 
+# Internal launch / marketing / strategy docs (never commit)
+RELEASES/
+
 # API 数据是生成的，不需要提交（可选，如果希望部署时免提取可以提交）
 # src/ascript_mcp/api_data/*.json
