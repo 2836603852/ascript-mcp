@@ -1,6 +1,12 @@
 # ascript-mcp
 
-AScript MCP Service — 让 AI 编程工具（Cursor / Trae）直接查询 AScript API 文档、操控 Android/iOS 设备。
+**中文** | [English](./README_EN.md)
+
+[![PyPI](https://img.shields.io/pypi/v/ascript-mcp.svg)](https://pypi.org/project/ascript-mcp/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Python](https://img.shields.io/pypi/pyversions/ascript-mcp.svg)](https://pypi.org/project/ascript-mcp/)
+
+AScript MCP Service — 让 AI 编程工具（Claude Desktop / Cursor / Trae）直接查询 AScript API 文档、操控真实 Android / iOS 设备（iOS 免签免越狱）。
 
 ## 功能
 
@@ -98,7 +104,14 @@ pip install ascript-mcp
 uvicorn ascript_mcp.server:app --host 0.0.0.0 --port 8000
 ```
 
+## License
+
+MIT License，详见 [LICENSE](./LICENSE)。Copyright © 2026 北京奥悦科技有限公司。
+
 ## 更多信息
 
-- AScript 官网：https://airscript.cn
+- AScript 官网：https://ascript.cn
 - API 文档：https://docs.airscript.cn
+- 插件库：https://py.airscript.cn
+- 社区论坛：https://bbs.ascript.cn
+- 京ICP备 2020040944号-4

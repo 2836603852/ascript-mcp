@@ -1,3 +1,4 @@
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -7,7 +8,25 @@ build/
 .venv/
 venv/
 .env
+
+# Logs
 *.log
+
+# IDE / Editor
+.vscode/
+.idea/
+.cursor/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+test_*.png
+test_*.jpg
+screenshot_*.png
 
 # API 数据是生成的，不需要提交（可选，如果希望部署时免提取可以提交）
 # src/ascript_mcp/api_data/*.json
