@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ascript-mcp"
-version = "1.6.2"
+version = "1.6.3"
 description = "AScript MCP Service - 为大模型提供 ascript 自动化库 API 文档与设备交互服务"
 readme = "README.md"
 requires-python = ">=3.10"

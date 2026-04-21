@@ -1,5 +1,7 @@
 # ascript-mcp
 
+<!-- mcp-name: io.github.ascript-cn/ascript-mcp -->
+
 **中文** | [English](./README_EN.md)
 
 [![PyPI](https://img.shields.io/pypi/v/ascript-mcp.svg)](https://pypi.org/project/ascript-mcp/)
