@@ -105,63 +105,6 @@
       "docstring": "iOS 节点查找与操作模块。\n\n提供基于 XPath 的 UI 节点选择器，支持按属性、层级关系查找节点，\n并对查找到的节点执行点击、滚动、输入等操作。",
       "classes": [
         {
-          "name": "_Sel",
-          "docstring": "内部选择器条件单元，表示单个 XPath 查询条件。\n\n用于构建 XPath 查询表达式的基本组成部分，支持属性匹配和层级关系。\n\nAttributes:\n    ATTR: 属性匹配模式常量。\n    SHIP: 层级关系模式常量。\n    ACTION: 操作模式常量。\n    NODE: 节点模式常量。",
-          "bases": [],
-          "methods": [
-            {
-              "name": "__init__",
-              "docstring": "初始化选择器条件单元。\n\nArgs:\n    mode: 条件模式，ATTR 表示属性匹配，SHIP 表示层级关系。\n    key: 条件键名，如属性名称或关系类型（parent/child/brother）。\n    value: 条件值，根据模式不同含义不同。\n    match: 匹配方式，-1 为默认精确匹配，可选 MODE_CONTAINS 等。",
-              "params": [
-                {
-                  "name": "mode",
-                  "type": "int"
-                },
-                {
-                  "name": "key",
-                  "type": "str"
-                },
-                {
-                  "name": "value",
-                  "type": "object"
-                },
-                {
-                  "name": "match",
-                  "type": "int",
-                  "default": "-1"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_make",
-              "docstring": "根据条件生成对应的 XPath 片段。\n\n根据 mode 和 match 的组合，生成属性匹配或层级关系的 XPath 子表达式。\n\nReturns:\n    str: 生成的 XPath 片段字符串。",
-              "params": [],
-              "return_type": null,
-              "decorators": []
-            }
-          ],
-          "class_variables": [
-            {
-              "name": "ATTR",
-              "value": "0"
-            },
-            {
-              "name": "SHIP",
-              "value": "1"
-            },
-            {
-              "name": "ACTION",
-              "value": "2"
-            },
-            {
-              "name": "NODE",
-              "value": "4"
-            }
-          ]
-        },
-        {
           "name": "Selector",
           "docstring": "iOS UI 节点选择器，支持链式调用构建查询条件。\n\n通过链式调用设置各种筛选条件（属性、层级关系等），然后执行查找操作\n获取匹配的 UI 节点元素。支持对查找到的节点执行点击、滚动、输入等操作。\n\nAttributes:\n    MODE_EQUAL: 精确匹配模式。\n    MODE_CONTAINS: 包含匹配模式。\n    MODE_MATCHES: 正则匹配模式。\n    MODE_GREATER: 大于比较模式。\n    MODE_LESS: 小于比较模式。\n    MODE_CLICK_ACCESS: 无障碍点击模式。\n    MODE_CLICK_XY: 坐标点击模式。\n    MODE_SCROLL_VISIBLE: 滚动至可见模式。\n    MODE_SCROLL_LEFT: 向左滚动模式。\n    MODE_SCROLL_RIGHT: 向右滚动模式。\n    MODE_SCROLL_UP: 向上滚动模式。\n    MODE_SCROLL_DOWN: 向下滚动模式。",
           "bases": [],
@@ -241,13 +184,6 @@
                   "default": "-1"
                 }
               ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_make_xpath",
-              "docstring": "根据已添加的选择器条件列表生成完整的 XPath 表达式。\n\nReturns:\n    str: 组合后的 XPath 查询字符串。",
-              "params": [],
               "return_type": null,
               "decorators": []
             },
@@ -1065,10 +1001,14 @@
               "docstring": "模块查找钩子，在模块导入时触发。\n\nArgs:\n    name: 被导入的模块名称。\n    path: 模块的搜索路径。\n    target: 目标模块对象（可选）。",
               "params": [
                 {
+                  "name": "cls"
+                },
+                {
                   "name": "name"
                 },
                 {
-                  "name": "path"
+                  "name": "path",
+                  "default": "None"
                 },
                 {
                   "name": "target",
@@ -1332,6 +1272,127 @@
         {
           "name": "export_yolo_zip",
           "docstring": "将标注数据导出为 YOLO 训练格式的 ZIP 压缩包。\n\nArgs:\n    args: 请求参数字典，必须包含 'name' 键，表示标注目录名称。\n\nReturns:\n    dict: 包含 ZIP 文件路径的 API 响应结果。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_img_add_label",
+          "docstring": "添加标注",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_img_del_label",
+          "docstring": "删除标注",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_img_labels",
+          "docstring": "获取图片标注",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_tags",
+          "docstring": "获取所有标签",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_clean_tags",
+          "docstring": "清理未使用的标签",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_export",
+          "docstring": "导出 YOLO 数据集",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_import",
+          "docstring": "导入 YOLO 数据集 — 对齐 Android LabelUtils.importDataset",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_del_tag",
+          "docstring": "删除指定索引的标签",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_rename_tag",
+          "docstring": "重命名标签",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_detect",
+          "docstring": "YOLO 检测 — 支持自动加载模型",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolo_capture",
+          "docstring": "截图并保存到标注集目录",
           "params": [
             {
               "name": "args"
@@ -1658,6 +1719,17 @@
         {
           "name": "api_screen_size",
           "docstring": "获取当前设备的屏幕分辨率。\n\nArgs:\n    args: 请求参数字典（当前未使用）。\n\nReturns:\n    dict: 包含 width 和 height 的 API 响应结果。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_screen_debug",
+          "docstring": "调试接口：返回各截图来源的实际尺寸",
           "params": [
             {
               "name": "args"
@@ -2455,6 +2527,25 @@
           "decorators": []
         },
         {
+          "name": "launch_app",
+          "docstring": "通过 bundle_id 直接启动 App（不依赖 WDA）",
+          "params": [
+            {
+              "name": "bundle_id",
+              "type": "str"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "get_installed_apps",
+          "docstring": "获取设备上所有已安装 App 列表，返回 [{\"bundle_id\": \"...\", \"name\": \"...\", \"schemes\": [...]}]",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
           "name": "notify",
           "docstring": "发送系统本地通知。\n\nArgs:\n    msg: 通知消息内容。\n    title: 通知标题，默认为 None。\n    _id: 通知 ID，默认为 \"9096\"。",
           "params": [
@@ -2563,6 +2654,37 @@
               "type": "dict"
             }
           ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "ws_state",
+          "docstring": "获取云控连接状态: 0断开 1已连接 -1连接中 -2断开中",
+          "params": [],
+          "return_type": "int",
+          "decorators": []
+        },
+        {
+          "name": "ws_connect",
+          "docstring": "连接云控 WebSocket（OC 层异步，Python 侧需自行等待）",
+          "params": [
+            {
+              "name": "url",
+              "type": "str"
+            },
+            {
+              "name": "developer_account",
+              "type": "str",
+              "default": "''"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "ws_close",
+          "docstring": "断开云控 WebSocket",
+          "params": [],
           "return_type": null,
           "decorators": []
         },
@@ -2691,6 +2813,32 @@
           "params": [],
           "return_type": null,
           "decorators": []
+        },
+        {
+          "name": "getIpAddress",
+          "docstring": "",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "get_log_switch",
+          "docstring": "",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "tunner_ws_call_py",
+          "docstring": "",
+          "params": [
+            {
+              "name": "data_json",
+              "type": "str"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
         }
       ]
     },
@@ -2811,12 +2959,130 @@
           "decorators": []
         },
         {
+          "name": "ocr_tomato_init",
+          "docstring": "",
+          "params": [
+            {
+              "name": "modelPath",
+              "default": "''"
+            },
+            {
+              "name": "mode",
+              "default": "''"
+            },
+            {
+              "name": "httpIntervalTime",
+              "default": "0"
+            },
+            {
+              "name": "license",
+              "default": "''"
+            },
+            {
+              "name": "remark",
+              "default": "''"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "ocr_tomato_detect",
+          "docstring": "",
+          "params": [
+            {
+              "name": "mode",
+              "type": "str"
+            },
+            {
+              "name": "img_inout",
+              "type": "ImgInout"
+            },
+            {
+              "name": "recType",
+              "default": "''"
+            },
+            {
+              "name": "detBoxType",
+              "default": "''"
+            },
+            {
+              "name": "detUnclipRatio",
+              "default": "1.9"
+            },
+            {
+              "name": "detScaleRatio",
+              "default": "1.0"
+            },
+            {
+              "name": "recScoreThreshold",
+              "default": "0.2"
+            },
+            {
+              "name": "returnType",
+              "default": "'json'"
+            },
+            {
+              "name": "binaryThresh",
+              "default": "0"
+            },
+            {
+              "name": "runMode",
+              "default": "'slow'"
+            },
+            {
+              "name": "type",
+              "default": "3"
+            },
+            {
+              "name": "pattern",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "ocr_tomato_find_tap_point",
+          "docstring": "",
+          "params": [
+            {
+              "name": "keyowrd",
+              "type": "str"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "ocr_tomato_find_tap_points",
+          "docstring": "",
+          "params": [
+            {
+              "name": "keyowrd",
+              "type": "str"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
           "name": "code_scanner",
           "docstring": "扫描图像中的条形码和二维码。\n\nArgs:\n    image: PIL Image 图像对象，传入 None 时返回空列表。\n    offset_x: 结果坐标的 X 轴偏移量，默认为 0。\n    offset_y: 结果坐标的 Y 轴偏移量，默认为 0。\n\nReturns:\n    list: 扫描结果列表，每项包含 result、rect、center_x、center_y、value、type、format。",
           "params": [
             {
               "name": "image",
-              "type": "Image"
+              "type": "Image",
+              "default": "None"
+            },
+            {
+              "name": "image_file",
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "rect",
+              "default": "None"
             },
             {
               "name": "offset_x",
@@ -2920,6 +3186,11 @@
             {
               "name": "nms_threshold",
               "default": "0.5"
+            },
+            {
+              "name": "rect",
+              "type": "str",
+              "default": "None"
             }
           ],
           "return_type": null,
@@ -2928,6 +3199,70 @@
         {
           "name": "yolov8_free",
           "docstring": "释放已加载的 YOLOv8 模型资源。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolov11_load",
+          "docstring": "",
+          "params": [
+            {
+              "name": "param_path",
+              "type": "str"
+            },
+            {
+              "name": "bin_path",
+              "type": "str"
+            },
+            {
+              "name": "use_gpu",
+              "type": "bool",
+              "default": "False"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolov11_detect",
+          "docstring": "",
+          "params": [
+            {
+              "name": "img",
+              "type": "Union[Image, str]"
+            },
+            {
+              "name": "target_size",
+              "type": "int",
+              "default": "640"
+            },
+            {
+              "name": "threshold",
+              "default": "0.4"
+            },
+            {
+              "name": "nms_threshold",
+              "default": "0.5"
+            },
+            {
+              "name": "rect",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolov11_free",
+          "docstring": "",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "yolov11_nc",
+          "docstring": "",
           "params": [],
           "return_type": null,
           "decorators": []
@@ -3043,32 +3378,6 @@
           "params": [
             {
               "name": "thread"
-            }
-          ],
-          "return_type": null,
-          "decorators": []
-        },
-        {
-          "name": "init_logging",
-          "docstring": "初始化日志系统。\n\n配置日志文件的轮转处理器，最大 1MB，保留 10 个备份文件。\n\nArgs:\n    log_file: 日志文件路径，默认为 None。",
-          "params": [
-            {
-              "name": "log_file",
-              "default": "None"
-            }
-          ],
-          "return_type": null,
-          "decorators": []
-        },
-        {
-          "name": "recode_loger",
-          "docstring": "记录日志消息到日志文件。\n\nArgs:\n    msg: 日志消息内容。\n    t: 日志类型，'i' 为 info 级别，其他为 error 级别。",
-          "params": [
-            {
-              "name": "msg"
-            },
-            {
-              "name": "t"
             }
           ],
           "return_type": null,
@@ -3253,18 +3562,176 @@
               "decorators": []
             },
             {
-              "name": "find_all",
-              "docstring": "查找所有匹配的颜色坐标点。\n\nReturns:\n    list: 所有匹配的坐标点列表。",
-              "params": [],
+              "name": "find",
+              "docstring": "查找第一个匹配的多点颜色组合，返回单个坐标点。\n\nArgs:\n    colors: 颜色字符串，格式 \"x,y,#RRGGBB|x,y,#RRGGBB|...\" 第一个为锚点，其余为相对偏移。\n    rect: 搜索区域 [left, top, right, bottom]，默认全屏。\n    space: 锚点扫描步长（像素），默认 5。\n    ori: 扫描方向（1-8），默认 2。\n    diff: 颜色相似度阈值 0-1，默认 0.98。\n    image: 自定义源图（Bitmap / cv2 / PIL），默认 None 自动截屏。\n    mode: 颜色比对模式。0=RGB（默认），1=归一化 RGB。\n    until: 超时毫秒数，>0 时启用循环重试直到找到或超时；0 表示不重试。\n\nReturns:\n    Point(x, y) 或 None（未匹配）。",
+              "params": [
+                {
+                  "name": "colors",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "space",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "diff",
+                  "type": "float",
+                  "default": "0.98"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "until",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             },
             {
-              "name": "find",
-              "docstring": "查找第一个匹配的颜色坐标点。\n\nReturns:\n    Point: 第一个匹配的坐标点；如果未找到则返回 None。",
-              "params": [],
+              "name": "find_all",
+              "docstring": "查找所有匹配的多点颜色组合，返回坐标列表。\n\nArgs:\n    colors: 颜色字符串，格式 \"x,y,#RRGGBB|x,y,#RRGGBB|...\"\n    rect: 搜索区域 [left, top, right, bottom]。\n    space: 锚点扫描步长，默认 5。\n    ori: 扫描方向（1-8），默认 2。\n    diff: 颜色相似度阈值 0-1，默认 0.98。\n    image: 自定义源图，默认 None 自动截屏。\n    p_max_num: 最大返回数量，默认 999999。\n    mode: 颜色比对模式。0=RGB（默认），1=归一化 RGB。\n    until: 超时毫秒数，>0 启用循环重试。\n\nReturns:\n    list[Point]，无结果时返回 None。",
+              "params": [
+                {
+                  "name": "colors",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "space",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "diff",
+                  "type": "float",
+                  "default": "0.98"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "p_max_num",
+                  "type": "int",
+                  "default": "999999"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "until",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_color",
+              "docstring": "单点找色：在屏幕上查找第一个匹配的颜色点（FindColors.find 的便捷封装）。\n\nArgs:\n    color: 目标颜色 \"#RRGGBB\"。\n    rect: 搜索区域 [left, top, right, bottom]。\n    diff: 相似度阈值 0-1，默认 0.98。\n    mode: 颜色比对模式。0=RGB（默认），1=归一化 RGB。\n\nReturns:\n    dict {\"x\": ..., \"y\": ...} 或 None。",
+              "params": [
+                {
+                  "name": "color",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "diff",
+                  "type": "float",
+                  "default": "0.98"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_all_color",
+              "docstring": "单点找色（全部）：找出所有匹配该颜色的像素点。\n\nArgs:\n    color: 目标颜色 \"#RRGGBB\"。\n    rect: 搜索区域。\n    diff: 相似度阈值，默认 0.98。\n    mode: 0=RGB，1=归一化 RGB。\n    max_num: 最大返回数量，默认 999999。\n\nReturns:\n    list[dict]，无匹配时返回 None。",
+              "params": [
+                {
+                  "name": "color",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "diff",
+                  "type": "float",
+                  "default": "0.98"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "max_num",
+                  "type": "int",
+                  "default": "999999"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
@@ -3274,7 +3741,7 @@
             },
             {
               "name": "ui_path",
-              "value": "'/static/gp/find_colors'"
+              "value": "'/static/gpui/find_colors/'"
             }
           ]
         },
@@ -3325,10 +3792,78 @@
             },
             {
               "name": "compare",
-              "docstring": "执行比色并返回结果。\n\nReturns:\n    bool: 如果所有颜色点均匹配则返回 True，否则返回 False。",
-              "params": [],
+              "docstring": "执行一次多点比色。\n\nArgs:\n    colors: 颜色字符串 \"x,y,#RRGGBB|...\"\n    diff: 相似度阈值，默认 0.9。\n    bitmap: Android Bitmap 对象，None 时自动截屏。\n    mode: 0=RGB，1=归一化 RGB，2=Lab Delta E。\n    until: 超时毫秒数，>0 启用循环重试。\n    sim: 数量相似度，1.0=全部匹配，0.8=80% 匹配即通过。\n    image: 源图别名，优先级低于 bitmap。\n\nReturns:\n    bool 是否匹配成功，异常时返回 None。",
+              "params": [
+                {
+                  "name": "colors",
+                  "type": "str"
+                },
+                {
+                  "name": "diff",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "until",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "sim",
+                  "type": "float",
+                  "default": "1.0"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "compare_multi",
+              "docstring": "多组特征比对：一次截图判断匹配的是哪一组颜色组合。\n\nArgs:\n    colors_list: 颜色字符串列表 [\"组0颜色串\", \"组1颜色串\", ...]\n    diff: 相似度阈值，默认 0.9。\n    mode: 0=RGB，1=归一化 RGB，2=Lab Delta E。\n    sim: 数量相似度，1.0=全匹配，0.8=80% 匹配通过。\n    image: 源图，None 自动截屏。\n\nReturns:\n    int 命中的组索引（0-based），-1 表示无任何组匹配。",
+              "params": [
+                {
+                  "name": "colors_list",
+                  "type": "list"
+                },
+                {
+                  "name": "diff",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "sim",
+                  "type": "float",
+                  "default": "1.0"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
@@ -3338,7 +3873,7 @@
             },
             {
               "name": "ui_path",
-              "value": "'/static/gp/compare_colors'"
+              "value": "'/static/gpui/compare_colors/'"
             },
             {
               "name": "cache_img",
@@ -3414,6 +3949,38 @@
               "params": [],
               "return_type": null,
               "decorators": []
+            },
+            {
+              "name": "count",
+              "docstring": "统计屏幕上匹配指定颜色的像素数量。\n\nArgs:\n    colors: 颜色字符串。\n    rect: 搜索区域，默认全屏。\n    sim: 颜色相似度阈值，默认 1。\n    bitmap: 位图对象，None 自动截屏。\n    image: 源图别名（Bitmap / cv2 / PIL），优先级低于 bitmap。\n\nReturns:\n    int 匹配像素数量。",
+              "params": [
+                {
+                  "name": "colors",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "sim",
+                  "type": "float",
+                  "default": "1"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
@@ -3423,7 +3990,7 @@
             },
             {
               "name": "ui_path",
-              "value": "'/static/gp/colors_num'"
+              "value": "'/static/gpui/colors_num/'"
             }
           ]
         },
@@ -3458,7 +4025,7 @@
                 },
                 {
                   "name": "confidence",
-                  "default": "0.1"
+                  "default": "0.9"
                 },
                 {
                   "name": "rgb",
@@ -3512,45 +4079,328 @@
             },
             {
               "name": "find",
-              "docstring": "使用混合模式查找第一个匹配的图片位置，先模板匹配再 SIFT。\n\nReturns:\n    dict: 匹配结果字典（包含 result、rect、confidence 等）；如果未找到则返回 None 或空列表。",
-              "params": [],
+              "docstring": "找图（单个），支持透明 PNG、多尺度匹配。\n\nArgs:\n    part_img: 模板图路径（或路径列表）。\n    rect: 搜索区域 [left, top, right, bottom]，默认全屏。\n    confidence: 匹配置信度阈值。不传时 template 默认 0.9，smart 默认 0.6（两种算法量纲不同）。\n    rgb: 是否启用彩色通道匹配，默认 False。\n    source_img: 自定义源图（cv2 ndarray），与 image 二选一。\n    ori: 多结果排序方向（1-8），默认 2。\n    scale_range: 多尺度范围，如 [0.5, 2.0]；None=单尺度（默认）。\n    image: 源图别名（Bitmap / cv2 ndarray / PIL），优先级低于 source_img。\n    method: \"template\"=模板匹配（默认）；\"smart\"=稠密 CNN 特征匹配，支持跨分辨率。\n    fast: True=单尺度 Coarse-to-Fine 加速（理论漏检 <0.1%，找不到自动 fallback）。\n\nReturns:\n    dict（含 center_x/center_y/rect/confidence）或 None。",
+              "params": [
+                {
+                  "name": "part_img",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "rgb",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "source_img",
+                  "default": "None"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "scale_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "method",
+                  "type": "str",
+                  "default": "'template'"
+                },
+                {
+                  "name": "fast",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             },
             {
               "name": "find_all",
-              "docstring": "使用模板匹配查找所有匹配的图片位置。\n\nReturns:\n    list: 所有匹配结果的列表。",
-              "params": [],
+              "docstring": "找图（所有），支持透明 PNG、多尺度匹配。\n\nArgs:\n    part_img: 模板图路径或路径列表。\n    rect: 搜索区域。\n    confidence: 置信度阈值，不传时 template 默认 0.9，smart 默认 0.6。\n    rgb: 是否使用彩色匹配，默认 False。\n    source_img: 自定义源图（cv2 ndarray）。\n    maxcnt: 最大返回数量，0 表示不限。\n    ori: 排序方向（1-8），默认 2。\n    scale_range: 多尺度范围，如 [0.5, 2.0]。\n    image: 源图别名，优先级低于 source_img。\n    method: \"template\" / \"smart\"。\n    fast: True=Coarse-to-Fine 加速。\n\nReturns:\n    list[dict] 或 None。",
+              "params": [
+                {
+                  "name": "part_img",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "rgb",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "source_img",
+                  "default": "None"
+                },
+                {
+                  "name": "maxcnt",
+                  "default": "0"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "scale_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "method",
+                  "type": "str",
+                  "default": "'template'"
+                },
+                {
+                  "name": "fast",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             },
             {
               "name": "find_template",
-              "docstring": "使用模板匹配查找第一个匹配的图片位置。\n\nReturns:\n    dict: 第一个匹配结果字典；如果未找到则返回 None 或空。",
-              "params": [],
+              "docstring": "模板匹配（单个），支持透明 PNG、多尺度。\n\nArgs:\n    part_img: 模板图路径或路径列表。\n    rect: 搜索区域。\n    confidence: 置信度阈值，默认 0.9。\n    rgb: 彩色匹配，默认 False。\n    source_img: 自定义源图。\n    ori: 排序方向，默认 2。\n    scale_range: 多尺度范围 [min, max]；None 表示单尺度。\n    image: 源图别名（Bitmap / cv2 ndarray）。\n    fast: True=单尺度 Coarse-to-Fine 加速。\n\nReturns:\n    dict 或 None。",
+              "params": [
+                {
+                  "name": "part_img"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "rgb",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "source_img",
+                  "default": "None"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "scale_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "fast",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             },
             {
               "name": "find_all_template",
-              "docstring": "使用模板匹配查找所有匹配的图片位置。\n\nReturns:\n    list: 所有模板匹配结果的列表。",
-              "params": [],
+              "docstring": "模板匹配（所有），支持透明 PNG、多尺度。\n\nArgs:\n    part_img: 模板图路径或列表。\n    rect: 搜索区域。\n    confidence: 置信度阈值，默认 0.9。\n    rgb: 彩色匹配。\n    maxcnt: 最大返回数量，0 表示不限。\n    source_img: 自定义源图。\n    ori: 排序方向。\n    scale_range: 多尺度范围 [min, max]。\n    image: 源图别名，优先级低于 source_img。\n    fast: True=Coarse-to-Fine 加速。\n\nReturns:\n    list[dict]。",
+              "params": [
+                {
+                  "name": "part_img"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "rgb",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "maxcnt",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "source_img",
+                  "default": "None"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "scale_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "fast",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             },
             {
               "name": "find_sift",
-              "docstring": "使用 SIFT 特征匹配查找第一个匹配的图片位置。\n\nReturns:\n    dict: 第一个匹配结果字典；如果未找到则返回 None 或空。",
-              "params": [],
+              "docstring": "SIFT 特征匹配（已移除：压缩版 OpenCV 不再支持），自动降级为模板匹配。\n\nArgs:\n    part_img: 模板图路径。\n    rect / confidence / rgb / source_img / ori / scale_range / fast: 同 find_template。\n\nReturns:\n    dict 或 None。",
+              "params": [
+                {
+                  "name": "part_img",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "rgb",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "source_img",
+                  "default": "None"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "scale_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "fast",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             },
             {
               "name": "find_all_sift",
-              "docstring": "使用 SIFT 特征匹配查找所有匹配的图片位置。\n\nReturns:\n    list: 所有 SIFT 匹配结果的列表。",
-              "params": [],
+              "docstring": "SIFT 特征匹配（已移除），自动降级为模板匹配；签名同 find_all_template。",
+              "params": [
+                {
+                  "name": "part_img",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.9"
+                },
+                {
+                  "name": "rgb",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "source_img",
+                  "default": "None"
+                },
+                {
+                  "name": "maxcnt",
+                  "default": "0"
+                },
+                {
+                  "name": "ori",
+                  "type": "int",
+                  "default": "2"
+                },
+                {
+                  "name": "scale_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "fast",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
@@ -3560,7 +4410,7 @@
             },
             {
               "name": "ui_path",
-              "value": "'/static/gp/find_images'"
+              "value": "'/static/gpui/find_images/'"
             },
             {
               "name": "M_TEMPLATE",
@@ -3584,12 +4434,25 @@
           ],
           "methods": [
             {
+              "name": "set_engine",
+              "docstring": "设置全局默认 OCR 引擎；之后 Ocr.find/find_all/click/wait 等不传 mode 时均使用该引擎。\n\nArgs:\n    engine: \"paddle\" / \"paddleocr\" / \"mlkit\" / \"vision\"（iOS）或 MODE_* 整数常量。",
+              "params": [
+                {
+                  "name": "engine"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
               "name": "__init__",
-              "docstring": "初始化 OCR 文字识别工具。\n\nArgs:\n    mode: 识别引擎模式，默认 MODE_MLK(1)。\n    rect: 可选，识别区域元组 (left, top, right, bottom)。\n    pattern: 可选，正则表达式过滤模式，仅返回匹配的文字结果。\n    confidence: 置信度阈值，低于此值的结果将被过滤，默认 0.1。\n    max_side_len: 图片最大边长限制，默认 1200。\n    image: 可选，用于识别的 PIL Image 对象。\n    image_file: 可选，用于识别的图片文件路径。",
+              "docstring": "初始化 OCR 文字识别器实例。\n\nArgs:\n    mode: OCR 引擎模式。MODE_MLK / MODE_PADDLE_V2 / MODE_PADDLE_V3 / MODE_TESS（Android）；MODE_MLK / MODE_PADDLE_V5 / MODE_VISION 等（iOS）。传 None 时使用全局默认引擎。\n    rect: 识别区域 [left, top, right, bottom]，默认全屏。\n    pattern: 文字过滤正则，默认 None。\n    confidence: 置信度阈值，默认 0.1。\n    binary: 二值化阈值，-1=不启用，0-255=按该阈值二值化后再识别（仅部分引擎生效）。",
               "params": [
                 {
                   "name": "mode",
-                  "default": "MODE_MLK"
+                  "default": "None"
                 },
                 {
                   "name": "rect",
@@ -3649,11 +4512,409 @@
               "decorators": []
             },
             {
-              "name": "paddleocr_v3",
-              "docstring": "使用当前配置执行 OCR 识别并返回结果。\n\nReturns:\n    list: 识别到的文字结果列表。",
-              "params": [],
+              "name": "paddleocr",
+              "docstring": "百度 PaddleOCR 离线高精度文字识别。\n\nArgs:\n    rect: 识别区域 [left, top, right, bottom]，默认全屏。\n    pattern: 文字过滤正则。\n    confidence: 置信度阈值。\n    max_side_len: 输入图最长边限制（像素），默认 1200。\n    precision: 精度等级，默认 16。\n    bitmap: Android Bitmap 对象，默认 None。\n    file: 图片文件路径。\n    binary: 二值化阈值，-1=不启用，0-255=按阈值二值化后识别。\n    language: 语言模型，\"chinese\"=内置中英日韩；其他语言首次使用需下载。\n    image: 源图别名（Bitmap / cv2 / PIL），与 bitmap 二选一。\n\nReturns:\n    list 识别结果，无结果返回 None。",
+              "params": [
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "pattern",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "max_side_len",
+                  "type": "int",
+                  "default": "1200"
+                },
+                {
+                  "name": "precision",
+                  "type": "int",
+                  "default": "16"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "file",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "language",
+                  "type": "str",
+                  "default": "'chinese'"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "mlkitocr_v2",
+              "docstring": "Google MLKit V2 OCR（中文+英文）。\n\nArgs:\n    rect: 识别区域，默认全屏。\n    pattern: 文字过滤正则。\n    confidence: 置信度阈值，默认 0.5。\n    bitmap: Android Bitmap 对象。\n    binary: 二值化阈值，-1=不启用，0-255=按阈值二值化。\n    image: 源图别名（Bitmap / cv2 / PIL）。\n\nReturns:\n    list 或 None。",
+              "params": [
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "pattern",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.5"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "vision",
+              "docstring": "Apple Vision OCR — iOS 原生引擎，iOS 16+ 支持中文。\n\nArgs:\n    rect: 识别区域。\n    pattern: 过滤正则。\n    confidence: 置信度阈值。\n    bitmap: 位图对象。\n    file: 图片文件路径。\n    image: 源图别名。\n\nReturns:\n    list 或 None。",
+              "params": [
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "pattern",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "file",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find",
+              "docstring": "在屏幕上查找文字，返回第一个匹配结果。\n\nArgs:\n    text: 待匹配文字（正则）。\n    rect: 识别区域。\n    mode: OCR 引擎，None 使用全局默认。\n    binary: 二值化阈值，-1=不启用。\n    confidence: 置信度阈值。\n    image: 自定义源图，None 自动截屏。\n\nReturns:\n    dict（text/rect/center_x/center_y/confidence）或 None。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "find_all",
+              "docstring": "在屏幕上查找所有匹配文字，返回结果列表。\n\nArgs 同 Ocr.find，text 不传时返回所有识别到的文字。\n\nReturns:\n    list[dict] 或 None。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "exists",
+              "docstring": "判断屏幕上是否存在指定文字（Ocr.find 的布尔包装）。\n\nArgs 同 Ocr.find。\n\nReturns:\n    bool。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "click",
+              "docstring": "找到文字并点击其中心位置；可选 timeout 内循环重试。\n\nArgs:\n    text: 待匹配文字。\n    rect / mode / binary / confidence: 同 Ocr.find。\n    timeout: 超时秒数，0=只查一次；>0 时循环重试，每次自动截屏。\n    image: 自定义源图（仅首次生效，timeout 重试期间自动截屏）。\n\nReturns:\n    bool 是否点击成功。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "timeout",
+                  "type": "float",
+                  "default": "0"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "wait",
+              "docstring": "等待屏幕上出现指定文字，返回首个匹配结果。\n\nArgs:\n    text: 待匹配文字。\n    timeout: 等待秒数，默认 10。\n    rect / mode / binary / confidence: 同 Ocr.find。\n    image: 自定义源图（仅首次生效）。\n\nReturns:\n    dict 或 None（超时未匹配）。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                },
+                {
+                  "name": "timeout",
+                  "type": "float",
+                  "default": "10"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "wait_click",
+              "docstring": "等待文字出现并点击其中心位置（Ocr.wait + 点击）。\n\nArgs 同 Ocr.wait。\n\nReturns:\n    bool 是否成功。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str"
+                },
+                {
+                  "name": "timeout",
+                  "type": "float",
+                  "default": "10"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "-1"
+                },
+                {
+                  "name": "confidence",
+                  "type": "float",
+                  "default": "0.1"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "matrix",
+              "docstring": "点阵字库识别（仅返回文本字符串，速度快）。\n\nArgs:\n    font_lib: 字库文件路径。\n    rect: 识别区域 [left, top, right, bottom]。\n    region: 区域相似度阈值，默认 0.9。\n    image: 自定义源图，None 时自动截屏。\n\nReturns:\n    str 识别文本，未识别返回 None。如需字符坐标请用 matrix_detail。",
+              "params": [
+                {
+                  "name": "font_lib",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "region",
+                  "default": "0.9"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
@@ -3703,7 +4964,7 @@
             },
             {
               "name": "ui_path",
-              "value": "'/static/gp/ocr'"
+              "value": "'/static/gpui/ocr/'"
             },
             {
               "name": "MODE_MLK",
@@ -3720,8 +4981,135 @@
             {
               "name": "MODE_TESS",
               "value": "4"
+            },
+            {
+              "name": "MODE_VISION",
+              "value": "5"
+            },
+            {
+              "name": "MODE_PADDLE_V5",
+              "value": "6"
+            },
+            {
+              "name": "_default_mode",
+              "value": "MODE_PADDLE_V5"
             }
           ]
+        },
+        {
+          "name": "TomatoOCR",
+          "docstring": "",
+          "bases": [
+            "Ocr"
+          ],
+          "methods": [
+            {
+              "name": "find_all",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "license",
+                  "type": "str"
+                },
+                {
+                  "name": "model_path",
+                  "type": "str"
+                },
+                {
+                  "name": "mode",
+                  "default": "'dev'"
+                },
+                {
+                  "name": "rec_type",
+                  "default": "'ch-3.0'"
+                },
+                {
+                  "name": "box_type",
+                  "default": "'rect'"
+                },
+                {
+                  "name": "ratio",
+                  "default": "1.9"
+                },
+                {
+                  "name": "scale_ratio",
+                  "default": "1.0"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.3"
+                },
+                {
+                  "name": "return_type",
+                  "default": "'json'"
+                },
+                {
+                  "name": "binary",
+                  "default": "0"
+                },
+                {
+                  "name": "run_mode",
+                  "default": "'slow'"
+                },
+                {
+                  "name": "ocr_type",
+                  "default": "3"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "file",
+                  "default": "None"
+                },
+                {
+                  "name": "capture",
+                  "default": "[]"
+                },
+                {
+                  "name": "text",
+                  "default": "''"
+                },
+                {
+                  "name": "texts",
+                  "default": "''"
+                },
+                {
+                  "name": "remark",
+                  "default": "''"
+                },
+                {
+                  "name": "http_interval_time",
+                  "type": "int",
+                  "default": "28800"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "is_init",
+              "value": "False"
+            },
+            {
+              "name": "last_license",
+              "value": "None"
+            }
+          ]
+        },
+        {
+          "name": "TomatoOcr",
+          "docstring": "",
+          "bases": [
+            "TomatoOCR"
+          ],
+          "methods": [],
+          "class_variables": []
         },
         {
           "name": "CodeScanner",
@@ -3736,12 +5124,12 @@
               "params": [
                 {
                   "name": "rect",
-                  "type": "tuple",
+                  "type": "list",
                   "default": "None"
                 },
                 {
                   "name": "image",
-                  "type": "Image",
+                  "type": "Image.Image",
                   "default": "None"
                 },
                 {
@@ -3768,9 +5156,25 @@
             {
               "name": "scan",
               "docstring": "执行条码扫描并返回结果。\n\nReturns:\n    list: 识别到的条码/二维码信息列表。",
-              "params": [],
+              "params": [
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
               "return_type": null,
-              "decorators": []
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
@@ -3780,7 +5184,7 @@
             },
             {
               "name": "ui_path",
-              "value": "'/static/gp/codescanner/'"
+              "value": "'/static/gpui/codescanner/'"
             }
           ]
         }
@@ -3822,9 +5226,13 @@
             {
               "name": "rect",
               "default": "None"
+            },
+            {
+              "name": "format",
+              "default": "FORMAT_PIL_IMAGE"
             }
           ],
-          "return_type": "Image.Image",
+          "return_type": null,
           "decorators": []
         },
         {
@@ -4015,6 +5423,18 @@
             {
               "name": "maxcnt",
               "default": "0"
+            },
+            {
+              "name": "ori",
+              "default": "1"
+            },
+            {
+              "name": "scale_range",
+              "default": "None"
+            },
+            {
+              "name": "fast",
+              "default": "True"
             }
           ],
           "return_type": null,
@@ -4033,7 +5453,7 @@
             },
             {
               "name": "rect",
-              "type": "tuple",
+              "type": "list",
               "default": "None"
             },
             {
@@ -4051,6 +5471,18 @@
             {
               "name": "bgremove",
               "default": "False"
+            },
+            {
+              "name": "ori",
+              "default": "1"
+            },
+            {
+              "name": "scale_range",
+              "default": "None"
+            },
+            {
+              "name": "fast",
+              "default": "True"
             }
           ],
           "return_type": null,
@@ -4073,7 +5505,7 @@
             },
             {
               "name": "off_rect",
-              "type": "tuple",
+              "type": "list",
               "default": "None"
             },
             {
@@ -4091,8 +5523,8 @@
           "decorators": []
         },
         {
-          "name": "find_sift",
-          "docstring": "使用 SIFT 特征匹配在大图中查找所有与小图匹配的位置。\n\nArgs:\n    image_source: 大图的 OpenCV 图像数组 (numpy.ndarray)。\n    image_search: 要查找的小图文件路径字符串或路径列表。\n    threshold: 匹配置信度阈值，默认 0.5。\n    off_rect: 可选，坐标偏移元组 (left, top, right, bottom)，用于结果坐标偏移。\n    rgb: 是否使用 RGB 模式，False 则转为灰度，默认 False。\n    maxcnt: 最大返回结果数量，0 表示不限制。\n\nReturns:\n    list: 匹配结果字典列表，每个字典包含 result、rectangle、rect、center_x、center_y、confidence 字段。\n\nRaises:\n    RuntimeError: 当指定的图片文件不存在时抛出。",
+          "name": "find_all_sift",
+          "docstring": "Fallback: SIFT/SURF not available in compressed OpenCV. Uses template matching instead.",
           "params": [
             {
               "name": "image_source"
@@ -4102,22 +5534,20 @@
               "type": "Union[str, list]"
             },
             {
+              "name": "rect",
+              "type": "list",
+              "default": "None"
+            },
+            {
               "name": "threshold",
               "default": "0.5"
             },
             {
-              "name": "off_rect",
-              "type": "tuple",
-              "default": "None"
-            },
-            {
               "name": "rgb",
-              "type": "bool",
               "default": "False"
             },
             {
               "name": "maxcnt",
-              "type": "int",
               "default": "0"
             }
           ],
@@ -4401,6 +5831,137 @@
           "class_variables": []
         },
         {
+          "name": "Result",
+          "docstring": "",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "GPTask",
+          "docstring": "",
+          "bases": [
+            "ABC"
+          ],
+          "methods": [
+            {
+              "name": "run",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "cv_image"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": [
+                "abstractmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'插件名称'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'插件UI地址'"
+            }
+          ]
+        },
+        {
+          "name": "GPStack",
+          "docstring": "",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "add",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "dao"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "change_img_channal",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "cv_image"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "run",
+              "docstring": "",
+              "params": [],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
           "name": "GpInOut",
           "docstring": "图色处理的输入输出容器，封装图像数据、区域、偏移量和处理结果。",
           "bases": [],
@@ -4442,6 +6003,9 @@
                   "name": "skip_cache",
                   "type": "bool",
                   "default": "False"
+                },
+                {
+                  "name": "**kwargs"
                 }
               ],
               "return_type": null,
@@ -4451,7 +6015,7 @@
               "name": "img_inout",
               "docstring": "将当前对象转换为 ImgInout 数据传输对象，支持缓存逻辑。\n\nReturns:\n    ImgInout: 用于底层图像处理的输入输出对象。",
               "params": [],
-              "return_type": "ImgInout",
+              "return_type": null,
               "decorators": []
             }
           ],
@@ -4514,33 +6078,11 @@
       ],
       "functions": [
         {
-          "name": "gptask_params",
-          "docstring": "从任务数据中提取参数字符串。\n\nArgs:\n    data: 任务数据字典。\n\nReturns:\n    str: 参数字符串；如果不存在 params 字段则返回空字符串。",
-          "params": [
-            {
-              "name": "data"
-            }
-          ],
-          "return_type": null,
-          "decorators": []
-        },
-        {
           "name": "load_or_reload_module",
           "docstring": "加载或重新加载指定名称的 Python 模块。\n\n如果模块已加载则重新加载，否则进行首次导入。\n\nArgs:\n    module_name_str: 模块的完整名称字符串（如 \"ascript.ios.screen\"）。\n\nReturns:\n    module: 加载后的模块对象。",
           "params": [
             {
               "name": "module_name_str"
-            }
-          ],
-          "return_type": null,
-          "decorators": []
-        },
-        {
-          "name": "create_gpcode_with_dict",
-          "docstring": "根据图色任务字典生成对应的 Python 代码片段，追加到全局代码构建列表中。\n\nArgs:\n    gp: 图色任务字典，需包含 id（模块类路径）和 type（任务类型）字段，可选 data 字段。",
-          "params": [
-            {
-              "name": "gp"
             }
           ],
           "return_type": null,
@@ -4569,76 +6111,17 @@
       ]
     },
     {
-      "module": "ascript.ios.screen.yolov8",
-      "file": "ascript/ios/screen/yolov8.py",
-      "docstring": "",
-      "classes": [],
-      "functions": [
-        {
-          "name": "load",
-          "docstring": "加载 YOLOv8 模型。\n\n在加载新模型前会先释放已有模型资源。\n\nArgs:\n    param_path: 模型参数文件路径。\n    bin_path: 模型二进制文件路径。\n    nc: 目标分类数量。\n    use_gpu: 是否使用 GPU 加速，默认 False。\n\nReturns:\n    模型加载结果。",
-          "params": [
-            {
-              "name": "param_path",
-              "type": "str"
-            },
-            {
-              "name": "bin_path",
-              "type": "str"
-            },
-            {
-              "name": "nc",
-              "type": "int"
-            },
-            {
-              "name": "use_gpu",
-              "type": "bool",
-              "default": "False"
-            }
-          ],
-          "return_type": null,
-          "decorators": []
-        },
-        {
-          "name": "detect",
-          "docstring": "使用已加载的 YOLOv8 模型进行目标检测。\n\n在子线程中执行检测以避免阻塞。\n\nArgs:\n    img: 要检测的图片，可以是 PIL Image 对象或图片路径/URL 字符串。默认使用 WDA 截图。\n    target_size: 检测目标尺寸，默认 640。\n    threshold: 检测置信度阈值，默认 0.4。\n    nms_threshold: 非极大值抑制阈值，默认 0.5。\n\nReturns:\n    list: 检测结果列表。",
-          "params": [
-            {
-              "name": "img",
-              "type": "Union[Image, str]",
-              "default": "None"
-            },
-            {
-              "name": "target_size",
-              "type": "int",
-              "default": "640"
-            },
-            {
-              "name": "threshold",
-              "default": "0.4"
-            },
-            {
-              "name": "nms_threshold",
-              "default": "0.5"
-            }
-          ],
-          "return_type": null,
-          "decorators": []
-        },
-        {
-          "name": "free",
-          "docstring": "释放已加载的 YOLOv8 模型资源。\n\nReturns:\n    模型释放结果。",
-          "params": [],
-          "return_type": null,
-          "decorators": []
-        }
-      ]
-    },
-    {
       "module": "ascript.ios.system",
       "file": "ascript/ios/system/__init__.py",
       "docstring": "",
       "classes": [
+        {
+          "name": "HIDModeClient",
+          "docstring": "HID模式下的代理客户端，调用WDA操作时抛出明确异常",
+          "bases": [],
+          "methods": [],
+          "class_variables": []
+        },
         {
           "name": "R",
           "docstring": "资源路径管理类，提供项目资源文件路径的快捷访问方法。",
@@ -4683,9 +6166,7 @@
               "docstring": "获取 res 资源目录下指定子路径的完整路径。\n\nArgs:\n    child: 资源目录下的子路径。\n\nReturns:\n    str: 完整的资源文件路径。",
               "params": [
                 {
-                  "name": "child",
-                  "type": "str",
-                  "default": "None"
+                  "name": "*child_paths"
                 }
               ],
               "return_type": null,
@@ -4698,9 +6179,7 @@
               "docstring": "获取 res/img 图片资源目录下指定子路径的完整路径。\n\nArgs:\n    child: 图片目录下的子路径。\n\nReturns:\n    str: 完整的图片文件路径。",
               "params": [
                 {
-                  "name": "child",
-                  "type": "str",
-                  "default": "None"
+                  "name": "*child_paths"
                 }
               ],
               "return_type": null,
@@ -4713,9 +6192,7 @@
               "docstring": "获取 res/ui 界面资源目录下指定子路径的完整路径。\n\nArgs:\n    child: UI 资源目录下的子路径。\n\nReturns:\n    str: 完整的 UI 资源文件路径。",
               "params": [
                 {
-                  "name": "child",
-                  "type": "str",
-                  "default": "None"
+                  "name": "*child_paths"
                 }
               ],
               "return_type": null,
@@ -4817,6 +6294,43 @@
           "bases": [],
           "methods": [
             {
+              "name": "connect",
+              "docstring": "连接到 ESP32 BLE HID 控制设备。\n\nArgs:\n    address: 设备蓝牙名称或地址。\n    timeout: 连接超时（秒），默认 15。\n\nReturns:\n    bool: 是否连接成功。",
+              "params": [
+                {
+                  "name": "address",
+                  "type": "str"
+                },
+                {
+                  "name": "timeout",
+                  "type": "float",
+                  "default": "15"
+                }
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "disconnect",
+              "docstring": "断开当前 HID 控制设备连接。",
+              "params": [],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "is_connected",
+              "docstring": "查询 HID 控制设备是否已连接。",
+              "params": [],
+              "return_type": "bool",
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
               "name": "send",
               "docstring": "发送控制消息。\n\n限制调用频率为至少 0.7 秒一次，过于频繁的调用将被忽略。\n\nArgs:\n    msgs: 要发送的消息字典。",
               "params": [
@@ -4829,12 +6343,29 @@
               "decorators": [
                 "staticmethod"
               ]
+            },
+            {
+              "name": "tunner",
+              "docstring": "注册 HID 控制设备的事件回调。\n\nArgs:\n    py_fun: 接收设备消息的回调函数。",
+              "params": [
+                {
+                  "name": "py_fun"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
             }
           ],
           "class_variables": [
             {
               "name": "last_time",
               "value": "0"
+            },
+            {
+              "name": "_OFFICIAL_URL",
+              "value": "'ws://control.ascript.cn:8180/ws/device'"
             }
           ]
         }
@@ -4862,6 +6393,13 @@
           "decorators": []
         },
         {
+          "name": "get_ip_address",
+          "docstring": "",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
           "name": "exit",
           "docstring": "停止当前运行的脚本模块。",
           "params": [],
@@ -4881,19 +6419,37 @@
           "params": [
             {
               "name": "bundle_id",
-              "type": "str"
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "scheme",
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "name",
+              "type": "str",
+              "default": "None"
             },
             {
               "name": "arguments",
               "type": "typing.List[str]",
-              "default": "[]"
+              "default": "None"
             },
             {
               "name": "environment",
               "type": "typing.Dict[str, str]",
-              "default": "{}"
+              "default": "None"
             }
           ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "app_list",
+          "docstring": "获取设备上已安装的应用列表。\n\nReturns:\n    list: 应用信息列表。",
+          "params": [],
           "return_type": null,
           "decorators": []
         },
@@ -4907,6 +6463,24 @@
             }
           ],
           "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "get_app_scheme",
+          "docstring": "获取 App 的 URL Scheme",
+          "params": [
+            {
+              "name": "bundle_id",
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "name",
+              "type": "str",
+              "default": "None"
+            }
+          ],
+          "return_type": "str",
           "decorators": []
         },
         {
@@ -4949,13 +6523,6 @@
         {
           "name": "app_current",
           "docstring": "获取当前前台运行的应用信息。\n\nReturns:\n    dict: 当前前台应用信息；如果发生异常返回 None。",
-          "params": [],
-          "return_type": null,
-          "decorators": []
-        },
-        {
-          "name": "app_list",
-          "docstring": "获取设备上已安装的应用列表。\n\nReturns:\n    list: 应用信息列表。",
           "params": [],
           "return_type": null,
           "decorators": []
@@ -5099,6 +6666,13 @@
         {
           "name": "get_screen_scale",
           "docstring": "获取设备屏幕缩放比例。\n\nReturns:\n    float: 屏幕缩放比例（如 Retina 屏为 2.0 或 3.0）。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "get_screen_size_logical",
+          "docstring": "返回屏幕逻辑点尺寸",
           "params": [],
           "return_type": null,
           "decorators": []
@@ -5282,15 +6856,6 @@
             },
             {
               "name": "request_timeout",
-              "docstring": "获取当前 HTTP 请求超时时间（秒）。\n\nReturns:\n    当前设置的请求超时时间。",
-              "params": [],
-              "return_type": "float",
-              "decorators": [
-                "property"
-              ]
-            },
-            {
-              "name": "request_timeout",
               "docstring": "设置 HTTP 请求超时时间。\n\nArgs:\n    timeout: 超时时间（秒）。",
               "params": [
                 {
@@ -5346,13 +6911,6 @@
               "decorators": []
             },
             {
-              "name": "_get_valid_session_id",
-              "docstring": "获取有效的会话 ID。\n\n如果当前缓存的会话 ID 无效，则尝试从 WDA 状态中获取，\n或创建新的会话。\n\nReturns:\n    有效的会话 ID 字符串。",
-              "params": [],
-              "return_type": "str",
-              "decorators": []
-            },
-            {
               "name": "session_request",
               "docstring": "发送带会话 ID 的请求。\n\n自动在 URL 路径前添加会话 ID 前缀。如果会话失效会自动重新创建。\n\nArgs:\n    method: HTTP 请求方法（GET 或 POST）。\n    urlpath: API 路径，不含会话 ID 前缀。\n    payload: 请求体字典，可选。\n\nReturns:\n    WDA 返回的 JSON 响应字典，请求异常时返回 None。",
               "params": [
@@ -5392,29 +6950,6 @@
                 }
               ],
               "return_type": "dict",
-              "decorators": []
-            },
-            {
-              "name": "_request_http",
-              "docstring": "执行底层 HTTP 请求。\n\n处理实际的 HTTP 连接建立、请求发送和响应读取。\n当请求失败且设置了恢复处理器时，会尝试调用恢复逻辑。\n\nArgs:\n    method: HTTP 请求方法（GET 或 POST）。\n    url: 完整的请求 URL。\n    payload: 请求体字典，可选。\n    **kwargs: 额外参数，支持 timeout 指定请求超时时间。\n\nReturns:\n    包含响应内容和状态码的 HTTPResponseWrapper 对象。",
-              "params": [
-                {
-                  "name": "method",
-                  "type": "RequestMethod"
-                },
-                {
-                  "name": "url",
-                  "type": "str"
-                },
-                {
-                  "name": "payload",
-                  "type": "dict"
-                },
-                {
-                  "name": "**kwargs"
-                }
-              ],
-              "return_type": "HTTPResponseWrapper",
               "decorators": []
             }
           ],
@@ -5545,31 +7080,6 @@
               "decorators": []
             },
             {
-              "name": "_fix_xcui_type",
-              "docstring": "修复 XCUI 元素类型名称，自动添加 XCUIElementType 前缀。\n\nArgs:\n    s: 包含元素类型的字符串（如 xpath 或 classChain），可为 None。\n\nReturns:\n    修复后的字符串，如果输入为 None 则返回 None。",
-              "params": [
-                {
-                  "name": "s"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_wdasearch",
-              "docstring": "Returns:\n    element_ids (list(string)): example ['id1', 'id2']\n\nHTTP example response:\n[\n    {\"ELEMENT\": \"E2FF5B2A-DBDF-4E67-9179-91609480D80A\"},\n    {\"ELEMENT\": \"597B1A1E-70B9-4CBE-ACAD-40943B0A6034\"}\n]",
-              "params": [
-                {
-                  "name": "using"
-                },
-                {
-                  "name": "value"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
               "name": "find_element_ids",
               "docstring": "根据选择器条件查找匹配的元素 ID 列表。\n\n按优先级依次使用 id、predicate、xpath、classChain 或自动生成的\nclass chain 进行查询。\n\nReturns:\n    匹配元素的 ID 字符串列表。",
               "params": [],
@@ -5586,13 +7096,6 @@
                   "default": "-1"
                 }
               ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_gen_class_chain",
-              "docstring": "根据选择器属性生成 WDA class chain 查询字符串。\n\n将选择器中设置的各种过滤条件（名称、标签、值、可见性等）\n组合为 WDA 可识别的 class chain 表达式。\n\nReturns:\n    生成的 class chain 查询字符串。",
-              "params": [],
               "return_type": null,
               "decorators": []
             }
@@ -5635,64 +7138,6 @@
                 {
                   "name": "data",
                   "default": "None"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_req",
-              "docstring": "发送元素级别的请求。\n\n自动在 URL 前添加 /element/{element_id} 前缀。\n\nArgs:\n    method: HTTP 请求方法。\n    url: 元素 API 路径后缀。\n    data: 请求体字典，可选。\n\nReturns:\n    WDA 返回的 JSON 响应字典。",
-              "params": [
-                {
-                  "name": "method"
-                },
-                {
-                  "name": "url"
-                },
-                {
-                  "name": "data",
-                  "default": "None"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_wda_req",
-              "docstring": "发送 WDA 扩展的元素级别请求。\n\n自动在 URL 前添加 /wda/element/{element_id} 前缀。\n\nArgs:\n    method: HTTP 请求方法。\n    url: WDA 元素 API 路径后缀。\n    data: 请求体字典，可选。\n\nReturns:\n    WDA 返回的 JSON 响应字典。",
-              "params": [
-                {
-                  "name": "method"
-                },
-                {
-                  "name": "url"
-                },
-                {
-                  "name": "data",
-                  "default": "None"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_prop",
-              "docstring": "获取元素的标准属性值。\n\nArgs:\n    key: 属性路径，如 'text'、'attribute/label' 等。\n\nReturns:\n    属性值。",
-              "params": [
-                {
-                  "name": "key"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_wda_prop",
-              "docstring": "获取元素的 WDA 扩展属性值。\n\nArgs:\n    key: WDA 扩展属性名，如 'accessible'、'accessibilityContainer'。\n\nReturns:\n    属性值。",
-              "params": [
-                {
-                  "name": "key"
                 }
               ],
               "return_type": null,
@@ -6142,42 +7587,30 @@
           "class_variables": []
         },
         {
-          "name": "_Base",
-          "docstring": "数据模型基类。\n\n提供自动初始化类型注解属性为 None、格式化输出以及\n从字典自动映射属性（驼峰转下划线）等通用功能。",
-          "bases": [],
-          "methods": [
-            {
-              "name": "__init__",
-              "docstring": "初始化数据模型，将所有类型注解的属性设置为 None。",
-              "params": [],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "value_of",
-              "docstring": "从字典创建数据模型实例，自动将驼峰命名的键转换为下划线命名。\n\nArgs:\n    data: 包含属性数据的字典，键名为驼峰命名。\n\nReturns:\n    填充了对应属性的类实例。",
-              "params": [
-                {
-                  "name": "data",
-                  "type": "dict"
-                }
-              ],
-              "return_type": null,
-              "decorators": [
-                "classmethod"
-              ]
-            }
-          ],
-          "class_variables": []
-        },
-        {
           "name": "AppInfo",
           "docstring": "应用信息数据类。\n\n存储 iOS 应用的基本信息，包括名称、进程参数、PID 和 Bundle ID。",
           "bases": [
             "_Base"
           ],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "name",
+              "type": "str"
+            },
+            {
+              "name": "process_arguments",
+              "type": "dict"
+            },
+            {
+              "name": "pid",
+              "type": "int"
+            },
+            {
+              "name": "bundle_id",
+              "type": "str"
+            }
+          ]
         },
         {
           "name": "StatusInfo",
@@ -6201,7 +7634,20 @@
               ]
             }
           ],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "ip",
+              "type": "str"
+            },
+            {
+              "name": "session_id",
+              "type": "str"
+            },
+            {
+              "name": "message",
+              "type": "str"
+            }
+          ]
         },
         {
           "name": "DeviceInfo",
@@ -6210,7 +7656,40 @@
             "_Base"
           ],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "time_zone",
+              "type": "str"
+            },
+            {
+              "name": "current_locale",
+              "type": "str"
+            },
+            {
+              "name": "model",
+              "type": "str"
+            },
+            {
+              "name": "uuid",
+              "type": "str"
+            },
+            {
+              "name": "user_interface_idiom",
+              "type": "int"
+            },
+            {
+              "name": "user_interface_style",
+              "type": "str"
+            },
+            {
+              "name": "name",
+              "type": "str"
+            },
+            {
+              "name": "is_simulator",
+              "type": "bool"
+            }
+          ]
         },
         {
           "name": "BatteryInfo",
@@ -6234,7 +7713,16 @@
               ]
             }
           ],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "level",
+              "type": "float"
+            },
+            {
+              "name": "state",
+              "type": "BatteryState"
+            }
+          ]
         },
         {
           "name": "SourceTree",
@@ -6243,7 +7731,16 @@
             "_Base"
           ],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "value",
+              "type": "str"
+            },
+            {
+              "name": "sessionId",
+              "type": "str"
+            }
+          ]
         },
         {
           "name": "StatusBarSize",
@@ -6252,7 +7749,16 @@
             "_Base"
           ],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "width",
+              "type": "int"
+            },
+            {
+              "name": "height",
+              "type": "int"
+            }
+          ]
         },
         {
           "name": "AppList",
@@ -6261,21 +7767,66 @@
             "_Base"
           ],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "pid",
+              "type": "int"
+            },
+            {
+              "name": "bundle_id",
+              "type": "str"
+            }
+          ]
         },
         {
           "name": "GestureOption",
           "docstring": "手势动作选项数据类。\n\n定义手势动作中的可选参数，如目标元素、坐标位置、重复次数和等待时长。",
           "bases": [],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "element",
+              "type": "Optional[str]",
+              "value": "None"
+            },
+            {
+              "name": "x",
+              "type": "Optional[int]",
+              "value": "None"
+            },
+            {
+              "name": "y",
+              "type": "Optional[int]",
+              "value": "None"
+            },
+            {
+              "name": "count",
+              "type": "Optional[int]",
+              "value": "None"
+            },
+            {
+              "name": "ms",
+              "type": "Optional[int]",
+              "value": "None"
+            }
+          ]
         },
         {
           "name": "Gesture",
           "docstring": "手势动作数据类。\n\n表示一个完整的手势动作，包含动作类型和可选参数。",
           "bases": [],
           "methods": [],
-          "class_variables": []
+          "class_variables": [
+            {
+              "name": "action",
+              "type": "Union[str, GestureAction]"
+            },
+            {
+              "name": "options",
+              "type": "Optional[Union[dict, GestureOption]]",
+              "value": "None"
+            }
+          ]
         },
         {
           "name": "Rect",
@@ -6447,15 +7998,6 @@
               ],
               "return_type": null,
               "decorators": []
-            },
-            {
-              "name": "debug",
-              "docstring": "获取调试模式状态。\n\nReturns:\n    是否开启调试模式。",
-              "params": [],
-              "return_type": "bool",
-              "decorators": [
-                "property"
-              ]
             },
             {
               "name": "debug",
@@ -6722,24 +8264,6 @@
                 {
                   "name": "value",
                   "type": "str"
-                }
-              ],
-              "return_type": null,
-              "decorators": []
-            },
-            {
-              "name": "_percent2pos",
-              "docstring": "将百分比坐标转换为像素坐标。\n\n当 x 或 y 为浮点数时，视为百分比值（0.0~1.0），\n自动乘以窗口尺寸转换为像素坐标。\n\nArgs:\n    x: x 坐标，整数为像素值，浮点数为百分比。\n    y: y 坐标，整数为像素值，浮点数为百分比。\n    window_size: 窗口尺寸元组 (宽, 高)，为 None 时自动获取。\n\nReturns:\n    转换后的 (x, y) 像素坐标元组。",
-              "params": [
-                {
-                  "name": "x"
-                },
-                {
-                  "name": "y"
-                },
-                {
-                  "name": "window_size",
-                  "default": "None"
                 }
               ],
               "return_type": null,
@@ -7426,6 +8950,2500 @@
         }
       ],
       "functions": []
+    },
+    {
+      "module": "ascript.ios.developer.api.api_gp",
+      "file": "ascript/ios/developer/api/api_gp.py",
+      "docstring": "GP (图色工具) API - Android 兼容层\n为 screen.html 图色工具提供后端 API 支持",
+      "classes": [],
+      "functions": [
+        {
+          "name": "api_gp_strack",
+          "docstring": "内部接口：执行 GP 调试栈（开发者工具调用）。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_eval",
+          "docstring": "内部接口：在沙箱中执行 GP 代码片段并返回结果。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_plug_list",
+          "docstring": "内部接口：列出已下载的 GP 插件。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_plug_line_list",
+          "docstring": "内部接口：列出在线 GP 插件库。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_plug_download",
+          "docstring": "内部接口：下载并安装 GP 插件。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_plug_remove",
+          "docstring": "内部接口：移除已安装的 GP 插件。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_create",
+          "docstring": "内部接口：创建新的 GP 任务。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_image_clear",
+          "docstring": "内部接口：清理 GP 调试缓存图片。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_test",
+          "docstring": "内部接口：运行 GP 调试测试。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_test_remove",
+          "docstring": "内部接口：删除 GP 调试测试记录。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "api_gp_img_wipe",
+          "docstring": "内部接口：清空 GP 调试图片库。",
+          "params": [
+            {
+              "name": "args"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.ios.developer.api.log_utils",
+      "file": "ascript/ios/developer/api/log_utils.py",
+      "docstring": "",
+      "classes": [],
+      "functions": [
+        {
+          "name": "init_logging",
+          "docstring": "初始化运行日志系统。\n\nArgs:\n    log_file: 可选的日志文件路径。",
+          "params": [
+            {
+              "name": "log_file",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "recode_loger",
+          "docstring": "记录一条带类型的日志。\n\nArgs:\n    msg: 日志内容。\n    t: 日志级别/类型。",
+          "params": [
+            {
+              "name": "msg"
+            },
+            {
+              "name": "t"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.ios.esp32hid.ble_device",
+      "file": "ascript/ios/esp32hid/ble_device.py",
+      "docstring": "ESP32 BLE HID 设备控制模块\n\n通过 iOS CoreBluetooth 连接 ESP32 BLE HID 设备，发送触摸、键盘等指令。\n通信协议: 通过自定义 BLE Service/Characteristic 发送命令字符串，格式为 \"命令?参数\"\n\nESP32 端自定义 Service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b\nESP32 端自定义 Characteristic UUID: beb5483e-36e1-4688-b7f5-ea07361b26a8",
+      "classes": [
+        {
+          "name": "BleDevice",
+          "docstring": "ESP32 BLE HID 设备控制类\n\n用法:\n    from ascript.ios.esp32hid import BleDevice\n\n    device = BleDevice()\n    device.scan()                      # 扫描设备\n    device.connect(\"AS_iOS_XXXX\")      # 连接设备\n    device.login()                     # 登录认证\n    device.touch(500, 800)             # 点击坐标\n    device.slide(100, 500, 900, 500, 500)  # 滑动\n    device.disconnect()                # 断开连接",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": ":param screen_width: 屏幕竖屏宽度（像素或逻辑点，与你的坐标体系一致即可）\n:param screen_height: 屏幕竖屏高度",
+              "params": [
+                {
+                  "name": "screen_width",
+                  "default": "0"
+                },
+                {
+                  "name": "screen_height",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "save_calibration",
+              "docstring": "保存校准表并更新内存副本.\n入参 table_x/table_y: [(delta_px, F), ...] 原始采样点.\n实测 F 在整屏范围内是常数 ~5.83, 多点插值只会把采样噪声搬进运行时.\n所以这里对每轴做截尾均值 (去掉最大/最小各 2 个后取平均), 存成单点\n[(0.0, F_avg)], _interp_F 单点时直接返回 F.",
+              "params": [
+                {
+                  "name": "table_x"
+                },
+                {
+                  "name": "table_y"
+                },
+                {
+                  "name": "origin_x",
+                  "default": "0.0"
+                },
+                {
+                  "name": "origin_y",
+                  "default": "0.0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "is_calibrated",
+              "docstring": "是否已完成过校准 (两个轴都至少有一个点)",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "clear_calibration",
+              "docstring": "清除当前校准数据 (调试 / 用户手动重置)",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "scan",
+              "docstring": "扫描周围的 ESP32 BLE HID 设备\n\n:param timeout: 扫描超时时间（秒）\n:return: 设备名称列表",
+              "params": [
+                {
+                  "name": "timeout",
+                  "default": "5.0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "connect",
+              "docstring": "连接 ESP32 设备并自动登录。\n- 已有连接且名称匹配: 直接复用\n- 传入名称: 直接连接该设备（用户需已配对）\n- 不传名称: 先查系统已连接设备，再扫描 AS_ 开头的设备\n\n:param device_name: 设备蓝牙名称，不传则自动发现\n:param timeout: 连接超时时间（秒）\n:return: 是否连接并登录成功",
+              "params": [
+                {
+                  "name": "device_name",
+                  "default": "None"
+                },
+                {
+                  "name": "timeout",
+                  "default": "15.0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "set_mode",
+              "docstring": "切换固件模式 (rel/abs). 固件单 bin 双模式, NVS 持久化:\n  - 发 setmode?<mode> 给固件\n  - 固件写 NVS → ESP.restart() → 按新模式选 descriptor/MAC/蓝牙名重新广播\n  - iPhone 会把它当成一个全新设备 (MAC 变了), 必须在 iPhone \"设置→蓝牙\"\n    里把旧配对\"忽略此设备\"再重新配对, 否则 descriptor 缓存会导致点击无反应\n  - Python 侧断开连接, 等用户重新配对后再调 connect(), connect 里的\n    _detect_mode() 会以固件自报为准刷新 self._mouse_mode\n\n:param mode: BleDevice.MODE_REL 或 BleDevice.MODE_ABS (\"rel\"/\"abs\")\n:return: 命令是否成功发出 (不代表固件已切换完成)",
+              "params": [
+                {
+                  "name": "mode"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_mode",
+              "docstring": "返回当前 Python 侧记录的鼠标模式.",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "disconnect",
+              "docstring": "断开与 ESP32 的连接",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "is_connected",
+              "docstring": "检查是否已连接",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "login",
+              "docstring": "手动登录认证。通常不需要调用，connect() 会自动登录。\n\n:param password: 认证密码，默认使用内置密码\n:return: 是否登录成功",
+              "params": [
+                {
+                  "name": "password",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "state",
+              "docstring": "查询设备状态，返回是否已登录并运行",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "get_id",
+              "docstring": "获取 ESP32 芯片 ID",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "touch",
+              "docstring": "点击指定坐标（物理像素）\n\n:param x: X 物理像素坐标\n:param y: Y 物理像素坐标\n:param duration: 按住时间（毫秒）",
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "duration",
+                  "default": "100"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "send",
+              "docstring": "发送原始 HID 鼠标报告（低层 API，不做坐标转换）\n\n:param state: 按钮状态\n:param x: HID delta X (-127~127)\n:param y: HID delta Y (-127~127)\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "state"
+                },
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "slide",
+              "docstring": "从 (x1,y1) 滑动到 (x2,y2)（物理像素）\n\n:param x1: 起始 X 物理像素坐标\n:param y1: 起始 Y 物理像素坐标\n:param x2: 结束 X 物理像素坐标\n:param y2: 结束 Y 物理像素坐标\n:param duration: 滑动持续时间（毫秒）\n:param easing_mode: 缓动模式\n:param easing_power: 缓动力度\n:param uptime: 到达终点后额外等待时间（毫秒）\n:param interval: 报告发送间隔（毫秒，最小15）\n:param apply_calibration: True=按校准表反推坐标 (默认), False=透传 (校准流程自身用)\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "x1"
+                },
+                {
+                  "name": "y1"
+                },
+                {
+                  "name": "x2"
+                },
+                {
+                  "name": "y2"
+                },
+                {
+                  "name": "duration",
+                  "default": "300"
+                },
+                {
+                  "name": "easing_mode",
+                  "default": "0"
+                },
+                {
+                  "name": "easing_power",
+                  "default": "0"
+                },
+                {
+                  "name": "uptime",
+                  "default": "0"
+                },
+                {
+                  "name": "interval",
+                  "default": "30"
+                },
+                {
+                  "name": "apply_calibration",
+                  "default": "True"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "slide_raw",
+              "docstring": "跳过校准, 透传. 校准流程专用.",
+              "params": [
+                {
+                  "name": "x1"
+                },
+                {
+                  "name": "y1"
+                },
+                {
+                  "name": "x2"
+                },
+                {
+                  "name": "y2"
+                },
+                {
+                  "name": "duration",
+                  "default": "300"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "is_dragging",
+              "docstring": "检查当前是否正在拖拽中",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "set_screen_size",
+              "docstring": "设置屏幕分辨率（始终传竖屏方向的宽高）\n\n:param width: 竖屏时的屏幕宽度（像素或逻辑点）\n:param height: 竖屏时的屏幕高度",
+              "params": [
+                {
+                  "name": "width"
+                },
+                {
+                  "name": "height"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "set_offset",
+              "docstring": "设置点击偏移微调（单位: 物理像素）\n如果点击总是偏右 10px，就设 set_offset(-10, 0)\n\n:param offset_x: X 偏移（正=右移，负=左移）\n:param offset_y: Y 偏移（正=下移，负=上移）",
+              "params": [
+                {
+                  "name": "offset_x",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "set_orientation",
+              "docstring": "设置当前屏幕方向\n\n:param orientation: BleDevice.PORTRAIT / LANDSCAPE_LEFT / LANDSCAPE_RIGHT / PORTRAIT_UPSIDE",
+              "params": [
+                {
+                  "name": "orientation"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "move_to",
+              "docstring": "移动光标到指定位置, 不点击.\nabs 模式: 瞬移 (~30ms)\nrel 模式: mouseHome + walk (时间取决于距离, 已在目标则跳过)\n\n:param x: 屏幕物理像素 X\n:param y: 屏幕物理像素 Y",
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "click",
+              "docstring": "绝对像素坐标点击（阻塞）\n\n:param x: 屏幕物理像素 X\n:param y: 屏幕物理像素 Y\n:param duration: 按住时间（毫秒）",
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "duration",
+                  "default": "100"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "long_click",
+              "docstring": "绝对像素坐标长按（阻塞）\n\n:param x: 屏幕物理像素 X\n:param y: 屏幕物理像素 Y\n:param duration: 按住时间（毫秒），默认1秒",
+              "params": [
+                {
+                  "name": "x"
+                },
+                {
+                  "name": "y"
+                },
+                {
+                  "name": "duration",
+                  "default": "1000"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "swipe",
+              "docstring": "绝对像素坐标滑动（阻塞）\n\n:param x1: 起始物理像素 X\n:param y1: 起始物理像素 Y\n:param x2: 结束物理像素 X\n:param y2: 结束物理像素 Y\n:param duration: 滑动时间（毫秒）\n:param easing_mode: 缓动模式\n:param easing_power: 缓动力度",
+              "params": [
+                {
+                  "name": "x1"
+                },
+                {
+                  "name": "y1"
+                },
+                {
+                  "name": "x2"
+                },
+                {
+                  "name": "y2"
+                },
+                {
+                  "name": "duration",
+                  "default": "300"
+                },
+                {
+                  "name": "easing_mode",
+                  "default": "0"
+                },
+                {
+                  "name": "easing_power",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "swipe_up",
+              "docstring": "从屏幕中下方向上滑",
+              "params": [
+                {
+                  "name": "duration",
+                  "default": "300"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "swipe_down",
+              "docstring": "从屏幕中上方向下滑",
+              "params": [
+                {
+                  "name": "duration",
+                  "default": "300"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "swipe_left",
+              "docstring": "从右向左滑",
+              "params": [
+                {
+                  "name": "duration",
+                  "default": "300"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "swipe_right",
+              "docstring": "从左向右滑",
+              "params": [
+                {
+                  "name": "duration",
+                  "default": "300"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "home",
+              "docstring": "按 Home 键（返回主屏幕）",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "back",
+              "docstring": "按返回键",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "enter",
+              "docstring": "按回车键",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "recent",
+              "docstring": "打开最近应用（iOS: 双击 Home）",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "copy",
+              "docstring": "全选并复制 (Cmd+A, Cmd+C)",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "paste",
+              "docstring": "粘贴 (Cmd+V)",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "clear",
+              "docstring": "全选并删除",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "print_text",
+              "docstring": "逐字符输入文本（通过 HID 键盘模拟打字）\n\n:param text: 要输入的文本（仅支持 ASCII 字符）\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "text"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "keyboard_write",
+              "docstring": "键盘写入文本\n\n:param text: 要输入的文本\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "text"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "keyboard_press",
+              "docstring": "键盘按下（不释放）\n\n:param text: 要按下的按键字符\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "text"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "keyboard_release_all",
+              "docstring": "释放所有按键",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "key",
+              "docstring": "发送组合键\n\n:param modifier_hex: 修饰键 HID 码（16进制字符串，如 \"E0\" 表示左Ctrl），\"0\" 表示无修饰键\n:param key_hex: 按键 HID 码（16进制字符串）\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "modifier_hex"
+                },
+                {
+                  "name": "key_hex"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "set_name",
+              "docstring": "设置 ESP32 蓝牙名称（设置后会自动重启）\n\n:param new_name: 新的蓝牙名称（最长30字符）",
+              "params": [
+                {
+                  "name": "new_name"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "reset_name",
+              "docstring": "恢复默认蓝牙名称（设备会自动重启）",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "restart",
+              "docstring": "重启 ESP32 设备",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "sync_cursor",
+              "docstring": "重置光标坐标系：断开连接、重启 ESP32、重新连接登录。\n横竖屏切换后如果点击位置不对（X 只能走一半），调用此方法修复。\n耗时约 3-5 秒。\n\n注意：录屏扩展会自动检测方向变化并触发同步（ObjC 层处理），\n一般不需要手动调用。仅在自动同步未生效时手动使用。\n\n:param timeout: 重连超时时间（秒）\n:return: 是否成功",
+              "params": [
+                {
+                  "name": "timeout",
+                  "default": "15.0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "PORTRAIT",
+              "value": "0"
+            },
+            {
+              "name": "LANDSCAPE_LEFT",
+              "value": "1"
+            },
+            {
+              "name": "LANDSCAPE_RIGHT",
+              "value": "2"
+            },
+            {
+              "name": "PORTRAIT_UPSIDE",
+              "value": "3"
+            },
+            {
+              "name": "MODE_REL",
+              "value": "MODE_REL"
+            },
+            {
+              "name": "MODE_ABS",
+              "value": "MODE_ABS"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.ios.plug.TomatoOCR",
+      "file": "ascript/ios/plug/TomatoOCR/__init__.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "TomatoOCR",
+          "docstring": "番茄 OCR 文字识别工具封装（第三方插件，官网 https://www.52tomato.com）。\n\n通过链式 setter 配置模型、识别类型、阈值等参数后，调用 ocrFile/ocrBitmap/ocrCapture 进行识别，或调用 findTapPoint/findTapPoints 直接定位文字坐标。",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    mode: 运行模式（'dev' 调试 / '' 正式）。\n    rec_type: 识别模型类型，默认 'ch-3.0'（中文 3.0）。\n    box_type: 检测框形状，默认 'rect'。\n    ratio: 检测框扩张系数，默认 1.9。\n    scale_ratio: 缩放比例，默认 1.0。\n    threshold: 置信度阈值，默认 0.3。\n    return_type: 返回格式，默认 'json'。\n    binary: 二值化阈值，默认 0（不启用）。\n    run_mode: 运行模式，默认 'slow'（精度优先）。\n    http_interval_time: license 校验间隔（秒），默认 86400。",
+              "params": [
+                {
+                  "name": "mode",
+                  "default": "''"
+                },
+                {
+                  "name": "rec_type",
+                  "default": "'ch-3.0'"
+                },
+                {
+                  "name": "box_type",
+                  "default": "'rect'"
+                },
+                {
+                  "name": "ratio",
+                  "default": "1.9"
+                },
+                {
+                  "name": "scale_ratio",
+                  "default": "1.0"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.3"
+                },
+                {
+                  "name": "return_type",
+                  "default": "'json'"
+                },
+                {
+                  "name": "binary",
+                  "default": "0"
+                },
+                {
+                  "name": "run_mode",
+                  "default": "'slow'"
+                },
+                {
+                  "name": "http_interval_time",
+                  "default": "86400"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setModelPath",
+              "docstring": "设置模型文件路径（必填，调用 setLicense 前需先设置）。",
+              "params": [
+                {
+                  "name": "model_path",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setMode",
+              "docstring": "设置运行模式（'dev' / 正式）。",
+              "params": [
+                {
+                  "name": "mode",
+                  "type": "str",
+                  "default": "'dev'"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setHttpIntervalTime",
+              "docstring": "设置 license 在线校验的最小间隔（秒）。",
+              "params": [
+                {
+                  "name": "http_interval_time",
+                  "type": "int",
+                  "default": "86400"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setLicense",
+              "docstring": "设置授权 license 并初始化 OCR 引擎；需先 setModelPath。\n\nArgs:\n    license: 授权字符串。\n    remark: 可选备注。",
+              "params": [
+                {
+                  "name": "license",
+                  "type": "str"
+                },
+                {
+                  "name": "remark",
+                  "type": "str",
+                  "default": "''"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setRecType",
+              "docstring": "设置识别模型类型（如 'ch-3.0'）。",
+              "params": [
+                {
+                  "name": "rec_type",
+                  "type": "str",
+                  "default": "'ch-3.0'"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setDetBoxType",
+              "docstring": "设置检测框形状（'rect' 等）。",
+              "params": [
+                {
+                  "name": "box_type",
+                  "type": "str",
+                  "default": "'rect'"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setDetUnclipRatio",
+              "docstring": "设置检测框扩张系数。",
+              "params": [
+                {
+                  "name": "ratio",
+                  "type": "float",
+                  "default": "1.9"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setDetScaleRatio",
+              "docstring": "设置缩放比例。",
+              "params": [
+                {
+                  "name": "scale_ratio",
+                  "type": "float",
+                  "default": "1.0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setRecScoreThreshold",
+              "docstring": "设置识别置信度阈值。",
+              "params": [
+                {
+                  "name": "threshold",
+                  "type": "float",
+                  "default": "0.3"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setReturnType",
+              "docstring": "设置返回格式（如 'json'）。",
+              "params": [
+                {
+                  "name": "return_type",
+                  "type": "str",
+                  "default": "'json'"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setBinaryThresh",
+              "docstring": "设置二值化阈值；0 表示不启用。",
+              "params": [
+                {
+                  "name": "binary",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "setRunMode",
+              "docstring": "设置运行模式（'slow' 精度优先 / 'fast' 速度优先）。",
+              "params": [
+                {
+                  "name": "run_mode",
+                  "type": "str",
+                  "default": "'slow'"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "ocrFile",
+              "docstring": "对图片文件执行 OCR。\n\nArgs:\n    file_path: 图片文件路径。\n\nReturns:\n    识别结果（按 setReturnType 设置的格式）。",
+              "params": [
+                {
+                  "name": "file_path",
+                  "type": "str"
+                },
+                {
+                  "name": "ocr_type",
+                  "type": "int",
+                  "default": "3"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "ocrBitmap",
+              "docstring": "对内存中的位图执行 OCR。",
+              "params": [
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "ocr_type",
+                  "type": "int",
+                  "default": "3"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "ocrCapture",
+              "docstring": "截取屏幕指定区域并执行 OCR。",
+              "params": [
+                {
+                  "name": "rect",
+                  "default": "[]"
+                },
+                {
+                  "name": "ocr_type",
+                  "type": "int",
+                  "default": "3"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "findTapPoint",
+              "docstring": "查找指定文字的点击坐标（首个匹配）。\n\nArgs:\n    keyword: 待匹配关键字。\n\nReturns:\n    匹配文字的中心坐标 (x, y)，未找到返回 None。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str",
+                  "default": "''"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "findTapPoints",
+              "docstring": "查找指定文字的所有点击坐标列表。",
+              "params": [
+                {
+                  "name": "text",
+                  "type": "str",
+                  "default": "''"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "find_all",
+              "docstring": "一次性配置参数并执行 OCR；会自动调用 setLicense 与 ocr* 方法。",
+              "params": [
+                {
+                  "name": "license",
+                  "type": "str"
+                },
+                {
+                  "name": "model_path",
+                  "type": "str"
+                },
+                {
+                  "name": "mode",
+                  "default": "'dev'"
+                },
+                {
+                  "name": "rec_type",
+                  "default": "'ch-3.0'"
+                },
+                {
+                  "name": "box_type",
+                  "default": "'rect'"
+                },
+                {
+                  "name": "ratio",
+                  "default": "1.9"
+                },
+                {
+                  "name": "scale_ratio",
+                  "default": "1.0"
+                },
+                {
+                  "name": "threshold",
+                  "default": "0.3"
+                },
+                {
+                  "name": "return_type",
+                  "default": "'json'"
+                },
+                {
+                  "name": "binary",
+                  "default": "0"
+                },
+                {
+                  "name": "run_mode",
+                  "default": "'slow'"
+                },
+                {
+                  "name": "ocr_type",
+                  "default": "3"
+                },
+                {
+                  "name": "bitmap",
+                  "default": "None"
+                },
+                {
+                  "name": "file",
+                  "default": "None"
+                },
+                {
+                  "name": "capture",
+                  "default": "[]"
+                },
+                {
+                  "name": "text",
+                  "default": "''"
+                },
+                {
+                  "name": "texts",
+                  "default": "''"
+                },
+                {
+                  "name": "remark",
+                  "default": "''"
+                },
+                {
+                  "name": "http_interval_time",
+                  "type": "int",
+                  "default": "28800"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "is_init",
+              "value": "False"
+            },
+            {
+              "name": "last_license",
+              "value": "None"
+            }
+          ]
+        }
+      ],
+      "functions": []
+    },
+    {
+      "module": "ascript.ios.screen.fontx",
+      "file": "ascript/ios/screen/fontx.py",
+      "docstring": "点阵字库识别引擎 (Python 版，对齐 Android AiPictrueUtils)\n\n核心流程：\n1. 读取字库文件，解析每个字模（字符+颜色+二值化矩阵）\n2. 按颜色分组，相同颜色只二值化一次\n3. 滑窗匹配：字模在二值化源图上滑动，统计前景像素命中率\n4. NMS 去重（非极大值抑制）\n5. 按行分组排序，拼接文字",
+      "classes": [
+        {
+          "name": "Fontx",
+          "docstring": "单个字模",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "line"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "__slots__",
+              "value": "('name', 'color_key', 'fg_color', 'tolerance', 'width', 'height', 'fg_count', 'rows')"
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "read_fonts",
+          "docstring": "读取字库文件",
+          "params": [
+            {
+              "name": "lib_path"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "ocrx",
+          "docstring": "点阵字库识别主入口\n\n:param lib_path: 字库文件路径\n:param image: PIL Image 或 numpy array (RGB)\n:param offset_x: 偏移 X\n:param offset_y: 偏移 Y\n:param region: 相似度阈值 0-100\n:return: {\"text\": \"识别文字\", \"fonts\": [匹配结果列表]}",
+          "params": [
+            {
+              "name": "lib_path"
+            },
+            {
+              "name": "image"
+            },
+            {
+              "name": "offset_x",
+              "default": "0"
+            },
+            {
+              "name": "offset_y",
+              "default": "0"
+            },
+            {
+              "name": "region",
+              "default": "90"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.ios.screen.gp_tasks",
+      "file": "ascript/ios/screen/gp_tasks.py",
+      "docstring": "",
+      "classes": [
+        {
+          "name": "Crop",
+          "docstring": "图片裁剪任务（图像处理流水线节点）。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    left/top/right/bottom: 裁剪区域的左上角与右下角坐标。",
+              "params": [
+                {
+                  "name": "left",
+                  "type": "int"
+                },
+                {
+                  "name": "top",
+                  "type": "int"
+                },
+                {
+                  "name": "right",
+                  "type": "int"
+                },
+                {
+                  "name": "bottom",
+                  "type": "int"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "对输入图像执行裁剪并返回新的 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'图片裁剪'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/crop/'"
+            }
+          ]
+        },
+        {
+          "name": "GrayImage",
+          "docstring": "灰度图任务：将彩色图像转换为单通道灰度图。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "对输入图像执行灰度转换并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'灰度图'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/grayimage/'"
+            }
+          ]
+        },
+        {
+          "name": "Threshold",
+          "docstring": "二值化任务：根据阈值将图像分为黑白两色。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    threshold: 阈值（0-255）。\n    inv: 是否使用反色二值化，默认 False。",
+              "params": [
+                {
+                  "name": "threshold",
+                  "type": "int"
+                },
+                {
+                  "name": "inv",
+                  "type": "bool",
+                  "default": "False"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行二值化并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'二值化'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/threshold/'"
+            }
+          ]
+        },
+        {
+          "name": "Erode",
+          "docstring": "腐蚀任务：形态学腐蚀，缩小白色区域。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    kernel_size: 结构元尺寸，默认 5。\n    iterations: 迭代次数，默认 1。",
+              "params": [
+                {
+                  "name": "kernel_size",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "iterations",
+                  "type": "int",
+                  "default": "1"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行腐蚀并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'腐蚀'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/erode/'"
+            }
+          ]
+        },
+        {
+          "name": "Dilate",
+          "docstring": "膨胀任务：形态学膨胀，扩大白色区域。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    kernel_size: 结构元尺寸，默认 5。\n    iterations: 迭代次数，默认 1。",
+              "params": [
+                {
+                  "name": "kernel_size",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "iterations",
+                  "type": "int",
+                  "default": "1"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行膨胀并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'膨胀'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/dilate/'"
+            }
+          ]
+        },
+        {
+          "name": "MorphClose",
+          "docstring": "闭运算任务：先膨胀后腐蚀，常用于填补小孔。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    kernel_size: 结构元尺寸，默认 5。\n    iterations: 迭代次数，默认 1。",
+              "params": [
+                {
+                  "name": "kernel_size",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "iterations",
+                  "type": "int",
+                  "default": "1"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行闭运算并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'闭运算'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/morphclose/'"
+            }
+          ]
+        },
+        {
+          "name": "MorphOpen",
+          "docstring": "开运算任务：先腐蚀后膨胀，常用于去除小噪点。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    kernel_size: 结构元尺寸，默认 5。\n    iterations: 迭代次数，默认 1。",
+              "params": [
+                {
+                  "name": "kernel_size",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "iterations",
+                  "type": "int",
+                  "default": "1"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行开运算并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'开运算'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/morphopen/'"
+            }
+          ]
+        },
+        {
+          "name": "GaussianBlur",
+          "docstring": "高斯模糊任务：对图像做高斯滤波。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    ksize: 高斯核大小（奇数），默认 5。\n    sigmaX: X 方向标准差，0 表示自动计算。",
+              "params": [
+                {
+                  "name": "ksize",
+                  "type": "int",
+                  "default": "5"
+                },
+                {
+                  "name": "sigmaX",
+                  "type": "int",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行高斯模糊并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'高斯模糊'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/gaussianblur/'"
+            }
+          ]
+        },
+        {
+          "name": "Resize",
+          "docstring": "缩放任务：按宽高或缩放比例调整图像尺寸。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    width/height: 目标宽高（像素），同时只填一个表示按比例。\n    scale: 缩放比例（>0 时优先生效），默认 0。",
+              "params": [
+                {
+                  "name": "width",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "height",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "scale",
+                  "type": "float",
+                  "default": "0"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行缩放并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'缩放'"
+            },
+            {
+              "name": "ui_path",
+              "value": "''"
+            }
+          ]
+        },
+        {
+          "name": "Rotate",
+          "docstring": "旋转任务：按指定角度旋转图像。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    angle: 旋转角度（度），默认 90。\n    expand: 是否扩展画布以容纳整张旋转后图像，默认 True。",
+              "params": [
+                {
+                  "name": "angle",
+                  "type": "float",
+                  "default": "90"
+                },
+                {
+                  "name": "expand",
+                  "type": "bool",
+                  "default": "True"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "执行旋转并返回 Result。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'旋转'"
+            },
+            {
+              "name": "ui_path",
+              "value": "''"
+            }
+          ]
+        },
+        {
+          "name": "Canny",
+          "docstring": "边缘检测任务：基于 Canny / Sobel / Laplacian / Adaptive 等算法检测轮廓，并按面积、宽高、位置等条件过滤，可选形状识别（三角形/矩形/圆等）。",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    low_threshold/high_threshold: Canny 双阈值。\n    algo: 算法，可选 'canny'/'sobel'/'laplacian'/'adaptive'。\n    blur: 预模糊核大小（奇数），0 表示不模糊。\n    mode: 轮廓检索模式（如 RETR_EXTERNAL）。\n    draw: 绘制方式（DRAW_NONE/ALL/RECT/RECT_FILL）。\n    area_range/width_range/height_range/left_range/top_range: 过滤范围 [min, max]。\n    approx: 多边形拟合精度（>0 启用）。\n    detect_shape: 是否识别形状类别，默认 False。\n    desc: 是否在图上绘制描述文字。",
+              "params": [
+                {
+                  "name": "low_threshold",
+                  "type": "int",
+                  "default": "50"
+                },
+                {
+                  "name": "high_threshold",
+                  "type": "int",
+                  "default": "150"
+                },
+                {
+                  "name": "algo",
+                  "type": "str",
+                  "default": "'canny'"
+                },
+                {
+                  "name": "blur",
+                  "type": "int",
+                  "default": "3"
+                },
+                {
+                  "name": "mode",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "draw",
+                  "type": "int",
+                  "default": "None"
+                },
+                {
+                  "name": "area_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "width_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "height_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "left_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "top_range",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "approx",
+                  "type": "float",
+                  "default": "0"
+                },
+                {
+                  "name": "detect_shape",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "desc",
+                  "type": "bool",
+                  "default": "False"
+                },
+                {
+                  "name": "sobel_ksize",
+                  "type": "int",
+                  "default": "3"
+                },
+                {
+                  "name": "sobel_dir",
+                  "type": "str",
+                  "default": "'xy'"
+                },
+                {
+                  "name": "block_size",
+                  "type": "int",
+                  "default": "11"
+                },
+                {
+                  "name": "c_val",
+                  "type": "int",
+                  "default": "2"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "run",
+              "docstring": "对输入图像执行边缘检测，返回 Result（data 字段为检测到的轮廓列表，每项含 x/y/w/h/area/perimeter/cx/cy/vertices/shape/aspect）。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            },
+            {
+              "name": "detect",
+              "docstring": "静态方法：边缘检测（自动截图）",
+              "params": [
+                {
+                  "name": "low_threshold",
+                  "default": "50"
+                },
+                {
+                  "name": "high_threshold",
+                  "default": "150"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                },
+                {
+                  "name": "**kwargs"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'边缘检测'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/canny/'"
+            },
+            {
+              "name": "RETR_TREE",
+              "value": "cv2.RETR_TREE"
+            },
+            {
+              "name": "RETR_LIST",
+              "value": "cv2.RETR_LIST"
+            },
+            {
+              "name": "RETR_EXTERNAL",
+              "value": "cv2.RETR_EXTERNAL"
+            },
+            {
+              "name": "DRAW_NONE",
+              "value": "0"
+            },
+            {
+              "name": "DRAW_ALL",
+              "value": "1"
+            },
+            {
+              "name": "DRAW_RECT",
+              "value": "2"
+            },
+            {
+              "name": "DRAW_RECT_FILL",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "name": "OcrX",
+          "docstring": "点阵字库 — 基于模板匹配的字符级 OCR",
+          "bases": [
+            "GPTask"
+          ],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "Args:\n    fontlib: 字库文件名。\n    make_font_colors: 制作字库时使用的颜色。\n    rect: 识别区域 [x, y, right, bottom]。\n    save_font_code: 保存字符模板的参数字典。\n    test_fontlib: 字库测试参数字典。",
+              "params": [
+                {
+                  "name": "fontlib",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "make_font_colors",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "save_font_code",
+                  "type": "dict",
+                  "default": "None"
+                },
+                {
+                  "name": "test_fontlib",
+                  "type": "dict",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "append_to_lib",
+              "docstring": "向字库文件末尾追加字符模板内容；文件不存在则创建。\n\nArgs:\n    lib_path: 字库文件路径。\n    content: 待追加的字符模板字符串。",
+              "params": [
+                {
+                  "name": "lib_path"
+                },
+                {
+                  "name": "content"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "run",
+              "docstring": "执行点阵字库 OCR 任务，可选保存字符模板到字库。",
+              "params": [
+                {
+                  "name": "cv_image",
+                  "type": "np.ndarray"
+                },
+                {
+                  "name": "offset_x",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "offset_y",
+                  "type": "int",
+                  "default": "0"
+                },
+                {
+                  "name": "data",
+                  "default": "None"
+                }
+              ],
+              "return_type": "Result",
+              "decorators": []
+            },
+            {
+              "name": "matrix",
+              "docstring": "点阵字库识别（仅文本），快速路径\n:return: 识别文本字符串，未识别到返回 None\n如需字符坐标，使用 OcrX.matrix_detail",
+              "params": [
+                {
+                  "name": "font_lib",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "region",
+                  "default": "0.9"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            },
+            {
+              "name": "matrix_detail",
+              "docstring": "点阵字库识别（含字符坐标）\n:return: {\"result\": \"识别文字\", \"chars\": [{\"text\":\"A\",\"x\":10,\"y\":5,\"w\":8,\"h\":12}, ...]}",
+              "params": [
+                {
+                  "name": "font_lib",
+                  "type": "str"
+                },
+                {
+                  "name": "rect",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "region",
+                  "default": "0.9"
+                },
+                {
+                  "name": "image",
+                  "default": "None"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "staticmethod"
+              ]
+            }
+          ],
+          "class_variables": [
+            {
+              "name": "name",
+              "value": "'点阵字库'"
+            },
+            {
+              "name": "ui_path",
+              "value": "'/static/gpui/ocr_x/'"
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "gp_list",
+          "docstring": "返回当前模块所有可用的图像处理任务（GPTask 子类）信息列表。\n\nReturns:\n    list[dict]: 每项含 name（中文显示名）、cls（类名）等。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "gp_list_json",
+          "docstring": "返回 gp_list() 的 JSON 字符串。",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.ios.screen.yolov11",
+      "file": "ascript/ios/screen/yolov11.py",
+      "docstring": "YOLO 目标检测 — 支持 YOLOv8/v11 (ncnn)\n对齐 Android API",
+      "classes": [],
+      "functions": [
+        {
+          "name": "load",
+          "docstring": "加载模型\n:param param_path: .param 文件路径\n:param bin_path: .bin 文件路径\n:param yaml_path: data.yaml 路径（可选，用于读取类别名称）\n:param nc: 类别数（0=自动检测）\n:param use_gpu: 是否使用 GPU",
+          "params": [
+            {
+              "name": "param_path",
+              "type": "str"
+            },
+            {
+              "name": "bin_path",
+              "type": "str"
+            },
+            {
+              "name": "yaml_path",
+              "type": "str",
+              "default": "None"
+            },
+            {
+              "name": "nc",
+              "type": "int",
+              "default": "0"
+            },
+            {
+              "name": "use_gpu",
+              "type": "bool",
+              "default": "False"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "detect",
+          "docstring": "检测目标\n:return: [{\"class_id\":0, \"confidence\":0.95, \"rect\":[x1,y1,x2,y2], \"tag\":\"label\"}]",
+          "params": [
+            {
+              "name": "img",
+              "type": "Union[Image, str]",
+              "default": "None"
+            },
+            {
+              "name": "target_size",
+              "type": "int",
+              "default": "640"
+            },
+            {
+              "name": "threshold",
+              "default": "0.4"
+            },
+            {
+              "name": "nms_threshold",
+              "default": "0.5"
+            },
+            {
+              "name": "rect",
+              "default": "None"
+            }
+          ],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "free",
+          "docstring": "释放模型",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        },
+        {
+          "name": "nc",
+          "docstring": "获取模型类别数",
+          "params": [],
+          "return_type": null,
+          "decorators": []
+        }
+      ]
+    },
+    {
+      "module": "ascript.ios.wdapy._base_source",
+      "file": "ascript/ios/wdapy/_base_source.py",
+      "docstring": "Created on Tue Sep 14 2021 15:26:27 by codeskyblue",
+      "classes": [
+        {
+          "name": "HTTPResponseWrapper",
+          "docstring": "",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "content",
+                  "type": "bytes"
+                },
+                {
+                  "name": "status_code",
+                  "type": "int"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "json",
+              "docstring": "",
+              "params": [],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "text",
+              "docstring": "",
+              "params": [],
+              "return_type": "str",
+              "decorators": [
+                "property"
+              ]
+            },
+            {
+              "name": "getcode",
+              "docstring": "",
+              "params": [],
+              "return_type": "int",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        },
+        {
+          "name": "BaseClient",
+          "docstring": "",
+          "bases": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "wda_url",
+                  "type": "str"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "request_timeout",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "timeout",
+                  "type": "float"
+                }
+              ],
+              "return_type": null,
+              "decorators": [
+                "request_timeout.setter"
+              ]
+            },
+            {
+              "name": "status",
+              "docstring": "",
+              "params": [],
+              "return_type": "StatusInfo",
+              "decorators": []
+            },
+            {
+              "name": "session",
+              "docstring": "create session and return session id",
+              "params": [
+                {
+                  "name": "bundle_id",
+                  "type": "str",
+                  "default": "None"
+                },
+                {
+                  "name": "arguments",
+                  "type": "list",
+                  "default": "None"
+                },
+                {
+                  "name": "environment",
+                  "type": "dict",
+                  "default": "None"
+                }
+              ],
+              "return_type": "str",
+              "decorators": []
+            },
+            {
+              "name": "set_recover_handler",
+              "docstring": "",
+              "params": [
+                {
+                  "name": "recover",
+                  "type": "Recover"
+                }
+              ],
+              "return_type": null,
+              "decorators": []
+            },
+            {
+              "name": "session_request",
+              "docstring": "request with session_id",
+              "params": [
+                {
+                  "name": "method",
+                  "type": "RequestMethod"
+                },
+                {
+                  "name": "urlpath",
+                  "type": "str"
+                },
+                {
+                  "name": "payload",
+                  "type": "dict",
+                  "default": "None"
+                }
+              ],
+              "return_type": "dict",
+              "decorators": []
+            },
+            {
+              "name": "request",
+              "docstring": "Raises:\n    RequestError, WDASessionDoesNotExist",
+              "params": [
+                {
+                  "name": "method",
+                  "type": "RequestMethod"
+                },
+                {
+                  "name": "urlpath",
+                  "type": "str"
+                },
+                {
+                  "name": "payload",
+                  "type": "dict",
+                  "default": "None"
+                }
+              ],
+              "return_type": "dict",
+              "decorators": []
+            }
+          ],
+          "class_variables": []
+        }
+      ],
+      "functions": [
+        {
+          "name": "http_create",
+          "docstring": "",
+          "params": [
+            {
+              "name": "url",
+              "type": "str"
+            }
+          ],
+          "return_type": "typing.Union[HTTPConnection, HTTPSConnection]",
+          "decorators": []
+        }
+      ]
     }
   ]
 }

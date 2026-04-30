@@ -36,6 +36,7 @@ class Device:
     serial: str = ""                  # ADB 序列号（仅 ADB 模式）
     _adb_api_port: int = 0            # ADB 转发的本地 API 端口
     _adb_ws_port: int = 0             # ADB 转发的本地 WS 端口
+    _adb_debug_port: int = 0          # ADB 转发的本地 debugpy 端口（5678 被占时为 free port）
 
     @property
     def base_url(self) -> str:
@@ -1138,6 +1139,317 @@ def stop_project() -> dict[str, Any]:
     else:
         url = f"{d.base_url}/api/module/stop"
         return _fetch_json(url, method="GET", headers=d.headers, timeout=5)
+
+
+# ------------------------------------------------------------------
+# 已安装 Python 包清单（Android: /api/status.python.packages，iOS: eval importlib.metadata）
+# ------------------------------------------------------------------
+
+# iOS 走 eval_python + importlib.metadata 列出实际安装包；Android 直接复用 /api/status
+_IOS_LIST_PACKAGES_CODE = (
+    "import importlib.metadata as _md, json\n"
+    "_pkgs = sorted({f\"{d.metadata['Name']}=={d.version}\" "
+    "for d in _md.distributions() if d.metadata.get('Name')})\n"
+    "_result = json.dumps({'install': list(_pkgs)})\n"
+)
+
+def list_python_packages() -> dict[str, Any]:
+    """获取设备 AScript App 内已安装的 Python 第三方库清单（Android + iOS）。
+
+    AI 写代码（特别是 eval_python 片段）前调用，确认要用的 lib 是否可用，
+    避免写出 `import xxx` 但设备上不存在导致运行时炸。
+
+    Android: 调 /api/status 取 python.packages（importlib.metadata 实时查询）。
+    iOS:     通过 eval_python 跑 importlib.metadata 列出实际安装包。
+
+    返回 dict：
+      {
+        "packages": ["opencv-python-headless==4.5.1.48", "numpy==1.26.0", ...],
+        "count": 13,
+        "source": "android-importlib-metadata" | "ios-importlib-metadata",
+      }
+    """
+    d = require_device()
+
+    if d.platform == "android":
+        status = get_device_status()
+        pkgs_dict = (status.get("python") or {}).get("packages") or {}
+        packages = sorted(f"{name}=={ver}" for name, ver in pkgs_dict.items())
+        return {
+            "packages": packages,
+            "count": len(packages),
+            "source": "android-importlib-metadata",
+        }
+
+    if d.platform == "ios":
+        evalres = eval_python(_IOS_LIST_PACKAGES_CODE)
+        if evalres.get("_format") == "json":
+            data = evalres.get("data") or {}
+            packages = data.get("install") or [] if isinstance(data, dict) else []
+            return {
+                "packages": packages,
+                "count": len(packages),
+                "source": "ios-importlib-metadata",
+            }
+        return {
+            "error": f"iOS 包列表查询失败：{evalres.get('error', '未知错误')}",
+            "packages": [],
+            "count": 0,
+            "source": "ios-importlib-metadata",
+        }
+
+    return {"error": f"平台 {d.platform} 不支持。", "packages": [], "count": 0}
+
+
+# ------------------------------------------------------------------
+# 设备 Python REPL（/api/gp/eval 直接 exec 任意代码，Android + iOS）
+# ------------------------------------------------------------------
+
+# eval 返回值大小上限：避免 AI 误用（截屏 / 大文件 read）撑爆 MCP 对话上下文
+_EVAL_MAX_IMAGE_B64 = 2 * 1024 * 1024   # 2MB base64 ≈ 1.5MB raw PNG
+_EVAL_MAX_TEXT = 256 * 1024             # 256KB 纯文本
+
+
+def _truncate(s: str, limit: int) -> str:
+    if len(s) <= limit:
+        return s
+    return s[:limit] + f"\n...[truncated, total={len(s)} chars > limit={limit}]"
+
+def eval_python(code: str, image_path: str = "") -> dict[str, Any]:
+    """在设备主进程的 Python 上下文中执行任意代码，返回 _result 全局变量。
+
+    Android 与 iOS 都支持。iOS 端会自动将 `ascript.android.` 替换为 `ascript.ios.`，
+    并预加载 cv2 / np / Image（PIL）到执行环境，跨平台片段几乎无需修改。
+
+    与 run_project 的区别：
+      - eval_python 在 App 主进程（请求级 fresh globals）里跑，不需要工程，
+        立即返回结果，几百毫秒一轮，适合探索/调试/复合决策
+      - run_project 在 :py 子进程跑工程代码，需要 upload_file，适合长跑脚本
+
+    AI 用法约定（写 code 时遵循）：
+      ```python
+      # 1. 简单字符串：
+      _result = "ok"
+
+      # 2. 结构化数据（推荐）：
+      import json
+      _result = json.dumps({"found": True, "x": 320, "y": 800})
+
+      # 3. 含截图返回：
+      import json, base64, io
+      buf = io.BytesIO(); cropped.save(buf, "PNG")
+      _result = json.dumps({
+          "data": {...},
+          "image_base64": base64.b64encode(buf.getvalue()).decode(),
+      })
+      ```
+
+    image_path 非空时 App 端会注入 `_im_source = '<image_path>'` 全局变量
+    （沿用现有 GP 工具约定，让代码读取已有图片而非重新 capture）。
+    iOS 上若代码引用 `img` 变量，且 image_path 指向的文件存在，会被预读为 cv2 ndarray。
+
+    返回 dict（MCP 层智能解析）：
+      - {"_format": "image", "image_base64": ..., "data": ...}  含图，含其他字段
+      - {"_format": "json", "data": <parsed>}                   纯结构化数据
+      - {"_format": "text", "data": "<raw>"}                    非 JSON 字符串
+      - {"_format": "error", "error": "...", "code": ...}       服务端报错
+    """
+    d = require_device()
+    url = f"{d.base_url}/api/gp/eval"
+    res = _fetch_json(
+        url,
+        method="POST",
+        params={"code": code, "image": image_path or ""},
+        headers=d.headers,
+        timeout=60,
+    )
+    if res.get("code") != 1:
+        return {
+            "_format": "error",
+            "error": res.get("msg") or "eval 失败",
+            "code": res.get("code"),
+        }
+
+    raw = res.get("data", "")
+    if raw is None:
+        raw = ""
+    raw = str(raw).strip()
+    if raw == "" or raw == "null":
+        return {"_format": "text", "data": ""}
+
+    # 智能解析：JSON 失败回退原文。截断超大文本避免炸 MCP 上下文。
+    try:
+        parsed = json.loads(raw)
+    except ValueError:
+        return {"_format": "text", "data": _truncate(raw, _EVAL_MAX_TEXT)}
+
+    # 含 image_base64 字段则拆出来作为多模态返回；超 cap 则丢图保留警告
+    if isinstance(parsed, dict) and parsed.get("image_base64"):
+        img_b64 = parsed.pop("image_base64")
+        if len(img_b64) > _EVAL_MAX_IMAGE_B64:
+            parsed["_warning"] = (
+                f"image_base64 太大（{len(img_b64)} 字节）已丢弃。"
+                "请在代码里压缩或裁剪后再返回（建议 PNG ≤1.5MB / base64 ≤2MB）。"
+            )
+            return {"_format": "json", "data": parsed}
+        return {"_format": "image", "image_base64": img_b64, "data": parsed}
+
+    return {"_format": "json", "data": parsed}
+
+
+# ------------------------------------------------------------------
+# 设备运行状态（Android only — /api/status 一次性返回 device/system/screen/battery/
+#   network/storage/memory/permissions/app/python/run_mode/runtime/tools 全集）
+# ------------------------------------------------------------------
+
+def get_device_status() -> dict[str, Any]:
+    """获取设备完整运行状态（Android）。
+
+    返回 dict 包含：
+      device     设备品牌/型号/ABI
+      system     Android 版本/SDK/语言/时区
+      screen     分辨率/dpi/方向
+      battery    电量/充电状态/温度
+      network    联网类型/IP
+      storage    存储总量/可用
+      memory     运行内存
+      permissions 全部权限的授权状态（运行时 + 设置类）
+      app        AScript App 版本/包名
+      run_mode   运行模式：root / accessibility / screen_only / hid
+      runtime    is_script_running 与正在跑的工程信息
+      tools      已安装工具配置
+
+    AI 在生成脚本前应先调用此工具，根据 run_mode、permissions、screen 等
+    适配代码（不同模式下可用 API 不同），并避开正在跑的脚本。
+    """
+    d = require_device()
+    if d.platform != "android":
+        return {"error": "/api/status 仅 Android 平台提供。"}
+    url = f"{d.base_url}/api/status"
+    res = _fetch_json(url, method="POST", headers=d.headers, timeout=10)
+    if res.get("code") != 1:
+        return {"error": res.get("msg") or "device API 报错", "code": res.get("code")}
+    return res.get("data") or {}
+
+
+# ------------------------------------------------------------------
+# debugpy 调试支持（Android only，复用 ADB 端口转发）
+# ------------------------------------------------------------------
+
+DEBUGPY_PORT = 5678
+
+
+def _ensure_debug_forward(device: Device) -> int:
+    """为 debugpy 建立 adb forward；优先 5678→5678，被占则取 free port→5678。
+
+    返回本地端口；失败返回 0。仅 ADB 模式。
+    缓存到 device._adb_debug_port，重复调用复用同一端口避免 forward 泄漏。
+    """
+    if device.connection_mode != "ADB":
+        return 0
+
+    # 已有缓存且仍可用 → 复用
+    if device._adb_debug_port and _is_port_open("127.0.0.1", device._adb_debug_port, 0.3):
+        return device._adb_debug_port
+
+    adb = _find_adb()
+    if not adb:
+        return 0
+    serial = device.serial or device.ip
+
+    local_port = DEBUGPY_PORT
+    if _is_port_open("127.0.0.1", local_port, 0.3):
+        # 5678 被别的进程占了（不是自家 forward — 那条会走上面的 cache 复用），取 free port
+        local_port = _find_free_port()
+
+    if not _adb_forward(adb, serial, local_port, DEBUGPY_PORT):
+        return 0
+
+    device._adb_debug_port = local_port
+    return local_port
+
+
+def run_project_debug(name: str) -> dict[str, Any]:
+    """以调试模式启动 Android 工程，自动建立 adb forward 并返回 attach 信息。
+
+    流程：
+      1. 校验：必须 Android + ADB 连接（debugpy 监听设备 127.0.0.1:5678，
+         LAN 模式无法穿透）。
+      2. adb forward tcp:<local_port> tcp:5678（local 优先 5678）。
+      3. POST /api/model/run?name=<name>&debug=1 让 :py 进入
+         start_for_debug(wait=True) 阻塞等 IDE attach。
+      4. 立即返回端口与 launch.json 片段；用户在 VS Code 创建 attach
+         配置（host=localhost, port=local_port）attach 后业务自动开跑。
+    """
+    d = require_device()
+    if d.platform != "android":
+        return {
+            "success": False,
+            "error": "调试模式仅支持 Android（iOS 暂未集成 debugpy）。",
+        }
+    if d.connection_mode != "ADB":
+        return {
+            "success": False,
+            "error": (
+                "调试模式需要 ADB 连接：debugpy 监听设备 127.0.0.1:5678，"
+                "局域网无法穿透。请用 USB 连上后通过 connect_device(serial) "
+                "或 scan_devices 重新连接。"
+            ),
+        }
+
+    local_port = _ensure_debug_forward(d)
+    if not local_port:
+        return {
+            "success": False,
+            "error": (
+                f"adb forward tcp:5678 失败。请确认 USB 连接正常，"
+                f"或手动执行 `adb -s {d.serial or d.ip} forward tcp:5678 tcp:5678`。"
+            ),
+        }
+
+    url = f"{d.base_url}/api/model/run"
+    res = _fetch_json(
+        url, method="POST", params={"name": name, "debug": "1"}, headers=d.headers
+    )
+    if res.get("code") != 1:
+        return {
+            "success": False,
+            "error": res.get("msg") or "设备启动调试失败（/api/model/run 返回非 1）",
+            "device_run_response": res,
+        }
+
+    launch_snippet = json.dumps(
+        {
+            "name": f"AScript: attach to {name}",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {"host": "localhost", "port": local_port},
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": ".",
+                }
+            ],
+            "justMyCode": False,
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    return {
+        "success": True,
+        "device_run_response": res,
+        "local_port": local_port,
+        "remote_port": DEBUGPY_PORT,
+        "host": "localhost",
+        "launch_json": launch_snippet,
+        "hint": (
+            f"调试服务已在设备启动并阻塞等待 attach。\n"
+            f"在 VS Code / Cursor 的 .vscode/launch.json 里加入下方配置后按 F5 attach；"
+            f"attach 成功后业务从 main 开始运行，断点会被命中。\n"
+            f"停止调试请调用 stop_project（同时停止业务和调试器）。"
+        ),
+    }
 
 
 # ------------------------------------------------------------------

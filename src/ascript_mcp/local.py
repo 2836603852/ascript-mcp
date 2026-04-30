@@ -588,11 +588,21 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="dump_ui_tree",
             description=(
-                "获取设备当前界面的控件树（UI 层级结构）。"
-                "返回所有控件的 id、text、type、rect、clickable 等属性。"
-                "用于分析界面结构、定位控件、编写自动化脚本。\n"
-                "【重要】控件树中有 text/id/className 等属性的元素，必须用 node.Selector() 通过属性定位操作，"
-                "不要用坐标点击。坐标只用于控件树中没有任何可识别属性的元素。"
+                "获取设备当前界面的控件树（UI 层级结构）。返回所有控件的 id、text、desc、className、rect、clickable 等属性。\n\n"
+                "【Android】调用前必须先调 get_device_status 确认 run_mode，再选对应 mode，否则拿空树：\n"
+                "- run_mode.code=accessibility（无障碍模式）→ mode=0/1（简单/复杂），或 2/3（过滤系统层变种）\n"
+                "- run_mode.code=root（Root 或激活模式）   → mode=9（root 控件）\n"
+                "- run_mode.code=hid（HID 控件 / 辅助控件模式）→ mode=6（辅助控件）\n"
+                "- run_mode.code=screen_only（图色模式）   → 无控件树，跳过 dump，走 OCR/找图\n"
+                "⚠ Android 命名陷阱：code=\"hid\" 实际是 ASS 枚举（辅助控件，有控件树）；"
+                "code=\"screen_only\" 才是图色模式（无控件树）。\n"
+                "Selector 实例化要传相同的 mode：node.Selector(mode=<dump 的 mode>)。\n\n"
+                "【iOS】只有 WebDriverAgent 一套引擎，不接 mode 参数（传了被忽略），返回 WDA XML。"
+                "iOS Selector() 也不接 engine mode；它的 MODE_EQUAL/CONTAINS/MATCHES 是给单个条件的"
+                "匹配运算符（如 selector.text(\"x\", mode=MODE_CONTAINS)），别和 Android 混。\n\n"
+                "【写 selector 必看】控件树里有 text/id/desc/className 等属性的元素，必须用 node.Selector() 通过属性定位操作，"
+                "不要用坐标点击。坐标只用于控件树中确实没有任何可识别属性的元素。\n"
+                "Selector 实例化时也要传相同的 mode：node.Selector(mode=<dump 的同一个 mode>)。"
             ),
             inputSchema={
                 "type": "object",
@@ -600,13 +610,14 @@ async def list_tools() -> list[Tool]:
                     "mode": {
                         "type": "integer",
                         "description": (
-                            "控件检索模式（Android）：\n"
-                            "0=普通（仅重要控件，默认）\n"
-                            "1=复杂（所有控件，层级深）\n"
-                            "2=简单过滤系统控件\n"
-                            "3=复杂过滤系统控件\n"
-                            "6=Hid 控件\n"
-                            "9=Root 模式"
+                            "控件检索模式（Android），对应 get_device_status 返回的 run_mode.code：\n"
+                            "0 = 无障碍 - 简单（仅重要控件，run_mode=accessibility 时常用）\n"
+                            "1 = 无障碍 - 复杂（所有控件含布局节点）\n"
+                            "2 = 无障碍 - 简单 + 过滤系统层（状态栏/导航栏，推荐）\n"
+                            "3 = 无障碍 - 复杂 + 过滤系统层\n"
+                            "6 = 辅助控件（run_mode=hid 时用，对应 Selector.MODE_ASS）\n"
+                            "9 = Root 控件（run_mode=root 时用，对应 Selector.MODE_ROOT）\n"
+                            "Selector 类常量：MODE_ACC_SIMPLE=0 / MODE_ACC_ALL=1 / MODE_ASS=6 / MODE_ROOT=9。"
                         ),
                         "default": 0,
                     },
@@ -749,6 +760,37 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
+            name="list_python_packages",
+            description=(
+                "列出设备 AScript App 内已安装的 Python 第三方库（Android + iOS）。\n"
+                "AI 在写脚本（尤其是 eval_python 片段）前**强烈建议先调用**，"
+                "确认要 import 的 lib 在该设备上可用。\n\n"
+                "Android: 走 /api/status 的 python.packages（importlib.metadata 实时查询）。\n"
+                "iOS:     借 eval_python 跑 importlib.metadata 实时列出。\n\n"
+                "常见自带库：opencv-python-headless / numpy / pillow / requests / pandas / "
+                "openpyxl / pymysql / websockets / cryptography 等，"
+                "具体清单随 App 版本和用户安装的插件而变化，**以本工具实时返回为准**。"
+            ),
+            inputSchema={"type": "object", "properties": {}},
+        ),
+        Tool(
+            name="get_device_status",
+            description=(
+                "获取设备完整运行状态（仅 Android）。一次性返回：\n"
+                " - device: 品牌/型号/ABI\n"
+                " - system: Android 版本/SDK/语言/时区\n"
+                " - screen: 分辨率/dpi/方向\n"
+                " - battery / network / storage / memory\n"
+                " - permissions: 全部权限授权状态\n"
+                " - run_mode: 当前运行模式（root / accessibility / screen_only / hid）— 决定可用的 API 集\n"
+                " - runtime: 是否正在跑脚本、当前工程名\n"
+                " - tools: 已安装工具配置\n\n"
+                "强烈建议生成脚本前先调用：根据 run_mode 选择 API（如 node.find 仅在 accessibility 模式可用），"
+                "根据 permissions 决定是否需要先申请权限，根据 runtime.is_script_running 避免互踩。"
+            ),
+            inputSchema={"type": "object", "properties": {}},
+        ),
+        Tool(
             name="list_projects",
             description="列出设备上的所有工程。",
             inputSchema={"type": "object", "properties": {}},
@@ -771,6 +813,75 @@ async def list_tools() -> list[Tool]:
             name="stop_project",
             description="停止设备上正在运行的工程。",
             inputSchema={"type": "object", "properties": {}},
+        ),
+        Tool(
+            name="eval_python",
+            description=(
+                "在设备主进程的 Python 上下文中直接 exec 任意代码，立即返回结果（Android + iOS）。\n"
+                "几百毫秒一轮，不需要 upload_file/run_project，适合：\n"
+                " - 探索性调试：试 selector / 找图 / OCR / 找色 / 一次点击\n"
+                " - 复合决策：把'看屏幕→判断→点击'打包一段 Python 一次执行\n"
+                " - 自动裁模板、SoM 标注、智能 tap 路由\n"
+                " - 任意一次性同步 API 调用：action.click / slide / Selector(任何 mode) /"
+                " Permission / KeyValue / Sms / Clipboard 等\n\n"
+                "Android 主进程 client 已本地 stub 化（App.java onCreate 时 bindClient），"
+                "所有原本走 :py 进程 IPC 的 API 现在 eval 里也能直接调。\n\n"
+                "⛔ 红线：eval 代码无法外部中断！HTTP 60s 超时只断客户端连接，服务端 Python\n"
+                "仍在跑直到自然返回；卡住 = 整个 App UI 冻住。所有循环必须 range/deadline 限定，\n"
+                "sleep ≤ 5s，try/except 整段。超过 30s 的逻辑改用 upload + run_project（可被 stop_project kill）。\n\n"
+                "⚠ 仍需谨慎的场景：\n"
+                " - 长循环 / 耗时 > 30s：用 upload+run_project\n"
+                " - 回调注册（event.on / sensor.on）：register 能调用，但 eval 返回时\n"
+                "   _result 已定，回调触发的数据拿不回 — 持续监听必须用 upload+run_project\n"
+                " - 长 session（cloud_control 连云、ESP32 BLE HID 持久会话）：建议用工程模式\n\n"
+                "完整指南见 docs/AGENT_EVAL_GUIDE.md。\n\n"
+                "代码必须把结果赋给 _result 全局变量。返回值约定：\n"
+                " - 简单字符串：_result = 'ok'\n"
+                " - 结构化数据（推荐）：_result = json.dumps({'found': True, 'x': 320})\n"
+                " - 含截图返回：_result = json.dumps({'data': {...}, 'image_base64': '...'})\n"
+                "   （MCP 自动识别 image_base64 字段并以图片形式返回给 AI 多模态查看）\n\n"
+                "image_path 非空时 App 会注入 _im_source 全局变量指向该图片路径；\n"
+                "iOS 上若代码中引用 img 变量，会被预读为 cv2 ndarray。\n\n"
+                "跨平台：iOS 端会自动把 `ascript.android.` 替换为 `ascript.ios.`，\n"
+                "并预加载 cv2 / np / Image (PIL) 到执行环境，常用片段几乎无需修改。\n"
+                "完整 API 参见 search_api / get_module_apis（按 platform 选择）。"
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "要执行的 Python 代码。必须将结果赋给 _result 变量。",
+                    },
+                    "image_path": {
+                        "type": "string",
+                        "description": "可选：传入已有图片路径，App 会注入为 _im_source 全局变量。",
+                    },
+                },
+                "required": ["code"],
+            },
+        ),
+        Tool(
+            name="run_project_debug",
+            description=(
+                "以调试模式启动 Android 工程，让脚本可被 VS Code / Cursor 通过 debugpy attach 调试。\n"
+                "前提：1) 平台为 Android（iOS 不支持）；2) 设备必须通过 ADB 连接（USB / adb tcpip）。\n"
+                "行为：自动 adb forward tcp:5678 → 设备 127.0.0.1:5678 + 调用设备 /api/model/run?debug=1，"
+                "设备端 :py 进程进入 listen+wait_for_client 阻塞，等待 IDE attach。\n"
+                "返回：本地端口、可直接粘贴到 .vscode/launch.json 的 attach 配置片段、操作提示。\n"
+                "用户在 VS Code 按 F5 attach 后，业务从 main 开始运行，断点会被命中。\n"
+                "停止调试请调用 stop_project（同时停止业务和调试器）。"
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "工程名称",
+                    },
+                },
+                "required": ["name"],
+            },
         ),
         Tool(
             name="get_run_log",
@@ -893,6 +1004,25 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent | ImageConte
             "坐标点击仅用于控件树中确实没有可识别属性的元素（如游戏自绘界面）。"
         )))
         return contents
+
+    # eval_python：根据 _format 字段拆图片/文本
+    if name == "eval_python" and isinstance(result, dict) and "_format" in result:
+        fmt = result["_format"]
+        if fmt == "image":
+            data = result.get("data") or {}
+            data_text = json.dumps(data, ensure_ascii=False, indent=2) if data else "(仅图片，无其他数据)"
+            return [
+                ImageContent(type="image", data=result["image_base64"], mimeType="image/png"),
+                TextContent(type="text", text=f"eval_python 返回（含截图）：\n{data_text}"),
+            ]
+        if fmt == "json":
+            return [TextContent(type="text", text=json.dumps(result["data"], ensure_ascii=False, indent=2))]
+        if fmt == "text":
+            return [TextContent(type="text", text=result["data"] or "(空)")]
+        if fmt == "error":
+            err = result.get("error", "未知错误")
+            code = result.get("code")
+            return [TextContent(type="text", text=f"eval_python 失败 (code={code}): {err}")]
 
     # deploy_and_run：返回日志 + 截图
     if name == "deploy_and_run" and isinstance(result, dict) and "screenshot" in result:
@@ -1025,6 +1155,12 @@ def _dispatch(name: str, args: dict) -> str | dict:
     if name == "create_project":
         return dev.create_project(args["name"])
 
+    if name == "get_device_status":
+        return dev.get_device_status()
+
+    if name == "list_python_packages":
+        return dev.list_python_packages()
+
     if name == "list_projects":
         return dev.list_projects()
 
@@ -1033,6 +1169,23 @@ def _dispatch(name: str, args: dict) -> str | dict:
 
     if name == "stop_project":
         return dev.stop_project()
+
+    if name == "eval_python":
+        return dev.eval_python(args["code"], image_path=args.get("image_path", ""))
+
+    if name == "run_project_debug":
+        result = dev.run_project_debug(args["name"])
+        if not result.get("success"):
+            return result.get("error", "调试启动失败。")
+        lines = [
+            f"调试已启动：localhost:{result['local_port']} → 设备 127.0.0.1:{result['remote_port']}",
+            "",
+            "—— 在 .vscode/launch.json 的 configurations 数组里加入以下片段，按 F5 attach ——",
+            result["launch_json"],
+            "",
+            result["hint"],
+        ]
+        return "\n".join(lines)
 
     if name == "get_run_log":
         logs = dev.get_run_log(seconds=args.get("seconds", 3.0))

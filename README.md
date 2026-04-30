@@ -43,11 +43,21 @@ pip install ascript-mcp
 
 ### 2. 规则配置
 
-在项目根目录创建 `.cursorrules` 文件：
+把 [`docs/AGENT_RULES.md`](./docs/AGENT_RULES.md) 完整复制到你的自动化工程根目录的 `.cursorrules`（Cursor）或 `CLAUDE.md` / `AGENTS.md`（Claude Code / 其他 IDE）。
 
-```
-当用户需要编写设备自动化脚本（Android/iOS/Windows）时，必须使用 ascript MCP 工具连接设备、观察界面、查询 API 后再编写代码，禁止凭记忆编写 ascript 代码。
-```
+这份规则模板包含：
+- 5 阶段标准工作流（先观察 → 选策略 → eval_python 迭代 → 必要时裁图 → 上传运行）
+- 选 API 的决策树（控件 → OCR → 找图 → 找色）
+- 自动登录 / 签到 / 游戏战斗等常见任务的编排范例
+- 反模式清单（凭空猜代码、不验证就 run、硬编码不存在的图片路径等）
+
+> 简版规则（仅当你不想复制完整规则时用）：
+> ```
+> 当用户需要编写设备自动化脚本（Android/iOS/Windows）时，必须先调用 ascript MCP 的
+> get_device_status 与 list_python_packages，再用 eval_python 在设备 REPL 里
+> 验证关键代码片段，最后才 upload_file + run_project。
+> 禁止凭记忆编写 ascript 代码。
+> ```
 
 ## 工具列表
 
@@ -66,12 +76,14 @@ pip install ascript-mcp
 | `list_plugins` | 查询插件库列表 |
 | `get_plugin_detail` | 获取插件详细文档 |
 
-### 设备连接（3 个）
+### 设备连接（5 个）
 | 工具 | 说明 |
 |------|------|
 | `auto_connect` | 从工程配置自动连接设备 |
 | `scan_devices` | 扫描局域网 + ADB 设备 |
 | `connect_device` | 手动连接指定设备 |
+| `get_device_status` | 获取设备完整运行状态（运行模式/权限/屏幕/电池/内存/正在跑的脚本等，仅 Android） |
+| `list_python_packages` | 列出设备 AScript App 已安装的 Python 第三方库（Android + iOS）|
 
 ### 观察界面（6 个）
 | 工具 | 说明 |
@@ -83,14 +95,16 @@ pip install ascript-mcp
 | `find_colors` | 多点找色 |
 | `compare_colors` | 多点比色 |
 
-### 开发部署（5 个）
+### 开发部署（7 个）
 | 工具 | 说明 |
 |------|------|
 | `create_project` | 在设备上创建工程 |
 | `upload_file` | 上传文件到设备（自动创建工程） |
 | `run_project` | 运行工程 |
+| `run_project_debug` | 调试模式运行（Android + ADB），自动 forward 5678 端口并返回 VS Code attach 配置 |
 | `stop_project` | 停止运行 |
 | `get_run_log` | 获取运行日志 |
+| `eval_python` | **设备 Python REPL（Android + iOS）**：直接在主进程 exec 代码立即拿结果，几百毫秒一轮。适合探索调试、复合决策、自定义工作流（SoM/智能 tap/自动裁模板等）。iOS 自动转译 `ascript.android.*` → `ascript.ios.*` 并预加载 cv2/np/Image。详见 [AGENT_EVAL_GUIDE](./docs/AGENT_EVAL_GUIDE.md) |
 
 ### 文件管理（2 个）
 | 工具 | 说明 |
