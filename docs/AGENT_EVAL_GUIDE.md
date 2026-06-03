@@ -156,9 +156,10 @@ except Exception:
 
 # OCR 全文
 try:
+    # Ocr.find_all() 返回 list[dict]，键：text/rect/center_x/center_y/confidence；rect=[左,上,右,下]
     texts = Ocr.find_all() or []
-    ocr_data = [{"text": t.text, "rect": [t.region_position.left, t.region_position.top,
-                                            t.region_position.right, t.region_position.bottom]}
+    ocr_data = [{"text": t["text"], "rect": t["rect"],
+                 "center": [t["center_x"], t["center_y"]]}
                 for t in texts]
 except Exception:
     ocr_data = []
@@ -206,14 +207,15 @@ from ascript.android.system import R
 text = "登录"
 padding = 10
 
+# Ocr 结果是 dict（text/rect/center_x/center_y）；用子串匹配，OCR 文本常带空格/粘连
 results = Ocr.find_all() or []
-target = next((t for t in results if t.text == text), None)
+target = next((t for t in results if text in t["text"]), None)
 if not target:
     _result = json.dumps({"ok": False, "error": f"未找到文字 {text!r}"})
 else:
-    rp = target.region_position
-    rect = (max(0, rp.left - padding), max(0, rp.top - padding),
-            rp.right + padding, rp.bottom + padding)
+    l, top, r, b = target["rect"]   # rect = [左,上,右,下]
+    rect = (max(0, l - padding), max(0, top - padding),
+            r + padding, b + padding)
 
     PROJECT_AUTO_DIR = R.img("auto")
     os.makedirs(PROJECT_AUTO_DIR, exist_ok=True)
@@ -224,7 +226,7 @@ else:
         "ok": True,
         "path": out_path,
         "rect": list(rect),
-        "matched_text": target.text,
+        "matched_text": target["text"],
     })
 ```
 
@@ -301,9 +303,8 @@ idx = 1
 
 # 1. 收集 OCR 文字框
 for t in (Ocr.find_all() or []):
-    rp = t.region_position
-    rect = (rp.left, rp.top, rp.right, rp.bottom)
-    elements.append({"id": idx, "kind": "ocr", "text": t.text, "rect": list(rect)})
+    rect = tuple(t["rect"])   # Ocr 结果是 dict，rect=[左,上,右,下]
+    elements.append({"id": idx, "kind": "ocr", "text": t["text"], "rect": list(rect)})
     draw.rectangle(rect, outline="red", width=2)
     draw.text((rect[0] + 2, rect[1] + 2), str(idx), fill="red")
     idx += 1
@@ -312,8 +313,8 @@ for t in (Ocr.find_all() or []):
 try:
     nodes = Selector().clickable(True).find_all() or []
     for n in nodes:
-        bounds = n.bounds  # 假设有 left/top/right/bottom
-        rect = (bounds.left, bounds.top, bounds.right, bounds.bottom)
+        rc = n.rect  # 节点矩形：node.rect.left/top/right/bottom
+        rect = (rc.left, rc.top, rc.right, rc.bottom)
         elements.append({"id": idx, "kind": "node", "text": getattr(n, "text", ""), "rect": list(rect)})
         draw.rectangle(rect, outline="blue", width=2)
         draw.text((rect[0] + 2, rect[1] + 2), str(idx), fill="blue")

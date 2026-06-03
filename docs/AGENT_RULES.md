@@ -25,7 +25,7 @@ AScript 脚本工程师助手。AScript 是 Python 跨平台移动端自动化�
 
 **关键决策步**(click / 输入 / 提交)前 `preconditions_pass()` 检查;**辅助步**(滑动 / sleep)不必。
 
-**eval_python 红线**(§3.5):无 `while True` / `sleep ≤ 5s` / 总预算 ≤ 30s / globals 共享(不重 import)。
+**eval_python 红线**(§3.5):无 `while True` / `sleep ≤ 5s` / 总预算 ≤ 30s / 每次调用全新 globals(必须每次 re-import，跨调用传状态用 `data.KeyValue`/文件)。
 
 **Token 经济**(§2.3.1):Android(有控件树)默认 dump、`screen_only` 默认截图、iOS 默认截图;`Ocr/FindImages` 自带读屏,**不要每步给 AI 截图**。
 
@@ -72,7 +72,7 @@ AScript 脚本工程师助手。AScript 是 Python 跨平台移动端自动化�
 
 ```
 ① 直接 API     ascript.<platform>.<module>.<func>()       多数情况首选
-              探索:search_api(keyword=...) / get_module_apis(...)
+              探索:search_api(query=...) / get_module_apis(...)
 
 ② 间接 API     仍是调 API — 调用本身不需要看屏幕、不模拟人
               Android:Intent / Broadcast / ContentProvider /
@@ -80,7 +80,7 @@ AScript 脚本工程师助手。AScript 是 Python 跨平台移动端自动化�
                       Shizuku 系统服务调用
               iOS:    URL Scheme(具体可用性视 iOS 版本)/
                       WDA 设备级方法 / 快捷指令深链
-              探索:search_api(keyword="intent"/"broadcast"/"url scheme"...)
+              探索:search_api(query="intent"/"broadcast"/"url scheme"...)
                    或直接问用户"有没有可用的间接调用方式"
 
 ③ UI 自动化    ①② 都没路才走。质变:② 是"调 API",③ 是"模拟人"
@@ -108,7 +108,7 @@ AScript 脚本工程师助手。AScript 是 Python 跨平台移动端自动化�
 | 系统按键(HOME/BACK/RECENTS/锁屏/截屏) | `Key` | `action.Key.home()` / `back()` / `recents()` / `lockscreen()` / `screenshot()` | (走 HID,见 §3.3) |
 | 模拟文本输入 | `input` | `action.input(msg, selector=None)` | 走 `ime` / WDA |
 | 剪贴板读写 | `Clipboard` | `system.Clipboard.put(msg)` / `get()` | — |
-| 设备信息 / 亮度 / 亮屏 / 电量 | `Device` | `Device.battery` / `Device.set_brightness(v)` / `Device.wake_up()` | `system.info()` / `get_ios_version()` |
+| 设备信息 / 亮度 / 亮屏 / 电量 | `Device` | `Device.battery()`（staticmethod，要带 ()）/ `Device.set_brightness(v)` / `Device.wake_up()` | `system.info()` / `get_ios_version()` |
 | 等包启动 / 拿前台 App | `wait_for_package` / `foreground` | `system.wait_for_package(pkg, timeout)` / `system.get_foreground_app()` | — |
 | 监听按键 / 通知 / 触摸(常驻) | `event` / `KeyEvent` | `event.KeyEvent.on(...)` / `NotificationEvent.on(...)` / `TouchEvent.on(...)` | — |
 | 执行 shell 命令 | `shell` | `system.shell(cmd, callback)` | (沙盒,无) |
@@ -194,13 +194,13 @@ _result = json.dumps(safe_action())
 
 | 工具 | 用途 | 何时用 / 陷阱 |
 |---|---|---|
-| `search_api(keyword, platform)` | 关键词搜 API | §1.2 ① 直接 API 探索主力。一次搜 1-3 个关键词,搜两轮无果就降 ② |
+| `search_api(query, platform)` | 关键词搜 API | §1.2 ① 直接 API 探索主力。一次搜 1-3 个关键词,搜两轮无果就降 ② |
 | `get_module_apis(platform, module)` | 看某模块完整 API | search_api 命中后看具体签名时用 |
 | `get_platform_overview(platform)` | 看平台模块概览 | 不熟悉某平台时翻一次 |
-| `get_code_example(scenario)` | 场景化示例 | **不要凭印象写代码** —— 抄能跑的示例改 |
+| `get_code_example(task, platform)` | 场景化示例 | **不要凭印象写代码** —— 抄能跑的示例改 |
 | `get_setup_guide(...)` | 环境搭建指南 | 用户问"装完 AScript 接下来做什么"时给 |
 | `list_plugins()` | 在线插件库列表 | OCR / YOLO / HID / 大模型等扩展能力都在这 |
-| `get_plugin_detail(id)` | 某插件详细文档 | §3.3 的 ESP32 BLE HID(id=103)必用 |
+| `get_plugin_detail(plugin_id)` | 某插件详细文档 | §3.3 的 ESP32 BLE HID(id=103)必用 |
 
 ### 2.2 设备连接与状态
 
@@ -253,11 +253,11 @@ Android 有控件树场景下,只在以下情况补 `screen_capture`:dump 拿到
 修已有脚本: get_run_log → eval_python 复现报错点 → dump_ui_tree 看实际状态
             → 改最小代码 → upload_file + run_project
 
-常驻监听:   search_api(keyword="event"/"listen"/"监听") 找到事件订阅 API
+常驻监听:   search_api(query="event"/"listen"/"监听") 找到事件订阅 API
             → 写脚本 → upload_file + run_project → stop_project 收尾
             (eval 不能 while True,见 §3.5,监听必须 upload+run)
 
-定时执行:   search_api(keyword="schedule") → 用 schedule 库 → 普通 upload+run
+定时执行:   search_api(query="schedule") → 用 schedule 库 → 普通 upload+run
 ```
 
 **eval_python 在节奏里的地位**:任何走到 ③ 的子动作,**先用 eval 验证片段命中,再写进工程文件**。比 "upload + run + 看 log" 快两个量级。
@@ -280,12 +280,12 @@ Android 有控件树场景下,只在以下情况补 `screen_capture`:dump 拿到
 
 | run_mode.code | 显示名 | 支持 mode | 常量 | 备注 |
 |---|---|---|---|---|
-| `accessibility` | 无障碍 | 0 / 1 / 2 / 3 | `MODE_ACC_SIMPLE=0` `MODE_ACC_ALL=1` `MODE_ACC_FILTERED=2` | 位掩码,见下 |
+| `accessibility` | 无障碍 | 0 / 1 / 2 / 3 | `MODE_ACC_SIMPLE=0` `MODE_ACC_ALL=1` | 2/3 为过滤系统栏的变种数字,见下 |
 | `root` | Root / 激活 | 9 | `MODE_ROOT=9` | Root 专属通道 |
 | `hid` | HID 辅助控件 | 6 | `MODE_ASS=6` | **有控件树,不是图色!** 命名易误读 |
 | `screen_only` | 图色模式 | 无 | — | 真没控件树,只能 OCR / 找图 / 找色 |
 
-**accessibility mode 由"模式选项 + FILTERED 位"组合**:`MODE_ACC_SIMPLE=0` / `MODE_ACC_ALL=1` 是模式选项;`MODE_ACC_FILTERED=2` 是过滤系统状态栏/导航栏的叠加位。所以 `mode=2 = SIMPLE|FILTERED`(实战默认),`mode=3 = ALL|FILTERED`。**实战推荐**:默认 `mode=2`,拿不到试 `mode=3`,再试 `mode=0`/`1`。
+**真实存在的常量只有 `MODE_ACC_SIMPLE=0` / `MODE_ACC_ALL=1`**(另有 `MODE_ASS=6` / `MODE_ROOT=9`);**没有 `MODE_ACC_FILTERED` 这个常量** —— 直接传数字 `mode=2`/`3` 即可,它们是在 SIMPLE/ALL 基础上额外过滤系统状态栏/导航栏的变种。**实战推荐**:默认数字 `mode=2`,拿不到试 `mode=3`,再试 `0`/`1`。
 
 **铁律**:
 - `dump_ui_tree(mode=X)` 和 `Selector(mode=X)` 必须**用同一个 X**,不一致 = dump 看到的元素 selector 找不到
@@ -312,9 +312,9 @@ iOS 的 `MODE_*` 是给**单条件**用的匹配运算符:
 ```python
 from ascript.ios.node import Selector
 
-Selector().text("登录").find()                                   # 完全匹配(默认)
-Selector().text("登录", mode=Selector.MODE_CONTAINS).find()      # 包含
-Selector().text(r"登录\d+", mode=Selector.MODE_MATCHES).find()   # 正则
+Selector().label("登录").find()                                   # 完全匹配(默认)
+Selector().label("登录", mode=Selector.MODE_CONTAINS).find()      # 包含
+Selector().label(r"登录\d+", mode=Selector.MODE_MATCHES).find()   # 正则
 ```
 
 iOS 还有点击 / 滑动专用 mode:`MODE_CLICK_ACCESS` / `MODE_CLICK_XY`、`MODE_SCROLL_VISIBLE/LEFT/RIGHT/UP/DOWN`。
@@ -357,7 +357,7 @@ iOS 控件基于 WDA,**反复 dump 可能让 App 卡死或崩溃**。路径优�
 
 | 答案 | 接下来做什么 |
 |---|---|
-| A 官方 ESP32 BLE HID | `list_plugins()` → `get_plugin_detail(id=103)` 拿 API,**只用插件提供的方法**。文档:https://ascript.cn/plug?id=103 |
+| A 官方 ESP32 BLE HID | `list_plugins()` → `get_plugin_detail(plugin_id=103)` 拿 API,**只用插件提供的方法**。文档:https://ascript.cn/plug?id=103 |
 | B 第三方 HID | 让用户提供:设备型号 + SDK / 库名 + 关键 API 调用样例。**不能凭训练数据猜接口** |
 | C 虚拟 HID | 让用户提供方案名称 + 接入方式 |
 | D 没配 | 任务暂停,指引用户配置(参考 ascript.cn/plug?id=103 或对应硬件文档) |
@@ -383,7 +383,7 @@ eval_python 跑在 App 主进程主线程,几百毫秒一轮。硬约束:
 - ⛔ 整段 `try/except`,异常写进 `_result`,否则结果丢失
 - 超 30s / 需监听 / 长 session → **必须 `upload_file` + `run_project`**(可被 `stop_project` 干掉)
 
-**eval 之间 globals 共享**:多次 `eval_python` 之间,模块 import、变量、函数都保留。**第一次 eval `import` 之后,后续 eval 直接用,不要 re-import**。
+**每次 eval 是全新 globals(请求级 fresh globals)**:多次 `eval_python` 之间,模块 import、变量、函数**不跨调用保留**。**每次 eval 都要重新 `import`**;要跨 eval 传状态用 `data.KeyValue` 或写文件。
 
 ---
 
@@ -443,10 +443,10 @@ Selector().id("com.tencent.mm:id/login_btn").find()
 
 # ✓ text + desc 双锚 / text + className 收紧形态
 Selector().text("登录").desc("登录按钮").find()
-Selector().text("确定").className("android.widget.Button").find()
+Selector().text("确定").type("android.widget.Button").find()
 
 # ✓ 静态布局 + 形态唯一:childCount/depth/className 场景内稳定属性
-Selector().className("android.widget.Button").childCount(0).find()
+Selector().type("android.widget.Button").childCount(0).find()
 
 # ✓ 锚点 + 子树 / child(idx) 替代脆弱 path
 anchor = Selector().text("用户登录").find()
@@ -481,10 +481,10 @@ Selector().path("/0/1/2/3/0").find()  # UI 微调或换 item 就坏
 import json
 from ascript.android.node import Selector
 
-matches = Selector(mode=2).text("确定").className("android.widget.Button").find_all() or []
+matches = Selector(mode=2).text("确定").type("android.widget.Button").find_all() or []
 _result = json.dumps({
     "count": len(matches),
-    "rects": [[m.rect.x1, m.rect.y1, m.rect.x2, m.rect.y2] for m in matches],
+    "rects": [[m.rect.left, m.rect.top, m.rect.right, m.rect.bottom] for m in matches],
 })
 ```
 
@@ -561,7 +561,7 @@ _result = json.dumps({
 | 用 `sys.argv` / `argparse`(脚本不是命令行启动) | §3.4 |
 | 工程入口起名 `main.py` / `app.py` / `run.py` | §3.4 |
 | eval 写 `while True` / `time.sleep > 5s` / 总预算 > 30s | §3.5 |
-| 每次 `eval_python` 重新 import(globals 共享) | §3.5 |
+| eval 后续调用不 re-import(误以为 globals 共享;实为每次全新 globals) | §3.5 |
 | 单 `text` selector(常见词跨页面误命中) | §4.4 |
 | 不规整 id 还硬用(`abc123` / 长哈希) | §4.2 §4.4 |
 | 堆低特异性属性(`clickable / enabled / packageName / childCount`) | §4.2 §4.4 |
