@@ -19,6 +19,7 @@ Cursor 配置（.cursor/mcp.json）：
 
 import json
 import asyncio
+import threading
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool, ImageContent, Prompt, PromptMessage, PromptArgument, CallToolResult
@@ -148,6 +149,7 @@ python your_script.py
 # ------------------------------------------------------------------
 
 server = Server("ascript-workspace", version="1.8.0")
+_legacy_lock = threading.RLock()
 
 # ------------------------------------------------------------------
 # Server Instructions（始终加载，AI 每次对话都能看到）
@@ -1043,7 +1045,7 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent | ImageConte
         return contents
 
     # 其他结果统一转文本
-    if isinstance(result, dict):
+    if isinstance(result, (dict, list)):
         text = json.dumps(result, ensure_ascii=False, indent=2)
     else:
         text = str(result)
@@ -1056,6 +1058,15 @@ def _dispatch(name: str, args: dict) -> str | dict:
 
     if name in SPECS:
         return dispatch_workspace(name, args)
+
+    # Existing device state is process-global. Preserve the old single-flight
+    # behavior while allowing unrelated workspace I/O off the event loop.
+    with _legacy_lock:
+        return _dispatch_legacy(name, args)
+
+
+def _dispatch_legacy(name: str, args: dict) -> str | dict:
+    """Original API/device dispatch, serialized against connection changes."""
 
     # ── 文档查询 ──────────────────────────────────────────────────
     if name == "get_platform_overview":

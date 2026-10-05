@@ -1,9 +1,12 @@
 import json
+import asyncio
 import tempfile
 import time
+import threading
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
@@ -159,6 +162,30 @@ class WorkspaceTests(unittest.TestCase):
             self.assertIn("confirm", tools[name].inputSchema["required"])
             self.assertTrue(tools[name].annotations.destructiveHint)
         self.assertEqual(len(tools), len(SPECS))
+
+    def test_original_device_dispatch_remains_single_flight(self):
+        from ascript_mcp.local import _dispatch
+        active=0
+        maximum=0
+        counter=threading.Lock()
+        def handler(name,args):
+            nonlocal active,maximum
+            with counter:
+                active+=1;maximum=max(maximum,active)
+            time.sleep(0.03)
+            with counter:active-=1
+            return name
+        with patch('ascript_mcp.local._dispatch_legacy',side_effect=handler),ThreadPoolExecutor(max_workers=2) as pool:
+            pending=[pool.submit(_dispatch,name,{}) for name in ('connect_device','screen_capture')]
+            self.assertEqual([p.result() for p in pending],['connect_device','screen_capture'])
+        self.assertEqual(maximum,1)
+
+    def test_operation_records_are_json_not_python_repr(self):
+        from ascript_mcp.local import call_tool
+        records=[{'state':'unknown','confirmed':False}]
+        with patch('ascript_mcp.local._dispatch',return_value=records):
+            contents=asyncio.run(call_tool('workspace_operations',{}))
+        self.assertEqual(json.loads(contents[0].text),records)
 
 
 if __name__ == "__main__":
