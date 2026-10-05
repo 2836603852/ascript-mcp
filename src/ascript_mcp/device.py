@@ -238,12 +238,11 @@ def _get_local_prefixes() -> list[str]:
     获取本机所有局域网 IPv4 前缀，如 ['192.168.1.', '10.0.0.']。
     1:1 对齐插件 getLocalIpPrefixes()：遍历所有网卡，排除 internal。
     """
-    import psutil  # type: ignore
-
     prefixes: list[str] = []
     seen: set[str] = set()
 
     try:
+        import psutil
         stats = psutil.net_if_stats()
         addrs = psutil.net_if_addrs()
         for iface_name, iface_addrs in addrs.items():
@@ -533,6 +532,7 @@ def scan_adb_devices() -> list[dict[str, Any]]:
             capture_output=True,
             text=True,
             timeout=10,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
         )
         if result.returncode != 0:
             return []
@@ -574,6 +574,7 @@ def _adb_forward(adb: str, serial: str, local_port: int, remote_port: int) -> bo
             [adb, "-s", serial, "forward", f"tcp:{local_port}", f"tcp:{remote_port}"],
             capture_output=True,
             timeout=10,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
         )
         return result.returncode == 0
     except Exception:

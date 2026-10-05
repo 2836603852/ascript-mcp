@@ -1,5 +1,10 @@
 # ascript-mcp
 
+> 自有扩展版 **AScript Workspace MCP 1.8.0**：69 个工具，保留原有设备能力，新增自动登录、云端工程与文件管理、AS/IAS/ZIP 导入导出、小程序上传修改及上下架、数据库与账号资源列表。
+>
+> 本版本从本仓库源码安装：`uv sync --locked`。启动：`.venv/Scripts/python.exe -m ascript_mcp.local`，通过 `ASCRIPT_CREDENTIALS_FILE` 指定本机账号配置。
+> 详见 [Workspace 使用说明](docs/WORKSPACE.md) 和 [69 个工具的完整参数](docs/TOOLS.md)。下方保留上游项目说明；其中 PyPI 安装命令对应官方版本。
+
 <!-- mcp-name: io.github.ascript-cn/ascript-mcp -->
 
 **中文** | [English](./README_EN.md)

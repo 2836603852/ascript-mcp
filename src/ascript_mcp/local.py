@@ -18,13 +18,16 @@ Cursor 配置（.cursor/mcp.json）：
 """
 
 import json
+import asyncio
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-from mcp.types import TextContent, Tool, ImageContent, Prompt, PromptMessage, PromptArgument
+from mcp.types import TextContent, Tool, ImageContent, Prompt, PromptMessage, PromptArgument, CallToolResult
 
 from ascript_mcp.api_store import api_store, VALID_PLATFORMS
 from ascript_mcp.examples import find_examples
 from ascript_mcp import device as dev
+from ascript_mcp.backend import WorkspaceError
+from ascript_mcp.workspace_tools import SPECS, list_workspace_tools, dispatch_workspace
 
 
 # ------------------------------------------------------------------
@@ -144,7 +147,7 @@ python your_script.py
 # 创建 MCP Server
 # ------------------------------------------------------------------
 
-server = Server("ascript-local")
+server = Server("ascript-workspace", version="1.8.0")
 
 # ------------------------------------------------------------------
 # Server Instructions（始终加载，AI 每次对话都能看到）
@@ -306,7 +309,7 @@ from ascript.ios.screen import Ocr, FindColors
 在不确定 API 用法时，用 search_api 和 get_module_apis 查询，不要猜参数。
 """
 
-server.instructions = SERVER_INSTRUCTIONS
+server.instructions = """AScript Workspace 自有 MCP：原有工具连接本地 Android/iOS 设备、查询 API、观察屏幕、部署运行脚本；backend_* 管理开发者后台；cloud_* 管理 AI Studio 工程、文件和分发。凭据从本机配置读取，首次调用和会话失效时自动登录。设备自动化先连接并观察真实界面，优先稳定控件选择器；不猜 API 或坐标。Android/iOS 脚本在设备上运行，本机只做编辑。云端配对与本地 USB/Wi-Fi 会话分别管理。修改源码使用最近读取的 revision；截断内容须分段读完或下载后再编辑。发布、删除和收费操作须有用户对具体目标的授权。写请求超时结果未知时先读取目标状态，不重复发送。"""
 
 
 # ------------------------------------------------------------------
@@ -967,6 +970,7 @@ async def list_tools() -> list[Tool]:
             },
         ),
     ]
+    tools.extend(list_workspace_tools())
     return tools
 
 
@@ -978,9 +982,11 @@ async def list_tools() -> list[Tool]:
 async def call_tool(name: str, arguments: dict) -> list[TextContent | ImageContent]:
     """处理 MCP 工具调用。"""
     try:
-        result = _dispatch(name, arguments)
+        result = await asyncio.to_thread(_dispatch, name, arguments)
+    except WorkspaceError as e:
+        return CallToolResult(content=[TextContent(type="text", text=json.dumps(e.as_dict(), ensure_ascii=False))], isError=True)
     except Exception as e:
-        result = f"错误：{type(e).__name__}: {e}"
+        return CallToolResult(content=[TextContent(type="text", text=f"错误：{type(e).__name__}: {e}")], isError=True)
 
     # 截图返回图片
     if name == "screen_capture" and isinstance(result, dict) and "base64" in result:
@@ -1047,6 +1053,9 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent | ImageConte
 
 def _dispatch(name: str, args: dict) -> str | dict:
     """根据工具名分发到对应处理函数。"""
+
+    if name in SPECS:
+        return dispatch_workspace(name, args)
 
     # ── 文档查询 ──────────────────────────────────────────────────
     if name == "get_platform_overview":

@@ -3,21 +3,27 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ascript-mcp"
-version = "1.7.0"
-description = "AScript MCP Service - 为大模型提供 ascript 自动化库 API 文档与设备交互服务"
+name = "ascript-mcp-workspace"
+version = "1.8.0"
+description = "Owned AScript Workspace MCP: device automation, auto login, cloud projects and developer resources"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
 dependencies = [
-    "mcp>=1.0.0",
+    "mcp>=1.30.0,<2",
     "uvicorn>=0.30.0",
     "starlette",
+    "requests>=2.32,<3",
+    "beautifulsoup4>=4.12,<5",
+    "psutil>=5.9,<8",
 ]
 
 [project.scripts]
 ascript-mcp = "ascript_mcp.local:main_sync"
+
+[dependency-groups]
+dev = ["build>=1.2", "setuptools>=61", "wheel"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

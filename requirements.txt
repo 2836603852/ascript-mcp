@@ -1,3 +1,6 @@
-mcp>=1.0.0
+mcp>=1.30.0,<2
 uvicorn>=0.30.0
 starlette
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+psutil>=5.9,<8

@@ -8,6 +8,9 @@ build/
 .venv/
 venv/
 .env
+.local/
+.tmp/
+outputs/
 
 # Logs
 *.log

@@ -1,5 +1,8 @@
 # ascript-mcp
 
+> **Owned AScript Workspace MCP 1.8.0**: 69 tools, including automatic login, cloud projects/files, AS/IAS/ZIP import/export, developer apps, database/resource listing, and all original device tools.
+> Install this checkout with `uv sync --locked` and set `ASCRIPT_CREDENTIALS_FILE`. See [Workspace](docs/WORKSPACE.md) and [tool schemas](docs/TOOLS.md). The upstream README below describes the official PyPI package.
+
 [中文](./README.md) | **English**
 
 **MCP server that lets AI tools (Claude Desktop / Cursor / Trae) control real Android and iOS devices.**

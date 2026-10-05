@@ -36,8 +36,12 @@ jobs:
       - name: Build distribution
         run: python -m build
 
+      - name: Workspace regression tests
+        run: python -m unittest discover -s tests -v
+
       - name: Validate built wheel installs cleanly
         run: |
           python -m venv /tmp/fresh
           /tmp/fresh/bin/pip install dist/*.whl
           /tmp/fresh/bin/python -c "import ascript_mcp; print('installed:', ascript_mcp.__version__)"
+          /tmp/fresh/bin/python -c "from ascript_mcp.workspace_tools import list_workspace_tools; assert len(list_workspace_tools()) == 40"

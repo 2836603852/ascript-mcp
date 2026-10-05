@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.ascript-cn/ascript-mcp",
-  "description": "Control Android/iOS/Windows devices from Claude, Cursor, and other AI tools. iOS without jailbreak.",
+  "name": "io.github.2836603852/ascript-mcp-workspace",
+  "description": "Owned AScript MCP with device automation, cloud projects, packages and developer resources.",
   "repository": {
-    "url": "https://github.com/ascript-cn/ascript-mcp",
+    "url": "https://github.com/2836603852/ascript-mcp",
     "source": "github"
   },
-  "version": "1.7.0",
+  "version": "1.8.0",
   "packages": [
     {
       "registryType": "pypi",
-      "identifier": "ascript-mcp",
-      "version": "1.7.0",
+      "identifier": "ascript-mcp-workspace",
+      "version": "1.8.0",
       "transport": {
         "type": "stdio"
       },
